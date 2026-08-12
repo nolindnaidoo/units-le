@@ -253,6 +253,36 @@ fn reason_of(found: &Found) -> String {
         .unwrap_or_else(|| "unknown".to_string())
 }
 
+/// The report for a file that was not read: named, warned about, and
+/// not a failure by itself.
+fn skipped(file: String, format: &'static str, reason: &str) -> FileReport {
+    FileReport {
+        schema: SCHEMA,
+        file,
+        format: format.to_string(),
+        quantities: Vec::new(),
+        diagnostics: vec![Diagnostic {
+            severity: "warning".to_string(),
+            code: "skipped".to_string(),
+            message: reason.to_string(),
+        }],
+        summary: Summary {
+            quantities: 0,
+            refused: 0,
+        },
+    }
+}
+
+/// Drop a leading byte-order mark.
+///
+/// Three invisible bytes that Notepad, Excel and a PowerShell redirect
+/// all add. They shift every column on the first line, and in a
+/// structured format they can lose the document entirely — which is
+/// indistinguishable from a file with no quantities in it.
+pub(crate) fn without_bom(content: &str) -> &str {
+    content.strip_prefix('\u{feff}').unwrap_or(content)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -483,36 +513,6 @@ mod tests {
             describe(&report, &report.quantities[0])
         );
     }
-}
-
-/// The report for a file that was not read: named, warned about, and
-/// not a failure by itself.
-fn skipped(file: String, format: &'static str, reason: &str) -> FileReport {
-    FileReport {
-        schema: SCHEMA,
-        file,
-        format: format.to_string(),
-        quantities: Vec::new(),
-        diagnostics: vec![Diagnostic {
-            severity: "warning".to_string(),
-            code: "skipped".to_string(),
-            message: reason.to_string(),
-        }],
-        summary: Summary {
-            quantities: 0,
-            refused: 0,
-        },
-    }
-}
-
-/// Drop a leading byte-order mark.
-///
-/// Three invisible bytes that Notepad, Excel and a PowerShell redirect
-/// all add. They shift every column on the first line, and in a
-/// structured format they can lose the document entirely — which is
-/// indistinguishable from a file with no quantities in it.
-pub(crate) fn without_bom(content: &str) -> &str {
-    content.strip_prefix('\u{feff}').unwrap_or(content)
 }
 
 #[cfg(test)]
