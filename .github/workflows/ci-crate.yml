@@ -134,3 +134,172 @@ jobs:
         with:
           tool: cargo-audit
       - run: cargo audit
+
+  # ---------------------------------------------------------------------
+  # The five below exist because something real got through a green suite.
+  # Each one names the bug it would have caught.
+  #
+  # **None of them touches the network.** This tool reads files and
+  # writes JSON; there is nothing to reach for and nothing to mock.
+  # ---------------------------------------------------------------------
+
+  # Inputs a real machine holds and a fixture directory cannot: a
+  # byte-order mark, a file that is not UTF-8, a UTF-16 document, a FIFO,
+  # a mode-000 file, a symlink loop, a path over 260 characters, several
+  # megabytes on one line, and a CSV whose quote never closes. The tree
+  # is built at runtime because Windows cannot check half of it into git,
+  # and every case a platform cannot express is skipped by name rather
+  # than passed quietly.
+  #
+  # Three of the defects it exists for shipped in this family: a BOM read
+  # as content emptied three crates silently, a PNG made --strict exit 2
+  # on every repository holding an image, and a non-UTF-8 file vanished
+  # from the report entirely — which reads as a file that was clean.
+  hazards:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, windows-2025, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # master
+        with:
+          toolchain: stable
+      - name: Hazardous inputs, against the built binary
+        run: cargo test --locked --test hazards -- --nocapture
+
+  # Behaviour that differs by operating system: report paths, TZ
+  # independence, case-folding filesystems, the reserved Windows
+  # filenames, CRLF, and a child that refuses before it reads stdin.
+  #
+  # envsync-le shipped a release whose report used `\` on Windows and `/`
+  # everywhere else, so every path in a Windows report differed from the
+  # same path in a Linux one for no reason a reader could see. This crate
+  # had the same shape — `scan.rs` handed `to_string_lossy()` straight
+  # into the report — and now normalises, with the Windows leg of this
+  # job as the only thing that can prove it.
+  platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, windows-2025, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # master
+        with:
+          toolchain: stable
+      - name: Paths, case folding, reserved names, CRLF and early stdin
+        run: cargo test --locked --test platform -- --nocapture
+      # Windows ignores TZ entirely, so a suite that quietly depended on
+      # it would be red there and nowhere else. Both runs are compared
+      # line for line rather than merely required to pass.
+      - name: The suite answers the same with TZ set and unset
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Names and outcomes, not the summary lines: those carry a
+          # duration, and two runs of the same suite never agree on one.
+          names() { grep -E '^test ' | grep -v '^test result:' | sort; }
+          TZ=UTC cargo test --locked -- --test-threads=1 2>&1 \
+            | names > "$RUNNER_TEMP/tz-utc.txt"
+          unset TZ
+          cargo test --locked -- --test-threads=1 2>&1 \
+            | names > "$RUNNER_TEMP/tz-unset.txt"
+          test -s "$RUNNER_TEMP/tz-utc.txt"
+          diff -u "$RUNNER_TEMP/tz-utc.txt" "$RUNNER_TEMP/tz-unset.txt"
+
+  # The corpus pins the cases somebody thought of; this generates the ones
+  # nobody did and feeds them to the MCP server, which is the thinnest
+  # shell there is around `extract/`.
+  #
+  # Hostile on purpose: digit runs past the 38 a u128 mantissa holds,
+  # magnitudes past what a PiB multiplier fits, compounds chained until
+  # they stop being quantities, every ambiguous symbol in every position,
+  # decimal separators from several locales, ISO durations with absurd
+  # component counts, and negative and zero quantities.
+  #
+  # **Release, deliberately.** `overflow-checks` is on in that profile
+  # because every base value is an integer multiplication that would
+  # otherwise wrap into a confident wrong answer. `extract/decimal.rs`
+  # refuses before it reaches that backstop; this is what proves it does,
+  # because an out-of-range magnitude must come back as `out_of_range`
+  # rather than as a panic or a number.
+  fuzz:
+    runs-on: ubuntu-24.04
+    # Sixty seconds of generation plus the build. The ceiling is what
+    # turns a genuine non-terminating scan into a failed build rather
+    # than a job that runs until somebody notices.
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # master
+        with:
+          toolchain: stable
+      - name: Sixty seconds against the grammar and the decimals
+        env:
+          UNITS_LE_FUZZ_SECONDS: '60'
+          # Fixed so a failure reproduces; printed on every run either way.
+          UNITS_LE_FUZZ_SEED: '9049015358324737'
+        run: cargo test --locked --release --test fuzz -- --test-threads=1 --nocapture
+
+  # A wall-clock ceiling on a tree generated from a fixed seed, and three
+  # linearity checks under it: four times the files, four times the
+  # quantities in one file, and four times the quantities on one
+  # non-ASCII line.
+  #
+  # The third is the one ips-le found — a UTF-16 column index that
+  # re-counts from the line start on every lookup is invisible on
+  # ordinary source and quadratic on a minified file, where the whole
+  # document is one line. `extract/position.rs` had exactly that shape
+  # behind its ASCII fast path, and four times the quantities cost 15.7x
+  # the clock until the memo landed.
+  #
+  # One platform and --test-threads=1: a timing assertion measured
+  # against six other tests on the same cores is noise.
+  budget:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # master
+        with:
+          toolchain: stable
+      - name: A five hundred file tree inside its budget, and linear in three directions
+        env:
+          UNITS_LE_BUDGET: '1'
+        run: cargo test --locked --release --test budget -- --test-threads=1 --nocapture
+
+  # Does the crate open what it claims, and answer what it claims?
+  #
+  # Every extension the alias table names plus a dozen it has never heard
+  # of, every one of the six format readers, every Dimension and every
+  # Reason — each reached through the built binary over a real tree — and
+  # every unit spelling in the grammar's own table, walked off that table
+  # rather than off a list beside it and checked against SPEC.md. A
+  # symbol the grammar accepts and the spec does not name is a promise
+  # nobody made and nobody can check.
+  #
+  # The marker check is not decoration: `cargo test <filter>` exits 0
+  # when the filter matches nothing, so a renamed test would pass this
+  # job silently.
+  coverage-matrix:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # master
+        with:
+          toolchain: stable
+      - name: Every extension, format, dimension, reason and unit spelling
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --locked --test coverage_matrix -- --nocapture 2>&1 \
+            | tee "$RUNNER_TEMP/matrix.txt"
+          cargo test --locked --bins coverage_matrix -- --nocapture 2>&1 \
+            | tee -a "$RUNNER_TEMP/matrix.txt"
+          grep -q 'coverage-matrix: .* extensions opened' "$RUNNER_TEMP/matrix.txt"
+          grep -q 'coverage-matrix: 7 format readers' "$RUNNER_TEMP/matrix.txt"
+          grep -q 'coverage-matrix: 4 dimensions and 6 reasons' "$RUNNER_TEMP/matrix.txt"
+          grep -q 'coverage-matrix: .* unit spellings and .* ambiguous symbols' \
+            "$RUNNER_TEMP/matrix.txt"
