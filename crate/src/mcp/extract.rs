@@ -116,21 +116,27 @@ pub(crate) fn run(arguments: &Value) -> Result<Value, String> {
     ))
 }
 
-/// Clamp quietly, reject loudly.
+/// Reject loudly. Nothing is clamped.
+///
+/// The schema declares `minimum` and `maximum`, so a value outside them
+/// is a malformed question rather than an ambitious one — and a cap
+/// silently lowered to 5000 returns 5000 rows with `truncated: true` to
+/// a caller who asked for everything and has no way to know the number
+/// it asked with was ignored. Strict parsing, no silent defaults, the
+/// same rule the command line's flags are held to.
 fn read_max_results(arguments: &Value) -> Result<usize, String> {
-    const INVALID: &str = "maxResults must be a positive integer";
+    let refusal = || format!("maxResults must be a whole number between 1 and {MAX_MAX_RESULTS}");
 
     let Some(raw) = arguments.get("maxResults") else {
         return Ok(DEFAULT_MAX_RESULTS);
     };
     // `as_u64` refuses a string, a fraction and a negative in one test.
-    let value = raw.as_u64().ok_or_else(|| INVALID.to_string())?;
-    if value < 1 {
-        return Err(INVALID.to_string());
+    let value = raw.as_u64().ok_or_else(refusal)?;
+    let value = usize::try_from(value).map_err(|_| refusal())?;
+    if !(1..=MAX_MAX_RESULTS).contains(&value) {
+        return Err(refusal());
     }
-    Ok(usize::try_from(value)
-        .unwrap_or(MAX_MAX_RESULTS)
-        .min(MAX_MAX_RESULTS))
+    Ok(value)
 }
 
 #[cfg(test)]
@@ -279,7 +285,33 @@ mod tests {
     #[test]
     fn a_fractional_cap_is_refused() {
         let error = run(&json!({ "content": "x", "maxResults": 1.5 })).expect_err("a refusal");
-        assert_eq!(error, "maxResults must be a positive integer");
+        assert_eq!(
+            error,
+            "maxResults must be a whole number between 1 and 5000"
+        );
+    }
+
+    /// **A cap outside the declared range is refused, not clamped.** A
+    /// silently lowered cap answers 5000 rows to a caller who asked for
+    /// more and cannot tell that its number was ignored — a truncated
+    /// answer believed to be whole, which is the failure this crate is
+    /// against everywhere else.
+    #[test]
+    fn a_cap_outside_the_schema_is_refused_rather_than_clamped() {
+        for cap in [0, MAX_MAX_RESULTS + 1, 999_999] {
+            let error = run(&json!({ "content": "a: 1h", "maxResults": cap }))
+                .expect_err(&format!("{cap} was accepted"));
+            assert!(error.contains("between 1 and 5000"), "{error}");
+        }
+        assert!(run(&json!({ "content": "a: 1h", "maxResults": MAX_MAX_RESULTS })).is_ok());
+    }
+
+    /// No refusal on this surface may name a flag: an MCP caller has no
+    /// command line to type one on.
+    #[test]
+    fn the_cap_refusal_speaks_no_command_line() {
+        let error = run(&json!({ "content": "x", "maxResults": 999_999 })).expect_err("a refusal");
+        assert!(!error.contains("--"), "{error}");
     }
 
     #[test]

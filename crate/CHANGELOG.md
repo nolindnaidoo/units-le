@@ -37,6 +37,18 @@ SPEC.md and this crate's own stated invariants.
   false-finding rate is **unchanged at 5 findings, 1.8%** — the wider
   rule costs no noise on opaque content.
 
+### Changed
+
+- **`extract_units` refuses a `maxResults` outside its schema instead of
+  clamping it.** The schema declares `minimum: 1` and `maximum: 5000`,
+  and a value above that was quietly lowered — so a caller asking for
+  50000 rows got 5000 and a `truncated: true` it had no way to attribute
+  to its own argument being ignored. It is now
+  `maxResults must be a whole number between 1 and 5000`, which names
+  the range and no command-line flag. The message for a fraction, a
+  string or a negative is the same one; `fixtures/mcp-extract-units.json`
+  pins it.
+
 ## [0.1.0] - 2026-08-12
 
 First release. Core functionality: the grammar, six formats plus a text

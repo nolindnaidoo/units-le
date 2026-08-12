@@ -241,6 +241,6 @@
 		"arguments": {
 			"maxResults": 1.5
 		},
-		"expectedError": "maxResults must be a positive integer"
+		"expectedError": "maxResults must be a whole number between 1 and 5000"
 	}
 ]
