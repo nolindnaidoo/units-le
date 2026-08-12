@@ -7,6 +7,33 @@ repository around it.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+0.1.0 has not shipped, so everything below lands in it when it does.
+The crate's own behaviour changes are in
+[`crate/CHANGELOG.md`](crate/CHANGELOG.md); this file covers the
+repository around it.
+
+### Fixed
+
+- **The documentation now describes the repository that exists.** An
+  audit against `crate/AGENTS.md` found five claims it had outgrown: a
+  release workflow said not to exist (`release-crate.yml` has been in
+  place, and it is dispatch-only rather than tag-driven as the root
+  document said), a `ci.yml` and a set of "byte-identical" shared
+  dotfiles that this crate-only repository does not have and cannot
+  have, a dependency count of four format parsers where there are five,
+  a fuzz suite described as gated when its variable is a budget, and a
+  CI job list missing `scenarios`.
+- **The no-inline-`#[allow]` rule is stated as the rule rather than as
+  the grep that enforces half of it.** Two `expect(dead_code)`
+  attributes had lived in `extract/` since the first commit while every
+  document claimed there were none.
+- **The measured false-finding rate is rounded rather than truncated**,
+  so the number the test prints and the number five documents quote are
+  the same 1.8%. The test now fails if SPEC.md or the README quotes a
+  different one.
+
 ## [0.1.0] - 2026-08-12
 
 First release. A Rust CLI and MCP server that extracts every quantity in

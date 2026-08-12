@@ -47,7 +47,7 @@ what makes this one usable in a review is that it will not pretend.
 | `500m` | `ambiguous_unit` — minutes, milliseconds, or Kubernetes millicores? |
 | `1.5KB` | `fractional_bytes` — a byte count has no fractional part |
 | `1,5s` | `locale_separator` — one and a half, or fifteen hundred? |
-| `1h + 30m` | `compound_arithmetic` — an expression, not a quantity |
+| `1h + 30m`, `30s*2` | `compound_arithmetic` — an expression, not a quantity |
 | `1MB` | `si_iec_hazard` — **1000000 bytes**, and the writer may have meant 2^20 |
 | `99999…PiB` | `out_of_range` — refused rather than wrapped |
 
@@ -126,6 +126,11 @@ Inside a compound the parts disambiguate each other. `m` on its own is
 refused; `m` between `h` and `s` can only be minutes, because a compound
 is written largest-first. That ordering is required rather than assumed,
 so `30s1h` is not a quantity at all.
+
+An operand with no unit is still an operand, so `30s*2` and `1h + 30`
+are refused too — reporting `30s` for a line that says twice that is the
+same wrong answer in a shorter form. Some operand has to carry a unit,
+which is why `2026-08-12` and `1-2` yield nothing at all.
 
 ## Exactness is the contract
 

@@ -76,6 +76,14 @@ crate/src/
   parts of a compound disambiguate each other — `m` alone is refused and
   `m` between `h` and `s` is minutes — which is why descending order is
   *required* rather than assumed, and why `30s1h` is not a quantity.
+- **An operand with no unit is still an operand.** `30s*2` and
+  `1h + 30` are `compound_arithmetic`, because reporting `30s` for a
+  line that says twice that is the same confident wrong answer as
+  reporting `1h` and `30m` separately. *Some* operand must carry a unit,
+  which is what keeps `2026-08-12` and `1-2` silent, and a leading sign
+  is part of the number rather than an operator, which is what keeps
+  `-30s` a quantity. The text scan spans the whole expression from
+  either end so the refusal names what it saw.
 - **Base values are exact decimals, never `f64`.** A sign, an integer
   mantissa and a power-of-ten scale. `0.1s` through a double is
   `100.00000000000001` ms. Every conversion is a checked integer

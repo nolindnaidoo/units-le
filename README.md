@@ -273,7 +273,7 @@ routes to [`crate/AGENTS.md`](crate/AGENTS.md); the product behaviour is
 
 ## Testing
 
-256 tests: 198 unit tests inside the modules they cover, and seven
+266 tests: 208 unit tests inside the modules they cover, and seven
 integration suites against the built binary.
 
 | Suite | What it holds | Run |
@@ -296,13 +296,13 @@ because a total hides one module sliding while the others carry it:
 
 | Module | Lines | Module | Lines |
 |---|---|---|---|
-| `corpus.rs` | 98.82% | `locate.rs` | 100.00% |
+| `corpus.rs` | 96.59% | `locate.rs` | 100.00% |
 | `csv.rs` | 96.23% | `mod.rs` | 100.00% |
 | `decimal.rs` | 99.07% | `policy.rs` | 100.00% |
 | `dotenv.rs` | 100.00% | `position.rs` | 100.00% |
-| `fallback.rs` | 98.61% | `toml.rs` | 100.00% |
-| `format.rs` | 100.00% | `yaml.rs` | 95.77% |
-| `grammar.rs` | 92.01% | `ini.rs` | 100.00% |
+| `fallback.rs` | 98.81% | `toml.rs` | 100.00% |
+| `format.rs` | 99.05% | `yaml.rs` | 95.77% |
+| `grammar.rs` | 92.69% | `ini.rs` | 100.00% |
 | `json.rs` | 100.00% | | |
 
 Reproduce with `cargo llvm-cov` in `crate/`. The floor is a floor and is
