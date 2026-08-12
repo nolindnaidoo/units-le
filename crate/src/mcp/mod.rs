@@ -205,19 +205,19 @@ fn scan_tool(arguments: &Value) -> Result<Value, String> {
     // but the count is carried, because an agent reading `reports` as
     // the whole tree would otherwise be wrong about coverage.
     let (read, binary) = scan::partition(scanned);
+    // Summed off the typed reports rather than read back out of the
+    // JSON. A lookup by field name answers `None` for a field that was
+    // renamed, and a total that silently fell to zero is exactly the
+    // shape of a clean audit that never ran.
+    let quantities: usize = read.iter().map(|report| report.summary.quantities).sum();
+    let refused: usize = read.iter().map(|report| report.summary.refused).sum();
+    // A report is plain data — strings, integers and unit-variant enums,
+    // every map keyed by a string and no float anywhere — so there is no
+    // input on which `to_value` can fail.
     let reports: Vec<Value> = read
         .iter()
         .map(|report| serde_json::to_value(report).expect("a report serializes"))
         .collect();
-
-    let total = |field: &str| -> u64 {
-        reports
-            .iter()
-            .map(|report| report["summary"][field].as_u64().unwrap_or(0))
-            .sum()
-    };
-    let quantities = total("quantities");
-    let refused = total("refused");
 
     let mut diagnostics: Vec<Value> = read
         .iter()
@@ -325,6 +325,8 @@ pub(crate) fn envelope(
 /// An MCP tool result: the envelope as text (what a model reads) and
 /// the same envelope structured.
 fn tool_result(envelope: &Value) -> Value {
+    // A `Value` is already valid JSON: rendering one can only fail on a
+    // non-finite float, and `serde_json::Number` cannot hold one.
     let text = serde_json::to_string_pretty(envelope).expect("an envelope serializes");
     json!({
         "content": [{ "type": "text", "text": text }],
