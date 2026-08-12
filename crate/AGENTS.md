@@ -13,10 +13,14 @@ has no unit concept; this extracts **quantities** — a number with its
 unit — and reports each one as the document wrote it *and* in a base
 unit, so two of them can be compared.
 
-**Status: v0.1.0, core functionality.** The grammar, the six format
+**Status: v0.1.0, hardened, unpublished.** The grammar, the six format
 readers, the text scan, both surfaces and the corpus are built and
-green. It is not hardened: the coverage floor, the CI workflows and the
-release plumbing the sibling crates carry are not here yet.
+green, and the family's hardening is in place: the four suites, the
+coverage-matrix, the 90% per-module floor on `extract/`, and the CI
+workflows that run them. It is **not on crates.io**, and this repository
+is **crate-only** — there is no extension beside it, so the `parity` and
+`differential` jobs the two-frontend siblings run are deliberately
+absent rather than present and vacuous.
 
 **The reader is not the author.** Someone reconciling configuration
 across services, or against a document that states the limits — an SRE
@@ -103,7 +107,21 @@ crate/src/
   could not decide.
 - **The text scan has a grammar**, unlike numbers-le's. It also has a
   written-down false-positive class — a run inside a base64 hash or a
-  UUID — which was measured against a real lockfile, not imagined.
+  UUID — which is **measured rather than imagined**: 1.8% over
+  `fixtures/documents/opaque.txt`, recomputed and printed on every test
+  run. The boundary characters that let it through are the same ones
+  that let `-30s` and `ttl=30s` through, so narrowing them would cost
+  real findings. Tightening this is a behaviour change that needs
+  SPEC.md and the CHANGELOG, not a quieter test.
+- **A report path is separated by `/` on every platform.** envsync-le
+  shipped `\` on Windows for a release; a report is diffed against one
+  produced somewhere else, and `scan.rs::report_path` is the one place
+  that normalises it.
+- **`PositionIndex` counts on from its last answer.** The ASCII fast
+  path is not the whole guard: without the memo a UTF-16 column re-counts
+  from the line start on every lookup, which is quadratic on a minified
+  file and cost 15.7x the clock for four times the quantities. Do not
+  remove it as a tidy-up — `tests/budget.rs` asserts the slope.
 - **A binary file is not a report.** A NUL byte in the first 8 KiB
   (ripgrep's test) and the file produces no report line and no effect on
   the exit code; it is counted on stderr. A file that *is* text and
@@ -197,10 +215,35 @@ CHANGELOG entry.
   callers branch on them — so they are pinned by tests that drive the
   built binary against a temporary tree. A new refusal adds its case
   there.
-- **Anything needing a document larger than an editor opens is
-  `tests/scenarios.rs`**, gated behind `UNITS_LE_SCENARIOS`. A skipped
-  scenario is never reported as a pass; each one says plainly that it
-  did not run.
+- **90% line coverage per module in `extract/`**, enforced by the
+  `coverage` CI job. Per module rather than on the total: a total hides
+  one module sliding while the others carry it. It is a floor and is
+  never lowered to make a build pass.
+- **Every case in the hardening suites names the bug it would have
+  caught.** A case that tests in general is decoration; a case that
+  names a defect is a regression test for the whole family.
+
+  | Suite | What it holds | Gate |
+  |---|---|---|
+  | `tests/hazards.rs` | inputs a real machine holds and a fixture directory cannot — a BOM, invalid UTF-8, a UTF-16 document, a FIFO, permission denied, a symlink loop, a path over 260 characters, several megabytes on one line, an unterminated CSV quote. The tree is built at runtime | none |
+  | `tests/platform.rs` | report paths, `TZ` independence, case folding, reserved Windows names, CRLF against LF, early stdin. Three OSes | none |
+  | `tests/fuzz.rs` | hostile quantity text through the MCP server: never a panic, never a hang, always a well-formed report, and never an overflow | `UNITS_LE_FUZZ_SECONDS`, **release** |
+  | `tests/budget.rs` | a wall-clock ceiling and linearity in three directions | `UNITS_LE_BUDGET`, **release** |
+  | `tests/coverage_matrix.rs` | every extension, format reader, dimension and reason, through the built binary | none |
+  | `tests/scenarios.rs` | documents larger than an editor opens | `UNITS_LE_SCENARIOS` |
+
+  **A skipped case is never reported as a pass.** Every gate and every
+  platform skip says so by name on stderr.
+
+  `fuzz` and `budget` run in **release** on purpose: `overflow-checks` is
+  on in that profile, and an out-of-range magnitude must come back as
+  `out_of_range` rather than reach the backstop.
+
+  The `coverage_matrix` markers are greped by CI, because `cargo test
+  <filter>` exits 0 when the filter matches nothing — a renamed test
+  would otherwise pass the job silently. The unit-spelling leg lives in
+  `grammar.rs` so it walks `UNITS` and `AMBIGUOUS` themselves rather
+  than a list beside them, and checks each symbol against SPEC.md.
 - **Every bug fix ships with a regression test** that fails before the
   fix.
 - **Run the binary, not only the tests.** The false-positive class in
@@ -215,13 +258,27 @@ cargo clippy --all-targets -- -D warnings
 cargo test --locked
 ```
 
+Those three are what the `test` job runs on macOS, Windows and Linux.
+Five more jobs run beside it — `hazards` and `platform` on all three
+OSes, `fuzz`, `budget` and `coverage-matrix` on Linux — plus `msrv`,
+`policy` (which fails the build on an inline `#[allow]`), `coverage` and
+`audit`. Reproduce the gated ones locally:
+
+```bash
+UNITS_LE_FUZZ_SECONDS=60 cargo test --locked --release --test fuzz -- --nocapture
+UNITS_LE_BUDGET=1 cargo test --locked --release --test budget -- --nocapture
+UNITS_LE_SCENARIOS=1 cargo test --locked --test scenarios
+cargo llvm-cov            # the 90% per-module floor on extract/
+```
+
 A change is not done because it compiles; it is done when it is tested,
 linted, documented where behavior changed (README / CHANGELOG / SPEC /
 this file), and honest — claims in docs must match the code.
 
 ## Not built yet
 
-Written down so nobody assumes otherwise: there is no CI workflow, no
-coverage job, no release workflow, and no VS Code extension in this
-repository. The sibling crates' `ci-crate.yml` / `release-crate.yml` are
-the model when they are added.
+Written down so nobody assumes otherwise: this crate is **not published
+to crates.io**, there is no release workflow, and there is no VS Code
+extension in this repository. The sibling crates' `release-crate.yml` is
+the model when it is added, and the absent `parity` / `differential` CI
+jobs arrive with an extension or not at all.

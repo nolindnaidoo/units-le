@@ -1,0 +1,54 @@
+# CLAUDE.md
+
+[AGENTS.md](AGENTS.md) is the technical source of truth for this repo. It is a
+router: **this repository is crate-only**, so everything that is the product
+lives in [`crate/`](crate/) and [`crate/AGENTS.md`](crate/AGENTS.md) is the
+engineering standard the code is held to — control flow, error handling,
+structure, the settled decisions, the definition of done. Read it before
+writing code. [`crate/SPEC.md`](crate/SPEC.md) defines the product behaviour.
+
+## Where to look
+
+| Question | File |
+|---|---|
+| How should this code be written? | [`crate/AGENTS.md`](crate/AGENTS.md) — the standard, the architecture, the invariants |
+| What is the tool supposed to do? | [`crate/SPEC.md`](crate/SPEC.md) — refusals, dimensions, exit codes, non-goals |
+| What does the user see? | [README.md](README.md) |
+| What changed? | [CHANGELOG.md](CHANGELOG.md) · [`crate/CHANGELOG.md`](crate/CHANGELOG.md) |
+
+## Gates
+
+```bash
+cd crate && cargo fmt --all --check && cargo clippy --all-targets -- -D warnings && cargo test --locked
+```
+
+All three, exactly as CI runs them. The gated suites are extra:
+`UNITS_LE_BUDGET=1 cargo test --release --test budget`,
+`UNITS_LE_FUZZ_SECONDS=60 cargo test --release --test fuzz`,
+`UNITS_LE_SCENARIOS=1 cargo test --test scenarios`.
+
+## Things that will bite you
+
+- **A refusal is a finding — that is the product, not a feature of it.** Never
+  let a test pass by normalising something that should be refused, and never
+  "fix" a refusal by resolving it. A changed case means a changed refusal table
+  in SPEC.md and a changed corpus, in the same commit.
+- **`si_iec_hazard` keeps its base value.** The one reason that annotates
+  rather than withholds. Making it a refusal is a behaviour change.
+- **Never reach for `f64`, never replace a `checked_mul` with a bare `*`.** An
+  overflow is `out_of_range`, not a wrap.
+- **Case is part of a unit symbol** (`MB` is bytes, `Mb` is refused), and **a
+  bare number is not a finding** — that is numbers-le's question.
+- **No inline `#[allow(...)]`.** The `policy` CI job greps for it. Fix the lint
+  or relax it visibly in `[lints.clippy]`.
+- **Every claim must be provable.** No metric, format or behaviour goes in a
+  README, a help text or SPEC.md unless the code backs it — and the numbers in
+  the README's Testing section come from a real `cargo llvm-cov` run.
+- **This repo shares config and workflows with the LE family.** `ci.yml`, the
+  agent-rules files and the dotfiles are byte-identical across it;
+  `ci-crate.yml` and `release-crate.yml` are this repo's own.
+- **Coverage thresholds are a floor**, per module on `extract/`, never lowered
+  to make CI pass.
+- **Run the binary, not only the tests.** The text scan's false-positive class
+  was found that way, and is now measured by
+  `crate/fixtures/documents/opaque.txt`.
