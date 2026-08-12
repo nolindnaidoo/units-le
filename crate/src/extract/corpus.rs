@@ -13,7 +13,12 @@
 /// One corpus document, by name. Panics on a name the corpus does not
 /// carry — a test naming a file that is not there is a broken test, not
 /// a runtime condition.
-#[cfg_attr(not(test), expect(dead_code, reason = "the corpus is a test fixture"))]
+///
+/// Compiled only for the tests that read it, rather than shipped and
+/// held quiet by a `dead_code` relaxation: an inline lint attribute is
+/// the one thing this crate does not carry, and the binary a user runs
+/// has no reason to hold the corpus in its own text.
+#[cfg(test)]
 pub(crate) fn document(name: &str) -> &'static str {
     match name {
         "units.json" => include_str!("../../fixtures/documents/units.json"),

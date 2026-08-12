@@ -112,7 +112,11 @@ pub(crate) enum Reason {
 impl Reason {
     /// Every reason, so a test can assert the corpus pins each one and
     /// the vocabulary cannot grow a value nothing checks.
-    #[cfg_attr(not(test), expect(dead_code, reason = "the list is a test fixture"))]
+    ///
+    /// Compiled only for the tests that read it, rather than shipped and
+    /// held quiet by a `dead_code` relaxation: an inline lint attribute
+    /// is the one thing this crate does not carry.
+    #[cfg(test)]
     pub(crate) const ALL: [Self; 6] = [
         Self::AmbiguousUnit,
         Self::FractionalBytes,
