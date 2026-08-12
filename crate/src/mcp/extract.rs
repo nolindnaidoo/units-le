@@ -144,7 +144,7 @@ mod tests {
     use serde::Deserialize;
 
     use super::*;
-    use crate::extract::FALLBACK_FORMAT;
+    use crate::extract::Format;
     use crate::extract::corpus::document;
 
     const CASES: &str = include_str!("../../fixtures/mcp-extract-units.json");
@@ -258,7 +258,7 @@ mod tests {
     fn an_unknown_format_falls_back_rather_than_failing() {
         let result =
             run(&json!({ "content": "waits 30s", "format": "nonsense" })).expect("a result");
-        assert_eq!(result["data"]["fileType"], FALLBACK_FORMAT);
+        assert_eq!(result["data"]["fileType"], Format::Unknown.name());
         assert_eq!(result["data"]["quantities"][0]["value"], "30s");
     }
 

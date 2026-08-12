@@ -15,7 +15,7 @@ pub(crate) mod yaml;
 
 use serde::Serialize;
 
-pub(crate) use format::{FALLBACK_FORMAT, SUPPORTED_FORMATS, resolve_format};
+pub(crate) use format::{Format, SUPPORTED_FORMATS, resolve_format};
 pub(crate) use grammar::{Dimension, Quantity};
 pub(crate) use position::Position;
 
@@ -59,7 +59,7 @@ pub(crate) enum Harvest {
 /// numbers-le's shared MCP tool omits positions to stay byte-identical
 /// with its npm twin; this crate has no twin, so a second shape would
 /// be two answers to one question.
-pub(crate) fn extract(text: &str, format: &str, options: Options) -> Vec<Found> {
+pub(crate) fn extract(text: &str, format: Format, options: Options) -> Vec<Found> {
     let found = locate::locate(text, harvest(text, format));
     let Some(wanted) = options.dimension else {
         return found;
@@ -75,15 +75,19 @@ pub(crate) fn extract(text: &str, format: &str, options: Options) -> Vec<Found> 
         .collect()
 }
 
-fn harvest(text: &str, format: &str) -> Harvest {
-    let fields = match format::canonical(format) {
-        "json" => json::extract(text),
-        "yaml" => yaml::extract(text),
-        "toml" => toml::extract(text),
-        "ini" => ini::extract(text),
-        "env" => dotenv::extract(text),
-        "csv" => csv::extract(text),
-        _ => return Harvest::Runs(fallback::scan(text)),
+fn harvest(text: &str, format: Format) -> Harvest {
+    // Exhaustive on purpose: a new reader is a compile error here until
+    // it is wired, where a catch-all arm would have made it a format
+    // that resolves, names itself in the report, and is quietly scanned
+    // as text.
+    let fields = match format {
+        Format::Json => json::extract(text),
+        Format::Yaml => yaml::extract(text),
+        Format::Toml => toml::extract(text),
+        Format::Ini => ini::extract(text),
+        Format::Env => dotenv::extract(text),
+        Format::Csv => csv::extract(text),
+        Format::Unknown => return Harvest::Runs(fallback::scan(text)),
     };
     Harvest::Fields(
         fields
@@ -94,16 +98,17 @@ fn harvest(text: &str, format: &str) -> Harvest {
 }
 
 /// Why a document yielded nothing, when the reason is a parse failure.
-pub(crate) fn parse_error(text: &str, format: &str) -> Option<String> {
-    match format::canonical(format) {
-        "json" => json::parse_error(text),
-        "yaml" => yaml::parse_error(text),
-        "toml" => toml::parse_error(text),
-        "ini" => ini::parse_error(text),
-        "csv" => csv::parse_error(text),
+pub(crate) fn parse_error(text: &str, format: Format) -> Option<String> {
+    match format {
+        Format::Json => json::parse_error(text),
+        Format::Yaml => yaml::parse_error(text),
+        Format::Toml => toml::parse_error(text),
+        Format::Ini => ini::parse_error(text),
+        Format::Csv => csv::parse_error(text),
         // dotenv reads lines and the fallback scans runs; neither has a
-        // shape it can reject.
-        _ => None,
+        // shape it can reject. Named rather than swept into a catch-all,
+        // so a reader that grows a parse failure has to say so here.
+        Format::Env | Format::Unknown => None,
     }
 }
 
@@ -111,33 +116,37 @@ pub(crate) fn parse_error(text: &str, format: &str) -> Option<String> {
 mod tests {
     use super::*;
 
-    fn values(text: &str, format: &str, options: Options) -> Vec<String> {
+    fn values(text: &str, format: Format, options: Options) -> Vec<String> {
         extract(text, format, options)
             .into_iter()
             .map(|found| found.quantity.value().to_string())
             .collect()
     }
 
-    fn plain(text: &str, format: &str) -> Vec<String> {
+    fn plain(text: &str, format: Format) -> Vec<String> {
         values(text, format, Options::default())
     }
 
     #[test]
     fn every_format_reaches_its_extractor() {
-        assert_eq!(plain(r#"{"a":"30s"}"#, "json"), ["30s"]);
-        assert_eq!(plain("a: 30s", "yaml"), ["30s"]);
-        assert_eq!(plain("a = \"30s\"", "toml"), ["30s"]);
-        assert_eq!(plain("[s]\na = 30s", "ini"), ["30s"]);
-        assert_eq!(plain("A=30s", "env"), ["30s"]);
-        assert_eq!(plain("30s,1h", "csv"), ["30s", "1h"]);
-        assert_eq!(plain("waits 30s here", "unknown"), ["30s"]);
+        assert_eq!(plain(r#"{"a":"30s"}"#, Format::Json), ["30s"]);
+        assert_eq!(plain("a: 30s", Format::Yaml), ["30s"]);
+        assert_eq!(plain("a = \"30s\"", Format::Toml), ["30s"]);
+        assert_eq!(plain("[s]\na = 30s", Format::Ini), ["30s"]);
+        assert_eq!(plain("A=30s", Format::Env), ["30s"]);
+        assert_eq!(plain("30s,1h", Format::Csv), ["30s", "1h"]);
+        assert_eq!(plain("waits 30s here", Format::Unknown), ["30s"]);
     }
 
     #[test]
     fn a_key_path_is_carried_where_the_format_has_one() {
-        let found = extract(r#"{"cache":{"ttl":"30s"}}"#, "json", Options::default());
+        let found = extract(
+            r#"{"cache":{"ttl":"30s"}}"#,
+            Format::Json,
+            Options::default(),
+        );
         assert_eq!(found[0].key.as_deref(), Some("cache.ttl"));
-        let scanned = extract("waits 30s", "unknown", Options::default());
+        let scanned = extract("waits 30s", Format::Unknown, Options::default());
         assert_eq!(scanned[0].key, None);
     }
 
@@ -147,7 +156,7 @@ mod tests {
         let only = |dimension| {
             values(
                 document,
-                "yaml",
+                Format::Yaml,
                 Options {
                     dimension: Some(dimension),
                 },
@@ -168,7 +177,7 @@ mod tests {
             assert!(
                 values(
                     document,
-                    "yaml",
+                    Format::Yaml,
                     Options {
                         dimension: Some(dimension)
                     }
@@ -185,7 +194,7 @@ mod tests {
     fn a_refusal_that_names_a_dimension_filters_normally() {
         let kept = values(
             "a: 1.5KB\nb: 30s",
-            "yaml",
+            Format::Yaml,
             Options {
                 dimension: Some(Dimension::Bytes),
             },
@@ -196,24 +205,24 @@ mod tests {
     #[test]
     fn a_bare_number_is_never_a_finding_in_any_format() {
         for (text, format) in [
-            (r#"{"a":30}"#, "json"),
-            ("a: 30", "yaml"),
-            ("a = 30", "toml"),
-            ("[s]\na = 30", "ini"),
-            ("A=30", "env"),
-            ("30,40", "csv"),
-            ("the answer is 30", "unknown"),
+            (r#"{"a":30}"#, Format::Json),
+            ("a: 30", Format::Yaml),
+            ("a = 30", Format::Toml),
+            ("[s]\na = 30", Format::Ini),
+            ("A=30", Format::Env),
+            ("30,40", Format::Csv),
+            ("the answer is 30", Format::Unknown),
         ] {
-            assert!(plain(text, format).is_empty(), "{format}");
+            assert!(plain(text, format).is_empty(), "{}", format.name());
         }
     }
 
     #[test]
     fn a_parse_failure_is_reported_by_the_formats_that_can_have_one() {
-        assert!(parse_error("{not json", "json").is_some());
-        assert!(parse_error("a: [unterminated", "yaml").is_some());
-        assert!(parse_error("not = = toml", "toml").is_some());
-        assert!(parse_error("anything at all", "unknown").is_none());
-        assert!(parse_error("A=30s", "env").is_none());
+        assert!(parse_error("{not json", Format::Json).is_some());
+        assert!(parse_error("a: [unterminated", Format::Yaml).is_some());
+        assert!(parse_error("not = = toml", Format::Toml).is_some());
+        assert!(parse_error("anything at all", Format::Unknown).is_none());
+        assert!(parse_error("A=30s", Format::Env).is_none());
     }
 }

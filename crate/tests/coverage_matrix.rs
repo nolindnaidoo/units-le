@@ -195,7 +195,10 @@ fn the_alias_list_here_still_matches_the_table_it_copies() {
     const FORMAT_RS: &str = include_str!("../src/extract/format.rs");
 
     assert!(
-        FORMAT_RS.contains(&format!("const ALIASES: [(&str, &str); {}]", ALIASES.len())),
+        FORMAT_RS.contains(&format!(
+            "const ALIASES: [(&str, Format); {}]",
+            ALIASES.len()
+        )),
         "extract/format.rs maps a different number of aliases than the {} named here",
         ALIASES.len()
     );

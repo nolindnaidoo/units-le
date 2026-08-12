@@ -7,7 +7,7 @@ use std::path::Path;
 
 use serde::Serialize;
 
-use crate::extract::{self, Found, Options, resolve_format};
+use crate::extract::{self, Format, Found, Options, resolve_format};
 
 /// The report shape's version. Bumped when a field moves, so a script
 /// reading these can branch instead of guessing.
@@ -37,7 +37,7 @@ pub(crate) struct Summary {
 pub(crate) struct FileReport {
     pub(crate) schema: u32,
     pub(crate) file: String,
-    pub(crate) format: String,
+    pub(crate) format: Format,
     pub(crate) quantities: Vec<Found>,
     pub(crate) diagnostics: Vec<Diagnostic>,
     pub(crate) summary: Summary,
@@ -73,7 +73,7 @@ impl FileReport {
 pub(crate) struct ScanOptions {
     pub(crate) extract: Options,
     /// A format the caller forced, instead of one inferred per file.
-    pub(crate) format: Option<&'static str>,
+    pub(crate) format: Option<Format>,
 }
 
 /// What reading one file produced.
@@ -162,14 +162,14 @@ pub(crate) fn scan_file(path: &Path, options: ScanOptions) -> Scanned {
     }
 }
 
-fn format_of(path: &Path) -> &'static str {
+fn format_of(path: &Path) -> Format {
     resolve_format(None, path.file_name().and_then(|name| name.to_str()))
 }
 
 pub(crate) fn scan_content(
     content: &str,
     file: String,
-    format: &str,
+    format: Format,
     options: ScanOptions,
 ) -> FileReport {
     let quantities = extract::extract(content, format, options.extract);
@@ -194,7 +194,7 @@ pub(crate) fn scan_content(
     FileReport {
         schema: SCHEMA,
         file,
-        format: format.to_string(),
+        format,
         summary: Summary {
             quantities: quantities.len(),
             refused,
@@ -261,11 +261,11 @@ fn reason_of(found: &Found) -> String {
 
 /// The report for a file that was not read: named, warned about, and
 /// not a failure by itself.
-fn skipped(file: String, format: &'static str, reason: &str) -> FileReport {
+fn skipped(file: String, format: Format, reason: &str) -> FileReport {
     FileReport {
         schema: SCHEMA,
         file,
-        format: format.to_string(),
+        format,
         quantities: Vec::new(),
         diagnostics: vec![Diagnostic {
             severity: "warning".to_string(),
@@ -315,7 +315,7 @@ mod tests {
 
     #[test]
     fn a_document_with_quantities_exits_zero() {
-        let report = scan_content(r#"{"ttl":"30s"}"#, "a.json".into(), "json", plain());
+        let report = scan_content(r#"{"ttl":"30s"}"#, "a.json".into(), Format::Json, plain());
         assert_eq!(values(&report), ["30s"]);
         assert_eq!(report.summary.quantities, 1);
         assert_eq!(exit_code(&[report], false), 0);
@@ -323,7 +323,7 @@ mod tests {
 
     #[test]
     fn a_document_with_none_exits_one() {
-        let report = scan_content(r#"{"a":"text"}"#, "a.json".into(), "json", plain());
+        let report = scan_content(r#"{"a":"text"}"#, "a.json".into(), Format::Json, plain());
         assert_eq!(report.summary.quantities, 0);
         assert_eq!(exit_code(&[report], false), 1);
     }
@@ -340,7 +340,7 @@ mod tests {
         let report = scan_content(
             "a: 500m\nb: 1.5KB\nc: 30s",
             "a.yaml".into(),
-            "yaml",
+            Format::Yaml,
             plain(),
         );
         assert_eq!(report.summary.quantities, 3);
@@ -354,7 +354,7 @@ mod tests {
     /// distinction exists to settle.
     #[test]
     fn an_si_hazard_is_not_a_refusal() {
-        let report = scan_content("a: 1MB", "a.yaml".into(), "yaml", plain());
+        let report = scan_content("a: 1MB", "a.yaml".into(), Format::Yaml, plain());
         assert_eq!(report.summary.refused, 0);
         assert_eq!(
             report.quantities[0].quantity.answer().map(|(base, _)| base),
@@ -367,7 +367,7 @@ mod tests {
     /// One malformed config must not fail an audit of ten thousand.
     #[test]
     fn a_parse_failure_is_a_warning_not_an_exit_two() {
-        let report = scan_content("{not json", "a.json".into(), "json", plain());
+        let report = scan_content("{not json", "a.json".into(), Format::Json, plain());
         assert_eq!(report.diagnostics.len(), 1);
         assert_eq!(report.diagnostics[0].severity, "warning");
         assert!(!report.was_skipped());
@@ -443,7 +443,7 @@ mod tests {
         let tree = TempTree::new("scan-format");
         let file = tree.write("config.toml", "ttl = \"30s\"\n");
         let report = read(&file, plain());
-        assert_eq!(report.format, "toml");
+        assert_eq!(report.format, Format::Toml);
         assert_eq!(values(&report), ["30s"]);
     }
 
@@ -454,7 +454,7 @@ mod tests {
         let tree = TempTree::new("scan-fallback");
         let file = tree.write("NOTES.md", "The cache holds 512MiB for 1h30m.\n");
         let report = read(&file, plain());
-        assert_eq!(report.format, "unknown");
+        assert_eq!(report.format, Format::Unknown);
         assert_eq!(values(&report), ["512MiB", "1h30m"]);
     }
 
@@ -465,11 +465,11 @@ mod tests {
         let report = read(
             &file,
             ScanOptions {
-                format: Some("toml"),
+                format: Some(Format::Toml),
                 ..plain()
             },
         );
-        assert_eq!(report.format, "toml");
+        assert_eq!(report.format, Format::Toml);
         assert_eq!(values(&report), ["30s"]);
     }
 
@@ -478,7 +478,7 @@ mod tests {
         let report = scan_content(
             "a: 30s\nb: 1MiB",
             "a.yaml".into(),
-            "yaml",
+            Format::Yaml,
             ScanOptions {
                 extract: Options {
                     dimension: Some(Dimension::Bytes),
@@ -491,7 +491,7 @@ mod tests {
 
     #[test]
     fn the_human_line_carries_the_position_the_text_and_the_base() {
-        let report = scan_content(r#"{"ttl":"30s"}"#, "a.json".into(), "json", plain());
+        let report = scan_content(r#"{"ttl":"30s"}"#, "a.json".into(), Format::Json, plain());
         assert_eq!(
             describe(&report, &report.quantities[0]),
             "a.json:1:9  30s  30000 milliseconds"
@@ -512,7 +512,7 @@ mod tests {
 
     #[test]
     fn the_human_line_names_the_reason_when_there_is_no_base() {
-        let report = scan_content("a: 500m", "a.yaml".into(), "yaml", plain());
+        let report = scan_content("a: 500m", "a.yaml".into(), Format::Yaml, plain());
         assert!(
             describe(&report, &report.quantities[0]).ends_with("500m  refused: ambiguous_unit"),
             "{}",

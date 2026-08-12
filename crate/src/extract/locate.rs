@@ -59,9 +59,9 @@ pub(crate) fn locate(text: &str, harvest: Harvest) -> Vec<Found> {
 
 #[cfg(test)]
 mod tests {
-    use crate::extract::{Options, extract};
+    use crate::extract::{Format, Options, extract};
 
-    fn at(text: &str, format: &str) -> Vec<Option<(usize, usize)>> {
+    fn at(text: &str, format: Format) -> Vec<Option<(usize, usize)>> {
         extract(text, format, Options::default())
             .into_iter()
             .map(|found| found.position.map(|at| (at.line, at.column)))
@@ -70,7 +70,7 @@ mod tests {
 
     #[test]
     fn a_quantity_is_found_where_it_appears() {
-        assert_eq!(at("ttl = \"30s\"\n", "toml"), [Some((1, 8))]);
+        assert_eq!(at("ttl = \"30s\"\n", Format::Toml), [Some((1, 8))]);
     }
 
     /// The reason the cursor exists: two of the same value take their
@@ -78,39 +78,48 @@ mod tests {
     #[test]
     fn repeated_values_take_successive_occurrences() {
         let text = "a: 30s\nb: 1h\nc: 30s\n";
-        assert_eq!(at(text, "yaml"), [Some((1, 4)), Some((2, 4)), Some((3, 4))]);
+        assert_eq!(
+            at(text, Format::Yaml),
+            [Some((1, 4)), Some((2, 4)), Some((3, 4))]
+        );
     }
 
     /// The limitation, asserted rather than left to be discovered: a key
     /// carrying the same text takes the match.
     #[test]
     fn a_run_in_a_key_can_take_the_match() {
-        assert_eq!(at("retry_30s: 30s\n", "yaml"), [Some((1, 7))]);
+        assert_eq!(at("retry_30s: 30s\n", Format::Yaml), [Some((1, 7))]);
     }
 
     /// The scan places its own runs, so a quantity in prose is exact.
     #[test]
     fn the_text_scan_places_its_own_runs() {
-        assert_eq!(at("cache holds 512MiB today", "unknown"), [Some((1, 13))]);
+        assert_eq!(
+            at("cache holds 512MiB today", Format::Unknown),
+            [Some((1, 13))]
+        );
     }
 
     /// A value the parser spelled differently from its source — a JSON
     /// escape — reports no position rather than a wrong one.
     #[test]
     fn a_value_the_search_cannot_find_reports_no_position() {
-        assert_eq!(at("A=\"30s\"\nB=1h\n", "env"), [Some((1, 4)), Some((2, 3))]);
-        assert_eq!(at(r#"{"a":"30\u0073"}"#, "json"), [None]);
+        assert_eq!(
+            at("A=\"30s\"\nB=1h\n", Format::Env),
+            [Some((1, 4)), Some((2, 3))]
+        );
+        assert_eq!(at(r#"{"a":"30\u0073"}"#, Format::Json), [None]);
     }
 
     /// Columns are UTF-16 units, so a quantity after a multi-byte
     /// character lands where an editor puts it.
     #[test]
     fn a_column_after_a_multibyte_character_is_counted_in_utf16() {
-        assert_eq!(at("café: 30s\n", "yaml"), [Some((1, 7))]);
+        assert_eq!(at("café: 30s\n", Format::Yaml), [Some((1, 7))]);
     }
 
     #[test]
     fn nothing_to_locate_is_nothing_returned() {
-        assert!(at("", "toml").is_empty());
+        assert!(at("", Format::Toml).is_empty());
     }
 }

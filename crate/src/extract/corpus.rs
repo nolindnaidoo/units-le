@@ -43,7 +43,7 @@ mod tests {
 
     use super::document;
     use crate::extract::grammar::Reason;
-    use crate::extract::{Dimension, Options, extract};
+    use crate::extract::{Dimension, Format, Options, extract};
 
     const CORPUS: &str = include_str!("../../fixtures/extraction.json");
 
@@ -57,7 +57,7 @@ mod tests {
         name: String,
         file: String,
         #[serde(rename = "fileType")]
-        file_type: String,
+        file_type: Format,
         expected: Vec<Expected>,
         errors: Vec<String>,
     }
@@ -78,7 +78,7 @@ mod tests {
         serde_json::from_str(CORPUS).expect("the corpus is valid JSON")
     }
 
-    fn rows(file: &str, file_type: &str) -> Vec<Expected> {
+    fn rows(file: &str, file_type: Format) -> Vec<Expected> {
         extract(document(file), file_type, Options::default())
             .into_iter()
             .map(|found| Expected {
@@ -98,7 +98,7 @@ mod tests {
         for case in corpus.documents {
             assert!(case.errors.is_empty(), "{} pins an error", case.name);
             assert_eq!(
-                rows(&case.file, &case.file_type),
+                rows(&case.file, case.file_type),
                 case.expected,
                 "{}",
                 case.name
@@ -109,10 +109,13 @@ mod tests {
     #[test]
     fn the_corpus_covers_every_extractor() {
         let corpus = corpus();
-        for format in ["json", "yaml", "toml", "ini", "env", "csv", "unknown"] {
+        // Every variant, walked off the enum: a reader added without a
+        // corpus document is a reader nothing pins the answers of.
+        for format in Format::ALL {
             assert!(
                 corpus.documents.iter().any(|case| case.file_type == format),
-                "no corpus case reads {format}"
+                "no corpus case reads {}",
+                format.name()
             );
         }
     }
@@ -122,7 +125,7 @@ mod tests {
     /// dropped.
     #[test]
     fn every_case_in_the_ambiguity_set_is_reported_with_a_reason() {
-        let found = extract(document("ambiguous.yaml"), "yaml", Options::default());
+        let found = extract(document("ambiguous.yaml"), Format::Yaml, Options::default());
         let lines = document("ambiguous.yaml").lines().count();
         assert_eq!(
             found.len(),
@@ -143,7 +146,7 @@ mod tests {
     /// refusal it is a behaviour change, not a tidy-up.
     #[test]
     fn only_the_si_hazard_carries_a_base_in_the_ambiguity_set() {
-        let found = extract(document("ambiguous.yaml"), "yaml", Options::default());
+        let found = extract(document("ambiguous.yaml"), Format::Yaml, Options::default());
         let resolved: Vec<&str> = found
             .iter()
             .filter(|row| !row.quantity.is_refused())

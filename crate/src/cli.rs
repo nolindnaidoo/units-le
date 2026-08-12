@@ -145,7 +145,7 @@ fn scan_stdin(options: &Cli) -> Result<FileReport, String> {
     let format = options
         .scan
         .format
-        .unwrap_or(crate::extract::FALLBACK_FORMAT);
+        .unwrap_or(crate::extract::Format::Unknown);
     Ok(scan::scan_content(
         &content,
         "<stdin>".to_string(),
@@ -271,7 +271,7 @@ fn plural(count: usize, one: &str, many: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::extract::SUPPORTED_FORMATS;
+    use crate::extract::{Format, SUPPORTED_FORMATS};
 
     #[test]
     fn every_documented_flag_is_parsed_and_the_reverse() {
@@ -314,7 +314,7 @@ mod tests {
     fn an_unknown_format_falls_back_rather_than_being_refused() {
         let options =
             parse(&["--format".into(), "handwriting".into(), "x".into()]).expect("accepted");
-        assert_eq!(options.scan.format, Some(crate::extract::FALLBACK_FORMAT));
+        assert_eq!(options.scan.format, Some(crate::extract::Format::Unknown));
     }
 
     /// And the place it is not. A dimension nobody recognises has no
@@ -346,7 +346,11 @@ mod tests {
     fn every_offered_format_is_accepted_by_name() {
         for format in SUPPORTED_FORMATS {
             let options = parse(&["--format".into(), format.into(), "x".into()]).expect(format);
-            assert_eq!(options.scan.format, Some(format));
+            assert_eq!(
+                options.scan.format.map(Format::name),
+                Some(format),
+                "{format} was offered and did not resolve to itself"
+            );
         }
     }
 
