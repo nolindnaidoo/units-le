@@ -949,6 +949,66 @@ mod tests {
         assert!(Dimension::named("length").is_none());
     }
 
+    /// **Two spellings of one word, held equal.** `name()` is what
+    /// `--dimension duration` is matched against and what a refusal
+    /// message lists; the serde spelling is what the report carries and
+    /// what the tool schema advertises. Nothing in the compiler makes
+    /// them agree, and a caller filtering on a name the report does not
+    /// use would get an empty answer rather than an error.
+    #[test]
+    fn a_name_and_its_serialised_spelling_are_the_same_word() {
+        for dimension in Dimension::ALL {
+            let serialised = serde_json::to_value(dimension).expect("a dimension serializes");
+            assert_eq!(
+                serialised.as_str(),
+                Some(dimension.name()),
+                "{dimension:?} is one word to name() and another to serde"
+            );
+            let unit = dimension.base_unit();
+            let serialised = serde_json::to_value(unit).expect("a base unit serializes");
+            assert_eq!(
+                serialised.as_str(),
+                Some(unit.name()),
+                "{unit:?} is one word to name() and another to serde"
+            );
+        }
+    }
+
+    /// Every word this crate can put in a report is named in SPEC.md —
+    /// the same rule the unit table is held to below, for the same
+    /// reason: a value the code can print and the spec does not mention
+    /// is a promise nobody made and nobody can check.
+    #[test]
+    fn every_reported_dimension_base_unit_and_reason_is_named_in_the_spec() {
+        const SPEC: &str = include_str!("../../SPEC.md");
+
+        let spelled = |value: &serde_json::Value| {
+            value
+                .as_str()
+                .unwrap_or_else(|| panic!("{value} is not a string"))
+                .to_string()
+        };
+        let mut words: Vec<String> = Vec::new();
+        for dimension in Dimension::ALL {
+            words.push(spelled(
+                &serde_json::to_value(dimension).expect("serializes"),
+            ));
+            words.push(spelled(
+                &serde_json::to_value(dimension.base_unit()).expect("serializes"),
+            ));
+        }
+        for reason in Reason::ALL {
+            words.push(spelled(&serde_json::to_value(reason).expect("serializes")));
+        }
+
+        for word in words {
+            assert!(
+                SPEC.contains(&format!("`{word}`")),
+                "{word} can appear in a report and SPEC.md does not name it"
+            );
+        }
+    }
+
     /// Every symbol resolves to exactly one reading. A symbol in both
     /// tables would be accepted or refused depending on lookup order,
     /// which is the kind of bug that only shows up in someone's config.
