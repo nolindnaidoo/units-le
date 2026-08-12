@@ -414,12 +414,37 @@ pub(crate) fn read(token: &str) -> Option<Quantity> {
 /// failure worth preventing is a scan reporting `1h` and `30m` as two
 /// independent quantities, which is a true statement about the text and
 /// a false one about the value.
+///
+/// **An operand with no unit is still an operand.** `30s*2` is the same
+/// failure in a shorter form — reporting `30s` for a line that says
+/// twice that — so a bare number satisfies an operand and only the
+/// whole expression is reported. What is required is that *some* operand
+/// carries a unit: an operator between two bare numbers is arithmetic
+/// about nothing this tool measures, and `2026-08-12` is the case that
+/// proves the rule has to be that way round.
 fn expression(token: &str) -> Option<Quantity> {
-    let segments: Vec<&str> = token.split(['+', '-', '*', '/']).collect();
-    if segments.len() < 2 {
+    let operands: Vec<&str> = token.split(['+', '-', '*', '/']).map(str::trim).collect();
+    if operands.len() < 2 {
         return None;
     }
-    if !segments.iter().all(|part| read(part.trim()).is_some()) {
+    // A leading sign splits into an empty operand. `-30s` is a negative
+    // quantity, not a subtraction with nothing on its left.
+    if operands.iter().any(|operand| operand.is_empty()) {
+        return None;
+    }
+    // Read each operand once: the answer decides both questions below.
+    let quantities: Vec<bool> = operands
+        .iter()
+        .map(|operand| read(operand).is_some())
+        .collect();
+    if !quantities.contains(&true) {
+        return None;
+    }
+    let every_operand_reads = operands
+        .iter()
+        .zip(&quantities)
+        .all(|(operand, is_quantity)| *is_quantity || is_bare_number(operand));
+    if !every_operand_reads {
         return None;
     }
     Some(Quantity::refused(
@@ -430,6 +455,16 @@ fn expression(token: &str) -> Option<Quantity> {
          duration written in two parts and is read; `1h + 30m` is a sum."
             .to_string(),
     ))
+}
+
+/// A number with no unit after it.
+///
+/// Not a quantity — that is numbers-le's question — but it is an
+/// operand, and that is what makes `30s*2` arithmetic rather than a
+/// quantity with a stray digit beside it. No sign is allowed: splitting
+/// on the operators already took any sign with it.
+pub(crate) fn is_bare_number(text: &str) -> bool {
+    !text.is_empty() && number_prefix(text, false) == text.len()
 }
 
 /// Split a token into `number, symbol` pairs.
@@ -874,6 +909,33 @@ mod tests {
             let found = read_value(token).unwrap_or_else(|| panic!("{token}"));
             assert_eq!(found.reason, Some(Reason::CompoundArithmetic), "{token}");
             assert_eq!(found.value, token, "the whole expression is the finding");
+        }
+    }
+
+    /// **An operand with no unit is still an operand.** `30s*2` used to
+    /// leave the grammar with nothing to say — the expression did not
+    /// parse because `2` is not a quantity, and the token did not parse
+    /// because of the operator — so a structured value produced no row
+    /// at all and the text scan reported a confident `30s`. Doubling is
+    /// exactly the ambiguity the reason exists for.
+    #[test]
+    fn an_operator_against_a_bare_number_is_arithmetic() {
+        for token in ["30s*2", "2*30s", "1h + 30", "30s - 5", "1h/2", "1.5h*2"] {
+            let found = read_value(token).unwrap_or_else(|| panic!("{token} yielded nothing"));
+            assert_eq!(found.reason, Some(Reason::CompoundArithmetic), "{token}");
+            assert_eq!(found.value, token, "the whole expression is the finding");
+            assert!(found.base.is_none(), "{token} was resolved anyway");
+        }
+    }
+
+    /// The boundary that keeps the widened rule from swallowing text
+    /// that has no quantity in it: an operator between two bare numbers
+    /// is arithmetic about nothing this tool measures. A date is the
+    /// case that matters, and it must stay silent.
+    #[test]
+    fn an_expression_with_no_unit_anywhere_is_not_a_finding() {
+        for token in ["1-2", "2026-08-12", "1.2/3.4", "10+20", "3*4"] {
+            assert!(read_value(token).is_none(), "{token}");
         }
     }
 

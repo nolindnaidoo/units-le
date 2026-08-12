@@ -370,6 +370,13 @@
 					"key": "total"
 				},
 				{
+					"value": "30s*2",
+					"dimension": null,
+					"base": null,
+					"reason": "compound_arithmetic",
+					"key": "doubled"
+				},
+				{
 					"value": "1MB",
 					"dimension": "bytes",
 					"base": "1000000",

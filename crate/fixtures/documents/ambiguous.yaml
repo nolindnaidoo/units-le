@@ -6,6 +6,7 @@ disk: 1.5KB
 latency: 1,5s
 budget: 1.000s
 total: 1h + 30m
+doubled: 30s*2
 memory: 1MB
 retention: 1y
 bandwidth: 100Mb

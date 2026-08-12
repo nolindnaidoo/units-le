@@ -5,6 +5,38 @@ The Rust CLI and MCP server.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+0.1.0 has not shipped, so everything below lands in it when it does.
+Each entry is a behaviour change found by auditing the crate against
+SPEC.md and this crate's own stated invariants.
+
+### Fixed
+
+- **`30s*2` is refused instead of answered wrongly.** SPEC.md has always
+  listed it under `compound_arithmetic`; the code did not refuse it,
+  because an operand with no unit stopped the expression from parsing.
+  The two halves failed differently and both badly: in a structured
+  format `cpu: 30s*2` produced **no row at all** — a quantity the tool
+  could see and silently dropped, against the rule that a refusal is
+  never a dropped row — and in prose `timeout is 30s*2` reported
+  **`30s`, 30000 milliseconds, with no reason**, which is a true
+  statement about three characters and a false one about the value.
+
+  An operand with no unit now counts, so `30s*2`, `2*30s`, `1h + 30` and
+  `30s - 5` are each one `compound_arithmetic` finding carrying the whole
+  expression. *Some* operand must still carry a unit: `2026-08-12`,
+  `1-2` and `3*4` yield nothing, because an operator between two bare
+  numbers is arithmetic about nothing this tool measures. A leading sign
+  is unchanged and still part of the number — `-30s` is a negative
+  quantity, not a subtraction.
+
+  In the text scan the run now spans the whole expression from either
+  end, so the refusal names what it saw rather than a truncated prefix.
+  Measured against `fixtures/documents/opaque.txt`, the documented
+  false-finding rate is **unchanged at 5 findings, 1.8%** — the wider
+  rule costs no noise on opaque content.
+
 ## [0.1.0] - 2026-08-12
 
 First release. Core functionality: the grammar, six formats plus a text

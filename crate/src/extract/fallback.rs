@@ -53,18 +53,7 @@ pub(crate) fn scan(text: &str) -> Vec<(Quantity, usize)> {
             index += width;
             continue;
         }
-        let Some(end) = run_end(text, index) else {
-            index += width;
-            continue;
-        };
-        // The expression first: a run that is part of a sum is not a
-        // quantity, and reporting it as one would be the whole failure.
-        // If the wider slice turns out not to be an expression after
-        // all, the run itself is still a finding.
-        let read = expression_end(text, end)
-            .and_then(|reach| Some((grammar::read_value(&text[index..reach])?, reach)))
-            .or_else(|| Some((grammar::read_value(&text[index..end])?, end)));
-        let Some((quantity, consumed)) = read else {
+        let Some((quantity, consumed)) = candidate(text, index) else {
             index += width;
             continue;
         };
@@ -73,6 +62,31 @@ pub(crate) fn scan(text: &str) -> Vec<(Quantity, usize)> {
     }
 
     found
+}
+
+/// What the text at `index` yields, if anything.
+///
+/// The expression comes first: a run that is part of a sum is not a
+/// quantity, and reporting it as one would be the whole failure. If the
+/// wider slice turns out not to be an expression after all, the run
+/// itself is still a finding.
+///
+/// **The chain may begin at a bare number**, which is the only way to
+/// reach the quantity in `2*30s`. That start is speculative — it yields
+/// nothing unless the chain it opens carries a unit somewhere, so a
+/// date or a version keeps producing nothing.
+fn candidate(text: &str, index: usize) -> Option<(Quantity, usize)> {
+    let run = run_end(text, index);
+    let first = run.or_else(|| number_end(text, index))?;
+
+    let expression = expression_end(text, first)
+        .and_then(|reach| Some((grammar::read_value(&text[index..reach])?, reach)));
+    if let Some(found) = expression {
+        return Some(found);
+    }
+
+    let end = run?;
+    Some((grammar::read_value(&text[index..end])?, end))
 }
 
 /// Whether a run may begin at `index`: the character before it is not
@@ -171,13 +185,31 @@ fn expression_end(text: &str, end: usize) -> Option<usize> {
             break;
         }
         let next_start = skip_spaces(text, after + operator.len_utf8());
-        let Some(next_end) = run_end(text, next_start) else {
+        let Some(next_end) = operand_end(text, next_start) else {
             break;
         };
         cursor = next_end;
         reach = Some(next_end);
     }
     reach
+}
+
+/// How far the operand at `start` reaches: a quantity-shaped run, or a
+/// bare number. The second is what keeps `30s*2` whole — the grammar
+/// refuses the pair, and a reach that stopped at the operator would hand
+/// it `30s` alone and call that the answer.
+fn operand_end(text: &str, start: usize) -> Option<usize> {
+    run_end(text, start).or_else(|| number_end(text, start))
+}
+
+/// The end of a plain number at `start`, if it ends at a word boundary.
+fn number_end(text: &str, start: usize) -> Option<usize> {
+    let length = number_prefix(&text[start..], false);
+    if length == 0 {
+        return None;
+    }
+    let end = start + length;
+    boundary_after(text, end).then_some(end)
 }
 
 fn skip_spaces(text: &str, from: usize) -> usize {
@@ -250,6 +282,37 @@ mod tests {
         assert_eq!(found.len(), 1);
         assert_eq!(found[0].0.value, "1h + 30m");
         assert_eq!(found[0].0.reason, Some(Reason::CompoundArithmetic));
+    }
+
+    /// **The run reaches the whole expression, so the refusal names
+    /// what it saw.** The operand with no unit used to end the reach,
+    /// which left the scan reporting `30s` — a true statement about
+    /// three characters of the line and a false one about the value.
+    #[test]
+    fn the_scan_spans_an_expression_ending_in_a_bare_number() {
+        for (text, expected) in [
+            ("timeout is 30s*2 total", "30s*2"),
+            ("wait 1h + 30 minutes", "1h + 30"),
+            ("budget 30s / 4 shards", "30s / 4"),
+        ] {
+            let found = scan(text);
+            assert_eq!(found.len(), 1, "{text}");
+            assert_eq!(found[0].0.value, expected, "{text}");
+            assert_eq!(
+                found[0].0.reason,
+                Some(Reason::CompoundArithmetic),
+                "{text}"
+            );
+        }
+    }
+
+    /// And it stops where the expression does: a bare number that is not
+    /// an operand must not extend a run, or every list of numbers after
+    /// a quantity becomes one finding.
+    #[test]
+    fn a_bare_number_that_is_not_an_operand_does_not_extend_the_run() {
+        assert_eq!(values("holds 512MiB, 2 copies"), ["512MiB"]);
+        assert_eq!(values("holds 512MiB and 2 copies"), ["512MiB"]);
     }
 
     #[test]
