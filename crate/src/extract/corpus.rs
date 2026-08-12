@@ -82,10 +82,10 @@ mod tests {
         extract(document(file), file_type, Options::default())
             .into_iter()
             .map(|found| Expected {
-                value: found.quantity.value,
-                dimension: found.quantity.dimension,
-                base: found.quantity.base,
-                reason: found.quantity.reason,
+                value: found.quantity.value().to_string(),
+                dimension: found.quantity.dimension(),
+                base: found.quantity.answer().map(|(base, _)| base.to_string()),
+                reason: found.quantity.reason(),
                 key: found.key,
             })
             .collect()
@@ -131,9 +131,9 @@ mod tests {
         );
         for row in &found {
             assert!(
-                row.quantity.reason.is_some(),
+                row.quantity.reason().is_some(),
                 "{} was resolved silently",
-                row.quantity.value
+                row.quantity.value()
             );
         }
     }
@@ -147,7 +147,7 @@ mod tests {
         let resolved: Vec<&str> = found
             .iter()
             .filter(|row| !row.quantity.is_refused())
-            .map(|row| row.quantity.value.as_str())
+            .map(|row| row.quantity.value())
             .collect();
         assert_eq!(resolved, ["1MB"]);
     }

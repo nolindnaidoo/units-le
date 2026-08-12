@@ -234,20 +234,26 @@ pub(crate) fn describe(report: &FileReport, found: &Found) -> String {
         Some(position) => format!("{}:{}:{}", report.file, position.line, position.column),
         None => format!("{}:-", report.file),
     };
-    let answer = match (&found.quantity.base, found.quantity.base_unit) {
-        (Some(base), Some(unit)) => format!("{base} {}", unit.name()),
-        (Some(base), None) => base.clone(),
-        (None, _) => format!("refused: {}", reason_of(found)),
+    // Two arms, because a base value and its unit arrive together or
+    // not at all. There is no third state to write a line for.
+    let answer = match found.quantity.answer() {
+        Some((base, unit)) => format!("{base} {}", unit.name()),
+        None => format!("refused: {}", reason_of(found)),
     };
-    format!("{at}  {}  {answer}", found.quantity.value)
+    format!("{at}  {}  {answer}", found.quantity.value())
 }
 
 /// The reason, as the report spells it. Serialising the enum is what
 /// keeps the human line and the JSON from drifting into two vocabularies.
+///
+/// The fallback is unreachable: a row with no base value is built by
+/// `Quantity::refused`, which always names one. It is a word rather than
+/// a panic because a human summary line is not worth aborting an audit
+/// over.
 fn reason_of(found: &Found) -> String {
     found
         .quantity
-        .reason
+        .reason()
         .and_then(|reason| serde_json::to_value(reason).ok())
         .and_then(|value| value.as_str().map(str::to_string))
         .unwrap_or_else(|| "unknown".to_string())
@@ -303,7 +309,7 @@ mod tests {
         report
             .quantities
             .iter()
-            .map(|found| found.quantity.value.as_str())
+            .map(|found| found.quantity.value())
             .collect()
     }
 
@@ -351,7 +357,7 @@ mod tests {
         let report = scan_content("a: 1MB", "a.yaml".into(), "yaml", plain());
         assert_eq!(report.summary.refused, 0);
         assert_eq!(
-            report.quantities[0].quantity.base.as_deref(),
+            report.quantities[0].quantity.answer().map(|(base, _)| base),
             Some("1000000")
         );
         assert_eq!(exit_code(&[report], true), 0);

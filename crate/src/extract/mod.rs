@@ -69,7 +69,7 @@ pub(crate) fn extract(text: &str, format: &str, options: Options) -> Vec<Found> 
         .filter(|found| {
             found
                 .quantity
-                .dimension
+                .dimension()
                 .is_none_or(|dimension| dimension == wanted)
         })
         .collect()
@@ -114,7 +114,7 @@ mod tests {
     fn values(text: &str, format: &str, options: Options) -> Vec<String> {
         extract(text, format, options)
             .into_iter()
-            .map(|found| found.quantity.value)
+            .map(|found| found.quantity.value().to_string())
             .collect()
     }
 

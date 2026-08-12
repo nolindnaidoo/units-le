@@ -138,17 +138,27 @@ impl Reason {
 /// There is no `unit` field. The unit is in `value`, where a reader can
 /// see it; a field repeating it would be a second place for the two to
 /// disagree. A refusal names the offending symbol in `detail` instead.
+///
+/// **The fields are private because they have to agree.** A base value
+/// implies the unit it is counted in and the dimension that unit
+/// belongs to; a row with no base implies a reason and a sentence a
+/// person can act on. The two constructors below build every `Quantity`
+/// there is and each sets the whole set at once, so an inconsistent row
+/// — a base with no unit, a refusal with nothing to say — cannot be
+/// spelled anywhere in this crate. `answer()` hands the base and its
+/// unit over together, which is what removed the branch a caller had to
+/// write for a state that could never happen.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub(crate) struct Quantity {
-    pub(crate) value: String,
-    pub(crate) dimension: Option<Dimension>,
+    value: String,
+    dimension: Option<Dimension>,
     #[serde(rename = "baseUnit")]
-    pub(crate) base_unit: Option<BaseUnit>,
-    pub(crate) base: Option<String>,
+    base_unit: Option<BaseUnit>,
+    base: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) reason: Option<Reason>,
+    reason: Option<Reason>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) detail: Option<String>,
+    detail: Option<String>,
 }
 
 const HAZARD_DETAIL: &str = "reported as SI — 10^6 bytes to the megabyte — because that is what the symbol says. The \
@@ -160,6 +170,34 @@ impl Quantity {
     /// is not one of these: it has a base, and a warning about it.
     pub(crate) fn is_refused(&self) -> bool {
         self.base.is_none()
+    }
+
+    /// The source text, exactly as the document spells it. This is the
+    /// evidence half of the report, and the string the position search
+    /// looks for.
+    pub(crate) fn value(&self) -> &str {
+        &self.value
+    }
+
+    /// What kind of thing this is, where that could be decided. A
+    /// refusal whose *unit* is what could not be read names none.
+    pub(crate) fn dimension(&self) -> Option<Dimension> {
+        self.dimension
+    }
+
+    /// Why there is no base value — or, for `si_iec_hazard` alone, what
+    /// is true about the one there is.
+    pub(crate) fn reason(&self) -> Option<Reason> {
+        self.reason
+    }
+
+    /// **The base value and the unit it is counted in, together or not
+    /// at all.** They are set by one constructor and read by one caller,
+    /// and handing them over separately is what let a caller print a
+    /// bare number with no unit beside it in a branch that could never
+    /// be reached but had to be written anyway.
+    pub(crate) fn answer(&self) -> Option<(&str, BaseUnit)> {
+        self.base.as_deref().zip(self.base_unit)
     }
 
     fn refused(value: &str, dimension: Option<Dimension>, reason: Reason, detail: String) -> Self {
@@ -1009,6 +1047,61 @@ mod tests {
             let _: BaseUnit = dimension.base_unit();
         }
         assert!(Dimension::named("length").is_none());
+    }
+
+    /// **The invariant the private fields exist for, asserted over
+    /// every shape this grammar can produce.** A base value and its unit
+    /// arrive together; a row without one names a reason and says
+    /// something a person can act on; a dimension and its base unit are
+    /// derived from each other rather than stored twice. The compiler
+    /// stops another module spelling a row that breaks these — this is
+    /// what stops the two constructors here doing it.
+    #[test]
+    fn every_quantity_this_grammar_builds_is_internally_consistent() {
+        let tokens = [
+            "30s",
+            "1h30m",
+            "PT1H30M",
+            "512MiB",
+            "1MB",
+            "15%",
+            "60Hz",
+            "-30s",
+            "500m",
+            "1.5KB",
+            "1,5s",
+            "1h + 30m",
+            "30s*2",
+            "P1Y",
+            "99999999999999999999999999999999999PiB",
+            "1ns",
+        ];
+        for token in tokens {
+            let found = read_value(token).unwrap_or_else(|| panic!("{token} is not a quantity"));
+            // One way round, not both: `1.5KB` is refused and still
+            // knows it is bytes, so a base unit without a base value is
+            // ordinary. A base value without the unit it is counted in
+            // is the impossible one.
+            assert!(
+                found.base.is_none() || found.base_unit.is_some(),
+                "{token}: a base value arrived without the unit it is counted in"
+            );
+            assert_eq!(
+                found.base_unit,
+                found.dimension.map(Dimension::base_unit),
+                "{token}: the base unit is derived from the dimension, not stored beside it"
+            );
+            assert_eq!(
+                found.answer().is_some(),
+                !found.is_refused(),
+                "{token}: `answer` and `is_refused` disagree about the same row"
+            );
+            if found.is_refused() {
+                assert!(found.reason.is_some(), "{token}: refused with no reason");
+                let detail = found.detail.as_deref().unwrap_or_default();
+                assert!(!detail.is_empty(), "{token}: refused with nothing to say");
+            }
+        }
     }
 
     /// **Two spellings of one word, held equal.** `name()` is what

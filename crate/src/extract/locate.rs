@@ -41,9 +41,9 @@ pub(crate) fn locate(text: &str, harvest: Harvest) -> Vec<Found> {
             fields
                 .into_iter()
                 .map(|(quantity, key)| {
-                    let position = text[cursor..].find(&quantity.value).map(|offset| {
+                    let position = text[cursor..].find(quantity.value()).map(|offset| {
                         let at = cursor + offset;
-                        cursor = at + quantity.value.len();
+                        cursor = at + quantity.value().len();
                         index.at(at)
                     });
                     Found {

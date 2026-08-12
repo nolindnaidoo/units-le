@@ -227,14 +227,14 @@ mod tests {
     fn values(text: &str) -> Vec<String> {
         scan(text)
             .into_iter()
-            .map(|(quantity, _)| quantity.value)
+            .map(|(quantity, _)| quantity.value().to_string())
             .collect()
     }
 
     fn bases(text: &str) -> Vec<Option<String>> {
         scan(text)
             .into_iter()
-            .map(|(quantity, _)| quantity.base)
+            .map(|(quantity, _)| quantity.answer().map(|(base, _)| base.to_string()))
             .collect()
     }
 
@@ -280,8 +280,8 @@ mod tests {
     fn an_expression_is_one_finding_and_not_two() {
         let found = scan("timeout is 1h + 30m total");
         assert_eq!(found.len(), 1);
-        assert_eq!(found[0].0.value, "1h + 30m");
-        assert_eq!(found[0].0.reason, Some(Reason::CompoundArithmetic));
+        assert_eq!(found[0].0.value(), "1h + 30m");
+        assert_eq!(found[0].0.reason(), Some(Reason::CompoundArithmetic));
     }
 
     /// **The run reaches the whole expression, so the refusal names
@@ -297,9 +297,9 @@ mod tests {
         ] {
             let found = scan(text);
             assert_eq!(found.len(), 1, "{text}");
-            assert_eq!(found[0].0.value, expected, "{text}");
+            assert_eq!(found[0].0.value(), expected, "{text}");
             assert_eq!(
-                found[0].0.reason,
+                found[0].0.reason(),
                 Some(Reason::CompoundArithmetic),
                 "{text}"
             );
@@ -321,7 +321,7 @@ mod tests {
         assert_eq!(
             found
                 .iter()
-                .map(|(quantity, _)| quantity.reason)
+                .map(|(quantity, _)| quantity.reason())
                 .collect::<Vec<_>>(),
             [Some(Reason::AmbiguousUnit), Some(Reason::FractionalBytes)]
         );
@@ -331,15 +331,15 @@ mod tests {
     fn an_offset_points_at_the_run() {
         let text = "the cache holds 512MiB";
         let (quantity, offset) = scan(text).remove(0);
-        assert_eq!(&text[offset..offset + quantity.value.len()], "512MiB");
+        assert_eq!(&text[offset..offset + quantity.value().len()], "512MiB");
     }
 
     #[test]
     fn a_thousands_group_is_not_split_into_two_findings() {
         let found = scan("budget 1,500ms");
         assert_eq!(found.len(), 1);
-        assert_eq!(found[0].0.value, "1,500ms");
-        assert_eq!(found[0].0.reason, Some(Reason::LocaleSeparator));
+        assert_eq!(found[0].0.value(), "1,500ms");
+        assert_eq!(found[0].0.reason(), Some(Reason::LocaleSeparator));
     }
 
     #[test]
@@ -352,7 +352,7 @@ mod tests {
     fn a_multibyte_character_does_not_shift_a_run() {
         let text = "café holds 512MiB";
         let (quantity, offset) = scan(text).remove(0);
-        assert_eq!(&text[offset..offset + quantity.value.len()], "512MiB");
+        assert_eq!(&text[offset..offset + quantity.value().len()], "512MiB");
     }
 
     /// The documented false positive, asserted rather than left to be
@@ -402,7 +402,7 @@ mod tests {
             findings.len()
         );
         for (quantity, _) in &findings {
-            eprintln!("opaque:   {}", quantity.value);
+            eprintln!("opaque:   {}", quantity.value());
         }
 
         assert!(
