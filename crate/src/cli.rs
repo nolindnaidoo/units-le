@@ -124,6 +124,10 @@ fn execute(args: &[String]) -> Result<u8, String> {
 fn write_reports(reports: &[FileReport]) -> Result<(), String> {
     let mut stdout = std::io::stdout().lock();
     for report in reports {
+        // A report is plain data — strings, integers and unit-variant
+        // enums, every map keyed by a string and no float anywhere — so
+        // there is no input on which `to_string` can fail. The write is
+        // the fallible half, and it is carried to the caller.
         let line = serde_json::to_string(report).expect("a report serializes");
         writeln!(stdout, "{line}")
             .map_err(|error| format!("could not write the report: {error}"))?;
@@ -217,10 +221,14 @@ fn parse(args: &[String]) -> Result<Cli, String> {
 /// except the binary count, which is the one thing stdout cannot carry
 /// because those files produce no report line at all.
 fn summarise(reports: &[FileReport], binary: usize) {
-    let mut stderr = std::io::stderr().lock();
-    let mut quantities = 0;
-    let mut refused = 0;
+    let quantities: usize = reports.iter().map(|report| report.summary.quantities).sum();
+    let refused: usize = reports.iter().map(|report| report.summary.refused).sum();
 
+    // Every write below is deliberately unchecked. stderr is the human
+    // half, and a reader who closed it — `| head`, a pipeline that
+    // stopped listening — has not made the audit fail: the answer is on
+    // stdout, which is written first and whose failure is carried.
+    let mut stderr = std::io::stderr().lock();
     for report in reports {
         for diagnostic in &report.diagnostics {
             let _ = writeln!(stderr, "{}: {}", report.file, diagnostic.message);
@@ -228,8 +236,6 @@ fn summarise(reports: &[FileReport], binary: usize) {
         for found in &report.quantities {
             let _ = writeln!(stderr, "{}", scan::describe(report, found));
         }
-        quantities += report.summary.quantities;
-        refused += report.summary.refused;
     }
 
     let _ = writeln!(
