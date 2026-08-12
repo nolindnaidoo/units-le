@@ -66,14 +66,37 @@ scan, both surfaces, and the corpus that pins them.
   `{ ok, data, diagnostics, meta }`, where a refusal is a successful
   answer carrying a reason rather than an error.
 
+- **The corpus and the hardening suites ship in the tarball**, so
+  `cargo test` on an unpacked copy checks the claims in this file rather
+  than asking you to trust them: `contracts` (the exit codes and the
+  stdout contract), `coverage_matrix` (every extension, format reader,
+  dimension and reason), `hazards` (a byte-order mark, invalid UTF-8, a
+  UTF-16 document, a FIFO, permission denied, a symlink loop, a path
+  over 260 characters, several megabytes on one line, an unterminated
+  CSV quote), `platform` (report paths, `TZ`, case folding, reserved
+  Windows names, CRLF, early stdin), `fuzz` (hostile quantity text —
+  never a panic, never a hang, never an overflow) and `budget` (a
+  wall-clock ceiling and linearity in three directions). Each case names
+  the defect it would have caught; a skipped one says so by name rather
+  than reporting a pass.
+
 ### Known limitations
 
 Written down rather than left to be discovered, each pinned by a test.
 
 - **The text scan reads runs inside opaque blobs.** `001d` in a UUID is
-  one day, and a base64 hash ending `/2w==` is two weeks — four such
-  rows came out of one `bun.lock`. The boundary characters that let them
-  through are the same ones that let `-30s` and `ttl=30s` through.
+  one day, and a base64 hash ending `/2w==` is two weeks. The boundary
+  characters that let them through — `-`, `=`, `/`, a space, a quote —
+  are the same ones that let `-30s`, `ttl=30s` and `holds 512MiB.`
+  through, so a scan with no parser cannot separate the cases and
+  narrowing them would cost real findings.
+
+  **Measured: 5 false findings over 280 opaque tokens — 1.8%.**
+  `fixtures/documents/opaque.txt` is that corpus — lockfile integrity
+  hashes, container digests, git object names, UUIDs, content-addressed
+  asset names, signing material — generated once from a fixed seed and
+  checked in, and `extract/fallback.rs` recomputes and prints the rate
+  on every test run.
 - **A run in a key can take a position.** In `retry_30s: 30s` the value
   matches the digits in the key. The quantity is right; the position is
   a best effort, and forward-only so it can never point above a quantity

@@ -1,0 +1,302 @@
+# A page of the opaque content a real repository is full of: lockfile
+# integrity hashes, container digests, git object names, identifiers,
+# content-addressed asset names, signing material and cursors.
+#
+# Nothing in this file is a quantity. Every finding the text scan
+# reports here is a false one, and extract/fallback.rs counts them and
+# prints the rate. Generated once from a fixed seed, then checked in:
+# the number has to be the same number on every machine.
+
+## lockfile integrity hashes
+  "react": ["react@0.2.39", "", {}, "sha512-5MH826OctGvS1fWVTD0Key6xrXaWWywtmTMLS0S1J8l3s4wtd5mIua8Qep47V7d2aZgmoltUIEjmHIsDu6vjlA=="],
+  "typescript": ["typescript@0.22.23", "", {}, "sha512-XuHmdoASX3OgU14wVNbq5VhfbxbVRKOGhRluYFgwjlxEakGiWPdLLH5xvV28fusZ55vPWfouK3hoycKdQevlKw=="],
+  "esbuild": ["esbuild@5.9.56", "", {}, "sha512-dw3R4MTJ66BDStiCOuPNu5zVGx9mJn/blOmxeBIDYmwP65N+DDvTIunI4R+HzvHUqWO2Cv/MWHr29nT7qruKSw=="],
+  "zod": ["zod@1.9.28", "", {}, "sha512-ZUbQ31/fddNrAuGAFu8TNJ/+lj/8b8L4xUzdpIYoQia3flDnWClWlpVrtmvATZjGoyAHF+T2G3v1PUxdUyKTyg=="],
+  "vite": ["vite@1.4.97", "", {}, "sha512-Rk6juMJ3HkiLYpyw3PN+rR87BCLNmjCuMXHFXSntkEGc0d2vVX/VJ79ebYKNsQmup05xlnXThBi81aLV+M7gsQ=="],
+  "hono": ["hono@4.2.5", "", {}, "sha512-UwvQD68ir/aG3hgIkcUTQat9QHR17qD/S/Pnv1fNu5rGHxCZFgA2rkB+wKy4hy70o6AUXuQ11YQQmHmDgUqRkA=="],
+  "drizzle-orm": ["drizzle-orm@7.19.44", "", {}, "sha512-iOn0roWvzn9h5bIKvM3MU7fcfebt9QT57woFAl2HvB9cFYQne41sQpxk6Wn768SYWkwVKQYfJuZk/HEQTFIsMg=="],
+  "tsx": ["tsx@5.25.81", "", {}, "sha512-a+6dgqOL0xf1RHuFiP2sS0ZJxD1edKZdPBzr7KLGaR7+cGsk/1pLGu+fK6IV6px8ZoTWxcNabazs+3Qh1htbiw=="],
+  "biome": ["biome@2.20.57", "", {}, "sha512-+sqGumWSyNucXETGzkgbsArUyf1yK9XpYH/CEBkyRik8CwgrQacVWyNSr2af/dxvDrwqW65lf6DbcG7yJFtjDg=="],
+  "undici": ["undici@4.30.36", "", {}, "sha512-svlxzO+jURW5baMGl/22Y/GMZD3uL2iEwdFNmgpm5yzORW3wSXHiTsfx18NADjp3P6J45Vkb9YIw7OE2fUd4TA=="],
+  "serde": ["serde@2.4.71", "", {}, "sha512-SsrOnespEbAiwDNfYWtRwT4ZSgYv4IwlcPGieIDPQ8P6SuZSpYQbBLQO4V5f0DG1lt3mwv3sOrWUTflAGoTyiQ=="],
+  "tokio": ["tokio@5.23.54", "", {}, "sha512-q2q/0Jsi8xgdsfoVEz5QpDp6rZDk9/iFYizQrAUK/tJVLS7qSFk0RUcT5M8BoKjZaALyHofRyEXUA6p7arNH1g=="],
+  "clap": ["clap@5.28.89", "", {}, "sha512-nSvKVo6zGM/gfrRG11uxKqZVqTV+LSoGLF8fvHgjMG3Ic1+6TXMuL8YA1QhYDeAtX80syaXeXjgMOYcmr7Pcrg=="],
+  "regex": ["regex@4.2.20", "", {}, "sha512-ANQX47Ucc9BRGN/qMp7JkRK6+98RBp/Aa9QN2EmftGwq9VwYKmXy6idjXu1p8BuRCN5liQXf0/UgojJ14h+fWQ=="],
+  "ignore": ["ignore@2.10.89", "", {}, "sha512-syvrs2ASvzI9XF7dyrYRwEZbjjJEnEoMjZeWYD5g1EfiEFLD+Z55w88r+jmen7wwS/cntH1JkemSxHFrituxnA=="],
+  "rayon": ["rayon@1.27.23", "", {}, "sha512-yLCdtthIdF84RQ4wVtNZm8jZwbKPZLf0FKiBTYNe5o280xfmeDobfvaorr5RSKsBehyYTOst1MGyDQ2TX5tLnQ=="],
+  "axum": ["axum@0.27.8", "", {}, "sha512-wbOyzMTFk2qztFePwvGG6RN9rRg8Q8gigI2iJH9/a/Q1Rmy9KsVTlxr1qSLtWjEX2Z5VjurzvoW4WR5f+LOE+g=="],
+  "tracing": ["tracing@7.4.63", "", {}, "sha512-HNbZRB3Hg8EHIuH4otv538l9HsUPDMHkyQ+aLK6DkxCGkCqQ8v3KOW5la2m0L8XsMzon22GjDJ+lfkczi2qTZA=="],
+  "anyhow": ["anyhow@6.22.3", "", {}, "sha512-04h/Fask+G88h3NCiDtFHP6kK0FPja93a2PzsR9+U3ajA4TTn7lWPPxMzQ5doJPA7AxgrDT1ha9rqtNOyZEmew=="],
+  "toml": ["toml@9.5.57", "", {}, "sha512-Voys6dRdB7i4Tn/1STqYixjm2rWKCRQYoYQr9MKYYzR1/FpG3GGBckP2EVL4QxCyfxRynzIQhQaDD194Xg7/fA=="],
+  "picomatch": ["picomatch@7.12.64", "", {}, "sha512-siLfX7hyIEUXt+AJ4VM3CFlXUfrLJb9YMcwlGoSK+heVYnBX6W2ZBOe1XeX6jE2c27MOncqwG+SFBW06gXZSkQ=="],
+  "chokidar": ["chokidar@6.0.49", "", {}, "sha512-554EguN80dybM+pbRAXBTeJqhq7x0oX9yvN9m6JCVsmd9Hr/2yhmpT1Cx71VS4PgyhyB7uYmOIOupgr35wC3KQ=="],
+  "rollup": ["rollup@2.15.90", "", {}, "sha512-pYXrxZcLFmfGsiZRBh5MWSBLfEAVZSi25wyqplSFgRg42yOo5SAaNbBoweOrLi/fr1YdCd17drWapxW3kDImjw=="],
+  "postcss": ["postcss@5.9.56", "", {}, "sha512-jrkbKfX2fweIHbPrdF0AhILNl6q4S66Q3AeIAUm1H7k21xZaNY0zVNbmYHaIHJ0JRHjGJeyP/+Fa/dpeTIGItA=="],
+  "tailwindcss": ["tailwindcss@4.25.83", "", {}, "sha512-2lSr4LqFlvbdfZEv5Ivf3SBA+E73/QaIqJyHw2OzDAZmjYTtqfNwcpFkrBFNQ/cKU9Q0OsLyshzB3o86tkyNRg=="],
+  "lightningcss": ["lightningcss@2.2.50", "", {}, "sha512-uT+U5hSfYQV+bq/tRjtcQadxisTtHqfRQuV/9t9jlYOIpJAOi/C14t2KePGV+HrWZqxUtPaKsSrH521wVeK6/g=="],
+  "oxc": ["oxc@9.14.71", "", {}, "sha512-d6mEAozf6O0eaYdPXHnASJFuv0nc2WtCYLPiZzrq2Ld52wg4fepuopWXJuK75TfWoR+61bV53kjG9l8ijhAp/g=="],
+  "swc": ["swc@7.11.58", "", {}, "sha512-/6TLQZwACTLpCpSyzU/kLP7TzksO4+iKLRZqTz+BglNO13iZk7A6zu54ibOPVUrEErSvZVqe3pMXcKRzxCT6UA=="],
+  "prettier": ["prettier@3.6.21", "", {}, "sha512-21wjGI1pBmYLW270ecARX+XXB+UarP35ANksX7Zr3iNfmNQQUToha/5fEYHVf/xP+kivFHwaRk7EjBDBQeSidw=="],
+  "eslint": ["eslint@9.17.23", "", {}, "sha512-TXiy/nS3fk0UZPHbAt9GtOAxpWDFknl5ic4zoCqTS+D0s0BaSLmpQTmv2/qoDdFEHkJX74xIZTTsmlQj4RkLnA=="],
+  "vitest": ["vitest@7.1.59", "", {}, "sha512-YhzJWErEkxSHkoJofe2ysTjvE60kCHMS77e05+SYyA7HXAGqaSne3z6GroGvCWHuuubPMDnNzLr+vJH7twogxA=="],
+  "playwright": ["playwright@2.17.14", "", {}, "sha512-E8gNbS9gk96c/KTA2e9izVpz2wtsK/HOzZbyCxMDxXBPnAH+2HRpDtTw0PUGhc8/XjcdeyluYhjbL8OrMQdCKw=="],
+  "turbo": ["turbo@1.4.47", "", {}, "sha512-22y5CdhPfGqcgZPlCtkgHolf1AOHtVywj945HJH7bruwhRpocCf/R5LHwc2x/6xORFXvV6nrPGv7Yr12FIJ/ww=="],
+  "nx": ["nx@9.23.70", "", {}, "sha512-8eYSaFrU1O/qUAY92h7NNx6lv45UEtaCn+XkU9D05VVBLQic3KOvbhjVpfvJCSmbIPUrsiKn5Flf5sXMDI0tDw=="],
+  "pnpm": ["pnpm@9.1.73", "", {}, "sha512-8hHVYPy6Ivr4ZdelFXXnDzBIp0uN11CNvQfr2p8/gtEwx5MAukPcI3EciCqT7oWj78RiaDpD4w7JBlJntDC1vg=="],
+  "bun-types": ["bun-types@0.6.68", "", {}, "sha512-X6fOCB076/yErYzSNC6jplKD65QPVAn9I+NPvM3E3oRYKH3R6/E2qj3qf7RWpJpHBF0bfi9ui3BSqWM+Ig/7hw=="],
+  "tsup": ["tsup@2.2.46", "", {}, "sha512-ujdmrkcd2QxM1Ccd3NZkPQSfUI1b492dRYlZ6gpNoPodZhGhDsqDABYmolXCRAi9LufEaCltsV8rs18hvjVhYw=="],
+  "unbuild": ["unbuild@1.29.34", "", {}, "sha512-bVQyKh3/plPbmvOZOv5g4go81UII3bXI27dgu1icEVztjV+LqTfisLsHbEdBbQenJ9tXe01ZpwRgZAZFfq5xAQ=="],
+  "happy-dom": ["happy-dom@4.1.38", "", {}, "sha512-hXSsBf/Ub/529XjDldsBgmLKi1SxTs3VV2S5zwALv7RtHw3JrZmdYasdvnKjq+BALH5vdFEbASK2HoMlXRXbsg=="],
+  "jsdom": ["jsdom@9.3.56", "", {}, "sha512-mwwOpKkHSwNJB7hoj+yRjKiTBGYDtFQHCQxDKSTPptE+AsZOcPT5/Rizp0hzOOtgk+9noBaxpUKhRJoY33KbGQ=="],
+
+## container image digests
+  image: app/api@sha256:7242fbb8073a675ee5118cdecd526ff9b13e121763ff9b11156ce467e5b98bb5
+  image: app/web@sha256:c91c2a7c9758cb6a2c878a91445ac54fcd81737058e0b13498e608782feb7ebf
+  image: postgres@sha256:948d8815182e83b60cfa4fe6b2855205046ae2b2530a0a564931682e702cdac6
+  image: redis@sha256:91806f5608fbc681a2bd842e5a44dc1668b415ddacff7c1238e03cb570fdf7b4
+  image: caddy@sha256:2cd0fa0ab4a98d858beefc97077cd45443bc6406cf48d56e084582c9031a70e1
+  image: node@sha256:c2ed00b219f2f0cbdfc1bb678e2a2c19259e6ab9dfb666b7cbf4b7e529d5448a
+  image: grafana@sha256:95b2b645825956e8c9b7dbbc5f77a13f71fc4966b3ffea42c55c2cb39629e6f1
+  image: prometheus@sha256:66daea098322cd9109d1a79e40aea1f9e6c0a28187b63b81e72c99e5f985579f
+  image: minio@sha256:aa57f49313144085079c2d02af2d18cc3ab02567a7d2196b6b65f29695b58847
+  image: vector@sha256:e24f58718e6e2a7684648f676b39ffd65cd89d5c63f1b002f83376639703fc8a
+  image: n8n@sha256:603b16352d7609355fabee9ec88bb26e60a09b0fa49e7e80945fa156f7429edb
+  image: listmonk@sha256:34d4ba14dd37b4af5a99cb768d2e278860b9167a91f16d6185055e00ffa3e25f
+  image: gitea@sha256:9abd1edb8d753791fc036cd45ed87f68495f869aa3e828f96bb0b243b473dc40
+  image: traefik@sha256:dcdb36074275020921bd376fb76b7d73f2e44b04d248afe719408945272c5637
+  image: valkey@sha256:82bb71c1f5840143dcf7eb132539131019335ef127802cc9b405c7e00bef8c52
+  image: clickhouse@sha256:1c1b03f0e5c5547f758ecb586ef6a9868a46a1b8a21c3b05f301c7fbc7f8e4fe
+  image: nats@sha256:44174ae5bdf284aa5b92dd864e4f1503e04db734df5e8d6358050a234b4f7aa0
+  image: temporal@sha256:f33f70456c238d4753465d98c935f9f3c7f414e62a9efb7265f4d894470f4cdf
+  image: meilisearch@sha256:66baeb5d320d58ec316c4e7c3c0da77c79fed2a51977947a246825fd6d8ae0f8
+  image: qdrant@sha256:27018b94b2e88ff1f1288e30a533ed9da405276dcb5ca0e1002f22281a79c6dd
+  image: typesense@sha256:f97a07d21524fc5ddcd67cc84de4d4940c1402bc8f95560032230a4a6ee3ee32
+  image: mailhog@sha256:b4b42a6f98640c8b1ad3d3216d48abb2826463640018fe6194770e4572228ca9
+  image: adminer@sha256:4b0702ebc83f9114d1a3b7710603b4699da0dcd0ce511bae61c3dca5090f5c8e
+  image: dozzle@sha256:62598f92ee96efaccd29c7ec2ebce3ef3468257cbd19dc98f33d998f17e7e6ab
+  image: uptime-kuma@sha256:f0774e580e585c4a2a1c326f18711d121720952cdf2172f31f67db4aa9c7be2e
+  image: registry@sha256:51a422716f27d6743237ceb44c9684203ab69c9eb4d499106db412cf35aad7be
+  image: busybox@sha256:892725ece14f92d231ec2584fcca13b7d2dcf105144d347e515240ea14258b23
+  image: alpine@sha256:f1555750fb26e066f76f8fc42cec1802b40536c76aca1f89ae31d78d82a1d855
+  image: debian@sha256:bebf2fe3fad32e17450ff3e44d652021ba134d6817b51d025956b45b7046361c
+  image: ubuntu@sha256:34b43837da6333fdf9f82af1f6fe8200eaf3938f9f76a01de6fb661b78f3cc32
+  image: distroless/static@sha256:f11cd92d36b46bd9ec4896a8691941e9fac53a9710c1809ace465a646e70b2a4
+  image: chainguard/go@sha256:97827e151fe5cc8fcc1225960ca99bc306679b5d8423200d53d74818c0e510c7
+  image: golang@sha256:300c3fc4c7a5aec9a48e083fb0b5b5100f58c4807fa74f4e98f10a619b444051
+  image: rust@sha256:dd2040b9dce85a88cdadafb58afd5efc89833d4678f296a359c7e9a8d4f7764a
+  image: python@sha256:4dc678b5ee8ff7f1fe8512b1259fb755792b218450566d83bda1d34a5c48a8b4
+  image: deno@sha256:9c7859a0616f873a5b67c7f81317ddeff4508578c3bb36455e242584537985a0
+  image: bun@sha256:44d6a1a9c5baf1371a9a653ad7dd82c02f5a91164d37844b9327a7755eae1ec9
+  image: php@sha256:ef8e4f800a703f9e45adf80460d3d469d6bc0e86d328804a78313388bc862fbe
+  image: ruby@sha256:7362b8dcb8d586bb4369d75f7269fc4239b07da7a8b8b52d5da330ff13ba70d8
+  image: openjdk@sha256:0ababb6829e8544fd3d119b4a8c3595279e0277a77b4fff43aa0a1f60e7a15cb
+
+## git object names
+commit 0587cc16a29759ba525f828344b52c6e966c5dfd  initial commit
+commit 839a40f7de5c93887ed40eb4e89d79e5dd97b841  widen the walk
+commit 41773f9b778569a32b931d433ced134f2ed2fb1c  pin the corpus
+commit f9205308d325435b323b077794ed204e5a950a7e  strip the byte-order mark
+commit 5f5a94eb26656a1c8d239928a4a0d72797a7e0cc  refuse a bare m
+commit 331854a8ff16e46b8adf2264dd7340040f7ae17f  add the position memo
+commit 80f1843e08a8da9b5cc100d18c5767abb65878d7  name the skipped files
+commit 5f7891d5bb524b17ab23c342c1312b725933127b  forbid inline allow
+commit 1f8b5721e1c61c4bd0f72622cb2765842f206dcb  carry the binary count
+commit e7ba4ca0eacca699b0fb475ed8afcf2a1b5b168b  exact decimals only
+commit d05f8b13ffbb6b46202f34582444f4cad3b85e65  checked multiply on apply
+commit b206a54caf3ff57dda9009e3692eed4691baffb1  one extraction function
+commit b6a5a19922fb897f3bd50ad803541d9737511b89  drop the unit field
+commit 28a91372755a2fcc3fb7c725dc23d3e2a495bb80  spell the reasons out
+commit 6c3bd1f6f7695ad160a570771db4ef5ff92e05bf  hazard keeps its base
+commit 33fa28437265a60de1aeb61c2216d07f976e81bf  compound ordering is required
+commit ad6ef350a8c1b04733a8eaa2f7c6de075beafa92  iso calendar refused
+commit 60480a54ccffda83beaf390d15b63bdb6b3858d6  locale narrowing
+commit bb0479fcf392c4577e7d6da5f04b396ab3548a6a  fixtures embedded
+commit 5d103a96e947c3130e755df9e949b0d9085e3bec  grep exit codes
+commit a8278b87c41235b2333868ebea811f2a5ffa221d  stdout is protocol
+commit c563c5a5517bb80936a9e310c64ff7c994daace6  refusals speak the caller
+commit 83d2abcccefd5c5a204ffa85d572d629ff0d76ad  walk uses ignore
+commit a39b6a22b75b21cadcc502d58f64cf4d56021484  utf-16 columns
+commit e36a3af84cf26eea2ea72a20d33301a90e300299  forward-only cursor
+commit 3018e0a5be9d661e068dd1dcea6df9bec1fe73ae  text scan has a grammar
+commit 89b47ce65b74724dc79c6f1b1a7b7d60f2dc1665  no regex engine
+commit ab64454efc1dfe81c4e26a2b3579b45486deb316  no byte-unit dependency
+commit bba27256c9a843450220c5165a1b7db7d0c8fdee  strict is opt-in
+commit 79cd1d7606699203ae05fba5b22dc7ed68e007d6  parse failure is a warning
+commit a963e038b10eccdb38b7136cb8023233eeefa01e  csv rows are all data
+commit 737d18373dd76ddc5d1373d990d6c77381b2d4c0  dotenv keeps its key
+commit e0ebf217ac97c83ef9663d8cfe1e9574177f935f  ini section in the path
+commit 49c0d2980da55a54b4f56bcbdb3ee262900a0fb0  yaml documents indexed
+commit 550d122f83014f5a572aff0271369571238bbb62  json escapes lose position
+commit 92016e7b1d2fca0068e7673e6e41821c2ccf6c7d  toml preserves order
+commit 5ab5d6bef2841b4319423b9488749bc965f200ae  kubernetes Mi spelling
+commit 89b9746c73678839a3848e0c6e6d054c9b6de7f6  percent is a ratio
+commit 601331660a29f16dfbff36630d2bcfc57649a917  frequency in hertz
+commit fe7323cf57c3a60673edd457bc76d709e42c8361  overflow-checks on
+
+## request and tenant identifiers
+  request_id: c12bdec3-3c37-4fba-abf0-34f241a7706d
+  tenant_id: 247e0bcc-17c7-4ac1-a206-705e318a2a26
+  trace_id: 3027cfbb-46a7-46bb-8c54-a14e49650eb1
+  session: f629a411-040b-4197-9d2d-e1559ca3f881
+  device: 9581f3c7-f542-474e-a3ec-f8301d632830
+  upload: cc9d94ad-85b3-4158-b86f-187fc819a54c
+  span: 3f653654-2c2f-4715-94bd-6cf6dfe1d756
+  correlation: d712aff7-67f0-4a16-b662-1c457c9726c3
+  idempotency: 6a8faf8e-4f77-4e24-91ad-745606d1d5ee
+  subscription: e5a67048-58d2-417f-83e8-daec32c4c58f
+  invoice: b1e0e573-1b28-4888-8234-40005fd6982d
+  webhook: a88b1ed6-3fcd-4d1f-b93d-b429d810e1b2
+  job: ce50d51e-0233-4c8f-a8cc-c9b1e4e7aa0d
+  run: bed562ef-ae4e-4cdc-99f2-908305cd1e2d
+  artifact: 79b7a10e-4d12-47d5-92bc-08a94281573c
+  deployment: 5a636f62-43b3-4da5-8db6-cfab82e0aa67
+  workspace: 0a3f3855-808d-4c21-9c82-bf63faf8bace
+  project: 99103b68-7915-4f86-a6e1-118dad18bbc1
+  member: b75cd5e6-e19a-4418-bf1b-2a6abb3b8ca9
+  invite: f12de9e6-343f-4524-a6f4-58455bb27064
+  token: b31d4868-fa4c-4e31-9709-44d2ed53bbb1
+  grant: 4e5cf1a9-b4e8-4724-a825-5189bdc08939
+  audience: 1c6061b0-bd6b-4512-acae-4ea395cf2000
+  issuer: ecd9d432-648d-45d3-a9f5-553dd5d6afae
+  installation: fba80464-ba1b-4747-850f-2ff63e1ecef4
+  repository: fe8b0d2d-c10b-4f2d-8c86-7c8adeabfeed
+  branch: d6a28b07-65bc-4b48-8044-ff3a3e40ad2c
+  check: 955602e4-5ee0-4638-8ee5-3df33d5e931f
+  annotation: 6da5f367-015a-450f-98d9-9e4c972651d8
+  label: 4e49f8c2-4f9e-432e-8e41-ca301f6df42f
+  milestone: 7dc77e41-ea4d-4d70-975a-62b5070a8092
+  release: d0f27d54-75fb-4813-ba25-e20cd43bb600
+  asset: 10a4d687-06e2-4f8a-b96d-97be5067cd00
+  package: 7ab00e64-9e9e-47a0-ac01-8c1490abb372
+  version: 3b68afc5-ce23-4728-9fd2-2c955fea40ce
+  channel: 6ccf813c-8ded-47c9-b218-7b8c62ebe9cc
+  rollout: 0abbda79-68f9-4b64-8f80-cfd6bd601442
+  segment: 0cb51c85-2556-42fe-b727-ed5bfec1d917
+  cohort: 455711d0-7527-4a3c-87d5-0aa167e20956
+  experiment: 89b0342d-da29-438a-b7f8-f3daf8662cc6
+
+## content-addressed asset names
+  dist/main.9792f061.js
+  dist/vendor.de06af2e.js
+  dist/runtime.71f08ba9.js
+  dist/styles.fc9aeaa4.js
+  dist/worker.498551c1.js
+  dist/polyfills.bf8a6d75.js
+  dist/chunk.a19b9384.js
+  dist/entry.0b4f3dba.js
+  dist/app.3bbee9c8.js
+  dist/shared.b670654f.js
+  dist/router.b8368fce.js
+  dist/store.33983e26.js
+  dist/icons.1c13dac9.js
+  dist/fonts.a3713d8a.js
+  dist/images.c5a9285b.js
+  dist/locale-en.e0476e12.js
+  dist/locale-de.d4338e06.js
+  dist/locale-ja.00d6670b.js
+  dist/charts.a36372f6.js
+  dist/editor.0c77937d.js
+  dist/viewer.73ca9df4.js
+  dist/legacy.3c05ed68.js
+  dist/modern.9ea88668.js
+  dist/sw.07334190.js
+  dist/manifest.209986ca.js
+  dist/critical.0abd8f09.js
+  dist/above-fold.f9debaa6.js
+  dist/lazy.a0fcd333.js
+  dist/prefetch.4335d335.js
+  dist/preload.b3e0adb8.js
+  dist/hydrate.ac71cc72.js
+  dist/island.6893872f.js
+  dist/boundary.1c6fdb4d.js
+  dist/layout.333bb042.js
+  dist/theme.0b43d32e.js
+  dist/tokens.ddd07621.js
+  dist/reset.1fe6af93.js
+  dist/print.606665ae.js
+  dist/dark.a9aec229.js
+  dist/light.a5b3e949.js
+
+## signing material and opaque tokens
+  api_key = +8cUHvNanz4Dh+ePJOKBWxlFmVhLAAlVgoaO2cQ2vzQ=
+  refresh = OZ4qJQMr5Tih9m6khRp3rZwhtSXCr+VWaM8sLBZ4W34=
+  nonce = M+DapPk+yjSC53Q6+M0ssGSsBL8TJfxJhyNqpg8zpX8=
+  salt = rZLikTmVVfPwbP+Ty6q5zzOry0zRFav/7YxlDbw4jZA=
+  csrf = U3wrEwS1dd11yysATBEpl0GLfvtjfiSqlDA20fCMBnM=
+  etag = hR7snSTfpiFiVNOIK68DqcuEhp9+/NUPLtaQ8tugAFM=
+  hmac = w5K0C0McC4NIxM+RowJUO5nix/TDw988+zQMnwZNiDw=
+  cookie = HmYzXkmU65tgg9ZpzvK7XDF5hZpw0HEAZ/iHIYBg74I=
+  state = uAlraoI3BHn/belIcqRB0elr8ReXaKfzlNoT9dU0Pm0=
+  verifier = Bt/77y4ZKKUg9hM3uqsAjFnx+NciQuA2R+/1osqkWag=
+  challenge = 7+T6wk1FL+clNblC3+R3yvEUOSpeKXa4XieoAOE25VQ=
+  kid = 5+xn5KrkOUxlmghFZO54ATt8tbOp5bjvHkhMKC1xbt0=
+  jti = DfTHTUpKlbOi7BzUgm3bzrdXNe0Pz5WUlkDdy67ED/Q=
+  seal = wyJ0mZqllsoTOEZe4t8+XrrPAXkZgzI+QOGQP6PzlcE=
+  wrap = VqOMsoDfrnFFx1y1Uml3zIIv+ADgfSCoR8I4L77uHY4=
+  dek = qEB8dARZfC7zlAK8lwYpXC+0asIx2l4jfyyiXzkHDUI=
+  kek = XTLW8VMiGkw9poyQLnks2hKl8Flp/I7DjYbLdbplzQA=
+  mac = 2c1jDedGULtwlUg/1J+bQSGN1I9D6UFg1SveohZxlgk=
+  tag = YygmZrKDy2mxe5G1C9b1CmnEwLK2zJZ+udhCkdo14Gc=
+  iv = BvNVAi4rai6gllb2dfjCpP2ui6g/DbhLCaDfuRxXWT0=
+  pepper = 1aWBaa5rHApbiGNQFwreJsL4edG42Wz/gB06Z/8YZ6w=
+  pin = KYSnRZ6YNQtKRvTdAQPGjs+XJ3Xou8G5CFKQkaXlqZM=
+  otp = iryENj4mi/xbZqDPq/JNl7TYhYMaM19cVn9Ph1nivwU=
+  recovery = lEjj4JBzFSt859v8tHPU3TpvZfP+zEarVMMg2gF1H5w=
+  backup = ifeicEBcbMiQJSuEtCfg0qPlH8TSAfZaJMZNZ26pvZ8=
+  share = RHvtrXNfDmjpNC3uapfYUz5iysqVPq2Gsh1K183RUVQ=
+  commitment = sBUJJ73yyzSTnBdMUGCYzxV9yN3FLJvEJV6hEu5cK3M=
+  proof = rmiIVV+y0s7IXd6sVVM+gzdLA9hCeBQUpkKPfP+fzLI=
+  witness = +PXivpUmkbbPzAPHAgj+6Mnb8GBSXa4P/bugBEv+ZXY=
+  blind = IcK+u9l7vgzgduVqWUDwaBW7gvCOPbwb+EugTSsRR8Y=
+  handshake = lLpt7yCsh3uWEN0IV+ixt6pNJBlLaf1OKgFPR1CK3QE=
+  psk = tMJCseMEHDAyiyyGutKrcZ3ylP4scmkLYMW0IN4bJhY=
+  prekey = GKiYgEEahxqDeVMk9LxuTEewRludjpySFj1tWyT+xoA=
+  ratchet = 7GYXHAvd0fCwcOzF3EJA6WSERw0pFxw0BPkR9KG81nc=
+  chain = lplRDCXTFpDe+W7unb85jtC8ljti0o63GJNhDNkMCMI=
+  root = bW/hOhvd2KaLgVDn4lEB70FLQWoL0Of6Id00jmDCUyk=
+  identity = PixBIA64uRjx+1fcHzPXaZPrgc/z5aGutjj7cUeJqME=
+  ephemeral = 0KdvZiabz72eJa2C5SB7cETh+kDbjfBiEhPCb5rcDCg=
+  signed = jvdLlVHRBYnF7MwxanVShbNA48Iu6OpFnFr4z8Ji4UQ=
+  onetime = XZCWfSXI3WSQqCDc28zArYxR1dJ7M9kz3stV4eGvAQE=
+
+## base64url identifiers, no padding
+  id=ytkYthmluGszZQcGOaQRPdGtKS6V--l6
+  cursor=iqgvtlqRRdCfACmDRB2fKIzLYM8WGw-a
+  page=zRgSXGFlrcGB7FLDBLvtVrbyGNRJF2b3
+  checkpoint=JuuVkbb2D0LHnvBHQnaqrKwwG4lUYjgb
+  offset=Rum_u0937lmSoDC9wZvx77yOZjm4nthP
+  watermark=W5fCzJ1_jeYMIQ4TnUphq7hZCdElD5UO
+  after=aVSrpVP7AE5Dp9JbbHES0d1zoiFBHbs1
+  before=d4mcGi8y-K95jKiV4J6hz_cccNph5YWE
+  since=PgIpo6K-njZ_S_FDALNprGRAIBtAxkTi
+  until=gP0qUpylLBQbmR_ZZzqvExBdaKckfE09
+  next=Mae34h7tR4fK8tN4Zr-JcwYUonYeF6AP
+  prev=Y3PdKAN02v-dTCnMzK3_WEmJHzN1fMw_
+  start=A25F53hsY_MrunH3aQdTiBP5tGkOwybS
+  end=W3rhMd5eIeR2dNL44VtQGcmPAr14GMtu
+  from=G7TSd1WU5Qwg__9VBb6UV83cLIcl_q9X
+  to=Jrfcj95yJEvZLS0F47Q7E3TRdL5Jl-zJ
+  mark=9lj41Y13egfYvooDOViz7u0yuXcq4-jn
+  seek=UbSCUEfjhWQngTFaFDdffdIZe-iM91Hh
+  anchor=DImM0QTqWTL7nPdmAN2e3AksL2TXDqb5
+  bookmark=kCAjr9icjkDR8fmG_Gw74mOI2T1goQwV
+  resume=SBwOkZ_VoMISomfvpjqVO1IARJLcLMaw
+  continuation=0Txt6IOxr212DISERPPW-271RhboNzN6
+  scroll=FCUS59Fh4Z-REMjU0eknIXiEdX123NtI
+  slice=TtMSHVBXdpJ2VSqQRIJfviQhbbE9fiuI
+  shard=8fJubgxj20MTrJS-mQFmRz13ucJLX5xE
+  partition=IucUiyF05Nx2sgRSTGFc5Zi5TKXqg_hW
+  bucket=egP1EhnZgouDaiAkqo2gLLSYOiYi4S4v
+  segment=2gWf6zYFdF0ZtyzC7ffYQNcApo4YpVxF
+  window=fjAT6f5DSsovSL3HN2DqsQIVmMHIpUeX
+  frame=VMhZbgycEH_CEeD_45oZrVWmgF8HX4Z6
+  epoch=BuqPjlN7QfjmlCYve4n6GiX0iJa6d0y_
+  generation=RL5b0qumZkFIpkDxqFTR7GCsj9mruTNs
+  revision=f_Dx5oqa2KVQ30Sb-bCxXCTyRaDZoIzV
+  sequence=ueA56lbI0oRGS4kccLhNQ5cro-pnSxBh
+  ordinal=om3RyvVDek2FejmSwGn6vpdTETZZcETM
+  position=b06-vteXRcY-lpOIlUTmySzrtS4l3EHX
+  index=9au2zLVxzQNhmjahzpgNt8i3zBv8L0eE
+  key=OP8wA8Zg_XyBJA-0zTHaHcFnvkhgeuwk
+  hash=Hon0IqRu3web4-sHKhj6b-xgD59K0Bpa
+  digest=ETJAL1M9PbNHm4POzaUJKL-f7RBrNV-n

@@ -151,11 +151,14 @@ yield them rather than nothing.
 
 Unlike numbers-le's text scan, this one has a shape to look for, so
 `v1.2.3` yields nothing rather than two numbers. Its known
-false-positive class is written down rather than left to be discovered:
+false-positive class is **measured** rather than left to be discovered:
 a run inside an opaque blob still reads as a quantity — `001d` in a
-UUID is one day, and a base64 hash ending `/2w==` is two weeks. Each is
-reported with its line and column, which is what makes it a row you
-discard rather than a number you trust.
+UUID is one day, and a base64 hash ending `/2w==` is two weeks. Over
+`fixtures/documents/opaque.txt`, 280 lines of lockfile hashes, container
+digests, git object names and UUIDs with not one quantity among them,
+the rate is **5 false findings — 1.8%**, recomputed and printed on every
+test run. Each is reported with its line and column, which is what makes
+it a row you discard rather than a number you trust.
 
 Every format with a shape carries a key path — `cache.ttl`,
 `limits[0]`, `server.timeout`, `TIMEOUT` — and every finding carries a

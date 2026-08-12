@@ -24,6 +24,10 @@ pub(crate) fn document(name: &str) -> &'static str {
         "units.csv" => include_str!("../../fixtures/documents/units.csv"),
         "units.txt" => include_str!("../../fixtures/documents/units.txt"),
         "ambiguous.yaml" => include_str!("../../fixtures/documents/ambiguous.yaml"),
+        // Not an expectation set: a page of opaque content whose rows
+        // are all false findings by construction, so the text scan's
+        // false-finding rate has a number. `fallback.rs` measures it.
+        "opaque.txt" => include_str!("../../fixtures/documents/opaque.txt"),
         other => panic!("the corpus has no document named {other}"),
     }
 }

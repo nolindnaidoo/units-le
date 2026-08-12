@@ -22,13 +22,19 @@
 //!
 //! What it still gets wrong is written down rather than left to be
 //! found: a run inside an opaque blob reads as a quantity. `001d` in a
-//! UUID is one day, and a base64 hash carrying `/2w=` is two weeks —
-//! measured, not imagined: four such rows came out of one `bun.lock`.
-//! The boundary characters that let them through are the same ones that
-//! let `-30s` and `ttl=30s` through, so a scan with no parser cannot
-//! separate the cases. Every one of them is reported with its line and
-//! column, which is what makes it a row a reviewer discards rather than
-//! a number they trust.
+//! UUID is one day, and a base64 hash carrying `/2w=` is two weeks.
+//!
+//! **Measured, not imagined.** The characters that open a run — `-`,
+//! `=`, `/`, `+`, `:`, a space, a quote — are exactly the ones that let
+//! `-30s`, `ttl=30s` and `holds 512MiB.` through, and a UUID's `-` and a
+//! base64 hash's `/` are the same characters, so a scan with no parser
+//! cannot separate the cases. Narrowing the set would cost real findings
+//! to remove false ones. Over `fixtures/documents/opaque.txt` — 280
+//! lines of lockfile hashes, container digests, git object names, UUIDs
+//! and signing material, none of it a quantity — the rate is **5
+//! findings, 1.8%**, recomputed and printed by the test below. Every one
+//! of them is reported with its line and column, which is what makes it
+//! a row a reviewer discards rather than a number they trust.
 
 use super::grammar::{self, Quantity, number_prefix, symbol_prefix};
 
@@ -293,6 +299,57 @@ mod tests {
     fn a_run_inside_an_opaque_blob_reads_as_a_quantity() {
         assert_eq!(values("id f47ac10b-001d-4f2a"), ["001d"]);
         assert_eq!(values("sha512-c3wKDVMkOuHPRHtSXKKU99IBazS/2w=="), ["2w"]);
+    }
+
+    /// **How often, not whether.** `fixtures/documents/opaque.txt` is
+    /// 280 lines of the content a real repository is full of — lockfile
+    /// integrity hashes, container digests, git object names, UUIDs,
+    /// content-addressed asset names, signing material — generated once
+    /// from a fixed seed and checked in. Nothing in it is a quantity, so
+    /// every row the scan reports is a false one and the rate is
+    /// arithmetic rather than an impression.
+    ///
+    /// Both bounds are deliberate. The ceiling fails a change that makes
+    /// the scan noisier. The floor fails a change that makes it quieter
+    /// — which would be welcome, and is a behaviour change that belongs
+    /// in SPEC.md and the CHANGELOG rather than in a silently greener
+    /// test.
+    #[test]
+    fn the_false_finding_rate_over_opaque_content_is_measured_rather_than_imagined() {
+        let document = crate::extract::corpus::document("opaque.txt");
+        let opaque = document
+            .lines()
+            .filter(|line| !line.trim().is_empty() && !line.trim_start().starts_with('#'))
+            .count();
+        let findings = scan(document);
+        // Tenths of a percent, in integers. A crate whose whole contract
+        // is that a base value never goes through an `f64` does not
+        // reach for one to print its own measurement either.
+        let tenths = findings.len() * 1000 / opaque;
+
+        eprintln!(
+            "opaque: {} false findings over {opaque} opaque tokens \u{2014} {}.{}%",
+            findings.len(),
+            tenths / 10,
+            tenths % 10
+        );
+        for (quantity, _) in &findings {
+            eprintln!("opaque:   {}", quantity.value);
+        }
+
+        assert!(
+            findings.len() <= opaque / 20,
+            "the text scan reports {} findings over {opaque} opaque tokens ({}.{}%), \
+             above the 5% this crate documents",
+            findings.len(),
+            tenths / 10,
+            tenths % 10
+        );
+        assert!(
+            !findings.is_empty(),
+            "the opaque-blob class is documented in SPEC.md and the README as a known \
+             limitation; if it has been fixed, say so there rather than here"
+        );
     }
 
     #[test]

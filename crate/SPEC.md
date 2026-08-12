@@ -54,6 +54,13 @@ what makes this one usable in a review is that `500m` comes back saying
 | `si_iec_hazard` | `1MB`, `256KB` | **the SI base value, plus the reason** | The one entry that answers. `MB` is 10^6 by the standard, so that is what is reported; the hazard is that a great deal of software writes `MB` and means 2^20. Reporting nothing would be less useful than reporting the standard answer with the flag attached, and picking 2^20 would be the guess this tool exists not to make. It does **not** count as refused and does not trip `--strict`. |
 | `out_of_range` | `99999999999999999999999999999999999PiB` | no base value | The base value does not fit in 128 bits. Refused rather than wrapped: a wrapped byte count is a confident wrong answer. `overflow-checks` is on in release as the backstop behind this check. |
 
+**The ambiguous set, in full** — every symbol that is refused rather
+than read, so the list is one a person can check against rather than a
+rule they have to derive: `m` `M` `k` `K` `G` `T` `P` `y` `Y` `b` `kb`
+`Kb` `mb` `Mb` `gb` `Gb` `tb` `Tb`. A unit test walks the grammar's own
+table against this section, so a symbol cannot be accepted or refused
+without appearing here.
+
 **A bare number with no unit is not a finding at all.** `timeout: 30`
 yields nothing. That is numbers-le's question, and the boundary is what
 keeps the two tools distinct.
@@ -142,13 +149,47 @@ before it is not a letter, a digit, `_`, `.` or `,`) and never ends
 inside one. Without the first, `0x1d` reads as one day; without the
 second, `5Mac` reads as five mega-somethings.
 
-**Known limitation, measured rather than imagined:** a run inside an
-opaque blob still reads as a quantity. `001d` in a UUID is one day, and
-a base64 hash ending `/2w==` is two weeks — four such rows came out of
-one `bun.lock`. The boundary characters that let them through are the
-same ones that let `-30s` and `ttl=30s` through. Every one is reported
-with its line and column, which is what makes it a row a reviewer
-discards rather than a number they trust.
+### The loosest edge: a run inside an opaque blob
+
+**This is the known false-positive class, and it is measured rather than
+imagined.** A quantity-shaped run inside content that is not text at all
+— a UUID, a base64 hash, a git object name — still reads as a quantity.
+`001d` in `f47ac10b-001d-4f2a` is one day. `2w` in
+`sha512-…IBazS/2w==` is two weeks.
+
+**Why the boundary rules cannot separate the cases.** A run may begin
+where the character before it is not a letter, a digit, `_`, `.` or `,`,
+and may end where the character after it is not a letter, a digit or
+`_`. Everything else opens a run: `-`, `=`, `/`, `+`, `:`, a space, a
+quote. That set is not incidental — it is exactly what lets `-30s` be a
+negative duration, `ttl=30s` be a value, `500m` be a cell and
+`holds 512MiB.` be prose. A UUID's `-` and a base64 hash's `/` and `=`
+are the same characters. **A scan with no parser cannot tell one from
+the other**, and narrowing the set would cost real findings to remove
+false ones — so the class is reported and written down rather than
+suppressed.
+
+**The measurement.** `fixtures/documents/opaque.txt` is 280 lines of
+exactly this content — lockfile integrity hashes, container image
+digests, git object names, request and tenant UUIDs, content-addressed
+asset names, signing material and base64url cursors — generated once
+from a fixed seed and checked in. Nothing in it is a quantity, so every
+row the scan reports from it is a false one:
+
+> **5 false findings over 280 opaque tokens — 1.8%.**
+
+`extract/fallback.rs` recomputes and prints that on every test run, and
+fails both if it rises above 5% and if it reaches zero — the second
+because a scan that stopped reporting this class would be a behaviour
+change that belongs here and in the CHANGELOG rather than in a quietly
+greener test.
+
+For scale on a real tree: run over the `numbers-le` repository on
+2026-08-12 it reported 36 quantities in total, four of them from
+`bun.lock`.
+
+Every one of these carries its line and column, which is what makes it a
+row a reviewer discards rather than a number they trust.
 
 ### Key paths
 
