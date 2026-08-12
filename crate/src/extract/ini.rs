@@ -36,19 +36,18 @@ pub(crate) fn extract(text: &str) -> Vec<Field> {
     let Ok(parsed) = ini::Ini::load_from_str_opt(&without_bare_keys(text), options()) else {
         return Vec::new();
     };
-    let mut fields = Vec::new();
-    for (section, properties) in &parsed {
-        for (key, value) in properties {
-            fields.push(Field {
+    parsed
+        .iter()
+        .flat_map(|(section, properties)| {
+            properties.iter().map(move |(key, value)| Field {
                 key: Some(match section {
                     Some(section) => format!("{section}.{key}"),
                     None => key.to_string(),
                 }),
                 text: value.to_string(),
-            });
-        }
-    }
-    fields
+            })
+        })
+        .collect()
 }
 
 pub(crate) fn parse_error(text: &str) -> Option<String> {
