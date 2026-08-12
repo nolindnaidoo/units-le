@@ -959,6 +959,67 @@ mod tests {
         }
     }
 
+    /// **Does this crate read what it claims to read?**
+    ///
+    /// Driven off `UNITS` and `AMBIGUOUS` themselves rather than off a
+    /// list beside them, because a list beside them is a list that
+    /// drifts. Every accepted spelling has to resolve to the dimension
+    /// its row declares, every refused one has to come back as
+    /// `ambiguous_unit`, and **every symbol in both tables has to appear
+    /// in SPEC.md** — a symbol the grammar accepts and the spec does not
+    /// mention is a promise nobody made and nobody can check.
+    ///
+    /// The marker line is not decoration: `cargo test <filter>` exits 0
+    /// when the filter matches nothing, so CI greps for it rather than
+    /// trusting a green run.
+    #[test]
+    fn coverage_matrix_every_unit_spelling_is_reachable_and_documented() {
+        const SPEC: &str = include_str!("../../SPEC.md");
+
+        for unit in &UNITS {
+            let token = format!("1{}", unit.symbol);
+            let found = read(&token).unwrap_or_else(|| panic!("{token} is not a quantity"));
+            assert_eq!(
+                found.dimension,
+                Some(unit.dimension),
+                "{} resolves to the wrong dimension",
+                unit.symbol
+            );
+            assert!(found.base.is_some(), "{} has no base value", unit.symbol);
+            assert_eq!(
+                found.reason.is_some(),
+                unit.hazard,
+                "{} carries a reason its row does not declare",
+                unit.symbol
+            );
+            assert!(
+                SPEC.contains(&format!("`{}`", unit.symbol)),
+                "{} is accepted and SPEC.md does not name it",
+                unit.symbol
+            );
+        }
+
+        for (symbol, detail) in AMBIGUOUS {
+            let token = format!("1{symbol}");
+            assert_eq!(refusal(&token), Reason::AmbiguousUnit, "{symbol}");
+            assert!(
+                !detail.is_empty(),
+                "{symbol} is refused without saying what the readings are"
+            );
+            assert!(
+                SPEC.contains(&format!("`{symbol}`")),
+                "{symbol} is refused and SPEC.md does not name it"
+            );
+        }
+
+        eprintln!(
+            "coverage-matrix: {} unit spellings and {} ambiguous symbols, all reachable and \
+             documented",
+            UNITS.len(),
+            AMBIGUOUS.len()
+        );
+    }
+
     /// Durations share one scale so their magnitudes can be compared,
     /// which is what the compound ordering rule rests on.
     #[test]
