@@ -15,7 +15,7 @@
 //! published core, and nothing holding this file equal to the similar
 //! ones in the sibling repos.
 
-use std::path::{Path as StdPath, PathBuf};
+use std::path::{Path, PathBuf};
 
 #[derive(Debug, Clone)]
 pub(crate) struct WalkOptions {
@@ -57,7 +57,7 @@ pub(crate) fn collect(inputs: &[PathBuf], options: &WalkOptions) -> Result<Vec<P
     Ok(files)
 }
 
-fn walk_directory(root: &StdPath, options: &WalkOptions) -> Result<Vec<PathBuf>, String> {
+fn walk_directory(root: &Path, options: &WalkOptions) -> Result<Vec<PathBuf>, String> {
     let mut builder = ignore::WalkBuilder::new(root);
     builder
         .hidden(!options.hidden)

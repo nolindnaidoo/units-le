@@ -3,7 +3,7 @@
 //! `cli.rs` and `mcp/` both come through here, so a rule can only be
 //! written once. `tests/contracts.rs` asserts the two agree.
 
-use std::path::{Path as StdPath, PathBuf};
+use std::path::Path;
 
 use serde::Serialize;
 
@@ -133,7 +133,7 @@ fn is_binary(bytes: &[u8]) -> bool {
 /// differ from the same path in a Linux one for no reason a reader could
 /// see.
 #[cfg(windows)]
-fn report_path(path: &StdPath) -> String {
+fn report_path(path: &Path) -> String {
     path.to_string_lossy().replace('\\', "/")
 }
 
@@ -141,11 +141,11 @@ fn report_path(path: &StdPath) -> String {
 /// legal character in a Unix filename, and replacing it would rename the
 /// file in the report.
 #[cfg(not(windows))]
-fn report_path(path: &StdPath) -> String {
+fn report_path(path: &Path) -> String {
     path.to_string_lossy().into_owned()
 }
 
-pub(crate) fn scan_file(path: &PathBuf, options: ScanOptions) -> Scanned {
+pub(crate) fn scan_file(path: &Path, options: ScanOptions) -> Scanned {
     let file = report_path(path);
     let format = options.format.unwrap_or_else(|| format_of(path));
 
@@ -162,7 +162,7 @@ pub(crate) fn scan_file(path: &PathBuf, options: ScanOptions) -> Scanned {
     }
 }
 
-fn format_of(path: &StdPath) -> &'static str {
+fn format_of(path: &Path) -> &'static str {
     resolve_format(None, path.file_name().and_then(|name| name.to_str()))
 }
 
@@ -263,7 +263,7 @@ mod tests {
         ScanOptions::default()
     }
 
-    fn read(path: &PathBuf, options: ScanOptions) -> FileReport {
+    fn read(path: &Path, options: ScanOptions) -> FileReport {
         scan_file(path, options)
             .into_report()
             .expect("the file was a text candidate")
@@ -469,7 +469,7 @@ mod tests {
     #[test]
     fn a_reported_path_is_separated_by_forward_slashes() {
         assert_eq!(
-            report_path(StdPath::new(r"C:\config\cache.yaml")),
+            report_path(Path::new(r"C:\config\cache.yaml")),
             "C:/config/cache.yaml"
         );
     }
