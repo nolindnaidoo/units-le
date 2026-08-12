@@ -152,13 +152,26 @@ pixelactions, scrape-le and numbers-le:
   `Option::map/filter/is_some_and/is_none_or`, `?`.
 - No nesting deeper than two levels inside a function; extract a named
   helper instead.
+- **Immutable by default.** An iterator chain over an accumulator, and a
+  `let mut` only where the loop genuinely carries state — `lex`, the
+  scanner's cursor, the walk. Every format reader in `extract/` is a
+  chain, and the one that was not read differently from its neighbours
+  for no reason a reader could see.
+- **Borrow the slice, not the owner**: `&str`, `&[T]`, `&Path`. A
+  `&String`, `&Vec<T>` or `&PathBuf` parameter refuses callers that hold
+  the borrowed form and buys nothing.
 
 ## Hard rules
 
-- **No inline `#[allow(...)]`.** Fix the lint, or add a visible,
-  commented relaxation to `[lints.clippy]` in `Cargo.toml`. There are
-  none today: the exact-decimal design means no float lint ever fires,
-  which is worth keeping.
+- **No inline lint attribute of any kind** — not `#[allow]`, not
+  `#[expect]`, not a `cfg_attr` carrying one. Fix the lint, or add a
+  visible, commented relaxation to `[lints.clippy]` in `Cargo.toml`.
+  There are none today: the exact-decimal design means no float lint
+  ever fires, and the two test-only fixtures the sibling crates hold
+  quiet with `expect(dead_code)` are `#[cfg(test)]` here instead — an
+  item only the tests read is compiled only for the tests. The `policy`
+  CI job greps for `#[allow(`; the rule is wider than the grep, because
+  a relaxation nobody can see is a relaxation nobody revisits.
 - **Clippy pedantic, deny warnings.** `cargo clippy --all-targets --
   -D warnings` must pass.
 - **No `anyhow`, no `thiserror`.** Fallible functions return
@@ -168,9 +181,11 @@ pixelactions, scrape-le and numbers-le:
 - **No async runtime.** This tool reads files. There is nothing to
   await.
 - **`unsafe` is forbidden crate-wide** (`[lints.rust]`).
-- **Dependencies are a cost.** Four format parsers and a walker;
-  every one is justified by a comment in `Cargo.toml`. Justify any
-  addition; prefer the standard library.
+- **Dependencies are a cost.** Eight: serde and serde_json, five format
+  parsers, and the walker. Every one carries its justification as a
+  comment in `Cargo.toml` — a dependency whose reason is not written
+  down is one nobody can argue with later. Justify any addition; prefer
+  the standard library.
 - **No network, ever. Nothing writes. Nothing judges.**
 - **Strict parsing, never silent defaults** — for flags. A typo'd
   `--strick` that silently did nothing would report a clean audit that
@@ -227,13 +242,15 @@ CHANGELOG entry.
   |---|---|---|
   | `tests/hazards.rs` | inputs a real machine holds and a fixture directory cannot — a BOM, invalid UTF-8, a UTF-16 document, a FIFO, permission denied, a symlink loop, a path over 260 characters, several megabytes on one line, an unterminated CSV quote. The tree is built at runtime | none |
   | `tests/platform.rs` | report paths, `TZ` independence, case folding, reserved Windows names, CRLF against LF, early stdin. Three OSes | none |
-  | `tests/fuzz.rs` | hostile quantity text through the MCP server: never a panic, never a hang, always a well-formed report, and never an overflow | `UNITS_LE_FUZZ_SECONDS`, **release** |
+  | `tests/fuzz.rs` | hostile quantity text through the MCP server: never a panic, never a hang, always a well-formed report, and never an overflow | none — one second on a bare run, `UNITS_LE_FUZZ_SECONDS=60` in CI, **release** there |
   | `tests/budget.rs` | a wall-clock ceiling and linearity in three directions | `UNITS_LE_BUDGET`, **release** |
   | `tests/coverage_matrix.rs` | every extension, format reader, dimension and reason, through the built binary | none |
   | `tests/scenarios.rs` | documents larger than an editor opens | `UNITS_LE_SCENARIOS` |
 
   **A skipped case is never reported as a pass.** Every gate and every
-  platform skip says so by name on stderr.
+  platform skip says so by name on stderr. `fuzz` is the one variable
+  that is a budget rather than a gate: the net runs on every push and the
+  variable only says for how long.
 
   `fuzz` and `budget` run in **release** on purpose: `overflow-checks` is
   on in that profile, and an out-of-range magnitude must come back as
@@ -259,10 +276,10 @@ cargo test --locked
 ```
 
 Those three are what the `test` job runs on macOS, Windows and Linux.
-Five more jobs run beside it — `hazards` and `platform` on all three
-OSes, `fuzz`, `budget` and `coverage-matrix` on Linux — plus `msrv`,
-`policy` (which fails the build on an inline `#[allow]`), `coverage` and
-`audit`. Reproduce the gated ones locally:
+Six more jobs run beside it — `hazards` and `platform` on all three
+OSes, `fuzz`, `budget`, `coverage-matrix` and `scenarios` on Linux —
+plus `msrv`, `policy` (which fails the build on an inline `#[allow]`),
+`coverage` and `audit`. Reproduce the gated ones locally:
 
 ```bash
 UNITS_LE_FUZZ_SECONDS=60 cargo test --locked --release --test fuzz -- --nocapture
@@ -275,10 +292,36 @@ A change is not done because it compiles; it is done when it is tested,
 linted, documented where behavior changed (README / CHANGELOG / SPEC /
 this file), and honest — claims in docs must match the code.
 
+## Commits
+
+The repository root's convention applies unchanged (root `AGENTS.md`):
+a conventional prefix, an imperative subject under 72 characters, and a
+body carrying the *why* and the user-visible consequence rather than a
+list of files. One concern per commit; if a doc describes the thing you
+changed, it changes in the same commit. **No AI attribution of any
+kind** — not a trailer, not a footer, not a comment.
+
+Every commit uses the GitHub noreply address:
+
+```
+13629544+nolindnaidoo@users.noreply.github.com
+```
+
+A real address in commit metadata is public forever — GitHub's API
+serves it for any public repo, and scrapers harvest it. A repo-local
+`user.email` silently overrides the global one, so check
+`git config user.email` in a fresh clone before the first commit.
+
 ## Not built yet
 
 Written down so nobody assumes otherwise: this crate is **not published
-to crates.io**, there is no release workflow, and there is no VS Code
-extension in this repository. The sibling crates' `release-crate.yml` is
-the model when it is added, and the absent `parity` / `differential` CI
-jobs arrive with an extension or not at all.
+to crates.io**, and there is no VS Code extension in this repository.
+The absent `parity` and `differential` CI jobs arrive with an extension
+or not at all.
+
+`release-crate.yml` is in place and unused. It is **dispatch-only and
+never triggered by a tag** — a crates.io version can never be reused, so
+the irreversible step is one a person chooses on purpose — it refuses a
+version already on crates.io, and its preflight runs on a dry run too,
+because the point is to find the problem before the publish rather than
+halfway through one.

@@ -29,19 +29,33 @@ categories = ["command-line-utilities", "development-tools", "text-processing"]
 exclude = ["AGENTS.md", "CLAUDE.md", "rust-toolchain.toml"]
 
 [dependencies]
+# The report is the product on stdout, and `derive` keeps its shape in
+# the types themselves — one place, rather than a hand-written writer
+# that drifts from the structs it claims to print.
 serde = { version = "1", features = ["derive"] }
+# stdout is JSON Lines and the agent surface is JSON-RPC. No
+# `raw_value`, unlike numbers-le: every quantity here is reported as a
+# string and every other number in a report is a small integer, so there
+# is no numeric token whose spelling this crate has to control.
 serde_json = "1"
-# The format parsers. Same four choices as the numbers-le crate, for the
-# same reasons — a document that parses there parses here.
+# The five format parsers. The same choices as the numbers-le crate, for
+# the same reason — a document that parses there parses here.
+#
+# JSON, with every loosening off, so a file this reads is a file
+# `JSON.parse` reads.
 jsonc-parser = "0.33"
 # `preserve_order`, without which a TOML table iterates alphabetically
 # and extraction stops following the document, which is the order this
 # tool's whole output contract is.
 toml = { version = "1", features = ["preserve_order"] }
+# INI, read with escape processing off: `\U` in a value is a Windows
+# path, not an escape.
 rust-ini = "0.21"
 # YAML 1.2 with the core schema, which is what `30s` being a *string*
 # rather than a typed scalar depends on.
 saphyr = "0.0.11"
+# CSV, read with no header row of its own and a flexible record length —
+# a ragged row is data rather than a failure.
 csv = "1"
 # The walker. `ignore` is ripgrep's, so "what this tool walks" and "what
 # ripgrep walks" are the same answer — which is the answer a person

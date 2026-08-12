@@ -52,9 +52,12 @@ a spec must match the code.
   No case folding, ever.
 - **A bare number is not a finding.** That is numbers-le's question, and
   the boundary is what keeps the two tools distinct.
-- **Never add an inline `#[allow(...)]`.** The `policy` CI job greps for
-  it and fails the build. Fix the lint, or add a commented relaxation to
-  `[lints.clippy]` in `crate/Cargo.toml`. There are none today.
+- **Never add an inline lint attribute** — not `#[allow]`, not
+  `#[expect]`, not a `cfg_attr` carrying one. The `policy` CI job greps
+  for `#[allow(` and fails the build, and the rule is wider than the
+  grep. Fix the lint, add a commented relaxation to `[lints.clippy]` in
+  `crate/Cargo.toml`, or make the item `#[cfg(test)]` where only the
+  tests read it. There are none today.
 - **Coverage is a floor, enforced per module** on `crate/src/extract/`
   at 90%, and never lowered to make a build pass. Per module rather than
   on the total, because a total hides one module sliding while the
@@ -64,10 +67,13 @@ a spec must match the code.
   through a green suite somewhere in this family; a new case there
   carries the defect it would have caught, in a comment, or it is
   decoration.
-- **`.github/workflows/ci.yml` and the agent-rules files are
-  byte-identical across the family.** A change to one needs copying to
-  the others. `ci-crate.yml` and `release-crate.yml` are this
-  repository's own — the fleet check does not see them.
+- **Nothing here is byte-identical with the rest of the family, and
+  that is deliberate.** The siblings' shared `ci.yml`, dotfiles and
+  agent-rules files describe a repository with a VS Code extension at
+  its root. This one is crate-only, so every workflow (`ci-crate.yml`,
+  `release-crate.yml`, a CodeQL job scanning `rust`), every dotfile and
+  every agent-rules file is this repository's own. Copying one across
+  from a sibling re-imposes a shape this repo does not have.
 - **Run the binary, not only the tests.** The text scan's
   false-positive class was found by running it over a real repository,
   and it is now measured rather than assumed: see
@@ -81,6 +87,9 @@ trailer, not a footer, not a comment. Commits are the author's alone.
 
 ## Release
 
-The crate publishes from `crate/` by tag. It is **not on crates.io
-yet**; `crate/CHANGELOG.md` and `crate/Cargo.toml` are the version's
-source of truth when it is.
+The crate publishes from `crate/` by **dispatching
+`release-crate.yml`**, never by pushing a tag: a crates.io version can
+never be reused, so the irreversible step is one a person chooses on
+purpose, and the workflow refuses a version the registry already
+carries. It is **not on crates.io yet**; `crate/CHANGELOG.md` and
+`crate/Cargo.toml` are the version's source of truth when it is.
