@@ -49,6 +49,14 @@ SPEC.md and this crate's own stated invariants.
   string or a negative is the same one; `fixtures/mcp-extract-units.json`
   pins it.
 
+- **`meta.count` counts quantities in both MCP tools.** It was the
+  number of report lines in `units_le_scan` and the number of quantities
+  in `extract_units`, so a caller writing one reader for the shared
+  envelope — which is the only reason to have a shared envelope — read a
+  file count as a finding count and got a smaller number that looked
+  entirely plausible. The file count is `data.reports.len()`, which was
+  always there.
+
 ## [0.1.0] - 2026-08-12
 
 First release. Core functionality: the grammar, six formats plus a text

@@ -244,7 +244,6 @@ fn scan_tool(arguments: &Value) -> Result<Value, String> {
         ));
     }
 
-    let count = reports.len();
     Ok(envelope(
         "units_le_scan",
         &json!({
@@ -253,7 +252,9 @@ fn scan_tool(arguments: &Value) -> Result<Value, String> {
             "refused": refused,
             "binaryFiles": binary,
         }),
-        count,
+        // The findings, not the files. `meta.count` means one thing
+        // across both tools, and the file count is `reports.len()`.
+        quantities,
         &diagnostics,
         false,
     ))
@@ -304,6 +305,12 @@ fn requested_paths(arguments: &Value) -> Result<Vec<PathBuf>, String> {
 /// to produce one — conflating the two would have a model report a
 /// broken tool when what it actually learned is that the config is
 /// ambiguous.
+///
+/// **`count` is the number of quantities the answer carries**, in every
+/// tool. One envelope is worth having only if one reader can read it,
+/// and a field that counted findings in one tool and files in another
+/// gave that reader a smaller number that looked entirely plausible.
+/// The file count is `data.reports.len()`, where a tool has files.
 pub(crate) fn envelope(
     tool: &str,
     data: &Value,
@@ -544,6 +551,46 @@ mod tests {
                 serde_json::to_string(&call("units_le_scan", &arguments)).expect("serializes");
             assert!(!rendered.contains("--"), "{rendered}");
         }
+    }
+
+    /// **`meta.count` counts the same thing in both tools.** It used to
+    /// be quantities in one and report lines in the other, so a caller
+    /// writing one reader for the envelope — which is the whole point of
+    /// there being one envelope — read a file count as a finding count
+    /// and got a smaller number that looked plausible.
+    #[test]
+    fn meta_count_is_the_findings_in_the_answer_for_both_tools() {
+        let tree = TempTree::new("mcp-count");
+        tree.write("a.yaml", "ttl: 30s\nmem: 512MiB\n");
+        tree.write("b.env", "TTL=1h\n");
+
+        let scanned = call(
+            "units_le_scan",
+            &json!({ "path": tree.path().to_string_lossy() }),
+        );
+        let envelope = &scanned["result"]["structuredContent"];
+        assert_eq!(
+            envelope["data"]["reports"]
+                .as_array()
+                .expect("reports")
+                .len(),
+            2
+        );
+        assert_eq!(
+            envelope["meta"]["count"], envelope["data"]["quantities"],
+            "the scan tool counts something other than its findings"
+        );
+        assert_eq!(envelope["meta"]["count"], 3);
+
+        let content = call("extract_units", &json!({ "content": "a: 30s\nb: 1MiB" }));
+        let envelope = &content["result"]["structuredContent"];
+        assert_eq!(
+            envelope["meta"]["count"],
+            envelope["data"]["quantities"]
+                .as_array()
+                .expect("rows")
+                .len()
+        );
     }
 
     /// Every tool returns the same envelope, so a caller writes one

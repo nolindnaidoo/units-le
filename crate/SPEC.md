@@ -312,7 +312,11 @@ what it just said it could not decide.
 
 `units-le mcp` speaks the Model Context Protocol on stdio. Both tools
 return the same envelope — `{ ok, data, diagnostics, meta }` — where
-`ok` means the check ran, never that the answer was yes.
+`ok` means the check ran, never that the answer was yes, and
+`meta.count` is the number of quantities the answer carries. One
+envelope is worth having only if one reader can read it, so `count`
+counts the same thing in every tool; where a tool reads files, the file
+count is `data.reports.len()`.
 
 - **`extract_units`** — content in, quantities out. Touches no
   filesystem. `fixtures/mcp-extract-units.json` pins its answers.
