@@ -1,0 +1,8 @@
+timeout = "30s"
+memory = "1GiB"
+headroom = "15%"
+plain = 30
+
+[cache]
+ttl = "1h30m"
+size = "256KB"

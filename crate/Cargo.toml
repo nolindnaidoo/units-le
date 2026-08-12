@@ -1,0 +1,76 @@
+[package]
+name = "units-le"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+license = "MIT"
+readme = "README.md"
+description = "Extract every quantity in a codebase with its unit, normalised, and refuse the ambiguous ones by name"
+authors = ["Nolin D Naidoo"]
+homepage = "https://letools.dev/tools/units-le"
+repository = "https://github.com/nolindnaidoo/units-le"
+keywords = ["units", "extract", "audit", "duration", "cli"]
+categories = ["command-line-utilities", "development-tools", "text-processing"]
+# What a consumer gets, and why.
+#
+# Ships: src/, Cargo.toml, Cargo.lock, LICENSE, README.md — needed to
+# build the binary. SPEC.md and CHANGELOG.md — the behavioural contract
+# someone scripting against the exit codes and the refusal reasons
+# needs. tests/ and fixtures/ — not needed to *build*, but needed to
+# *verify*: `cargo test` on the unpacked tarball runs the whole corpus,
+# so the refusal claims in the README are checkable by whoever installed
+# it rather than taken on trust.
+#
+# Excluded: AGENTS.md and CLAUDE.md are how this repo is worked on, not
+# how the tool is used. rust-toolchain.toml is a convenience for
+# contributors to *this* checkout; shipped, it would pin the toolchain
+# of anyone who unpacks or vendors the crate, which is not this crate's
+# business.
+exclude = ["AGENTS.md", "CLAUDE.md", "rust-toolchain.toml"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# The format parsers. Same four choices as the numbers-le crate, for the
+# same reasons — a document that parses there parses here.
+jsonc-parser = "0.33"
+# `preserve_order`, without which a TOML table iterates alphabetically
+# and extraction stops following the document, which is the order this
+# tool's whole output contract is.
+toml = { version = "1", features = ["preserve_order"] }
+rust-ini = "0.21"
+# YAML 1.2 with the core schema, which is what `30s` being a *string*
+# rather than a typed scalar depends on.
+saphyr = "0.0.11"
+csv = "1"
+# The walker. `ignore` is ripgrep's, so "what this tool walks" and "what
+# ripgrep walks" are the same answer — which is the answer a person
+# auditing a repository already has in their head.
+ignore = "0.4"
+
+# No `byte-unit`, `humantime`, `duration-str` or `uom`. Each of them
+# resolves the cases this tool exists to refuse — `1.5KB` becomes 1500,
+# a bare `m` becomes minutes or millis depending on the crate — and a
+# dependency that guesses is a dependency that decides the audit. The
+# grammar in `extract/grammar.rs` is pinned here, in one file, with the
+# refusals as first-class results. No regex engine either: the grammar
+# is a hand-written lexer, so there is nothing a pattern would express
+# more clearly.
+
+[profile.release]
+strip = true
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+# Not a debug aid. Every base value here is an integer multiplication —
+# a `PiB` count against 2^50 — and a release build that wrapped would
+# report a confident, wrong number of bytes. The arithmetic is checked
+# and refuses on overflow; this is the backstop that makes a missed
+# check a crash rather than a lie.
+overflow-checks = true
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }

@@ -1,0 +1,246 @@
+[
+	{
+		"name": "a csv document, every cell a candidate",
+		"file": "units.csv",
+		"arguments": {
+			"format": "csv"
+		},
+		"expected": {
+			"ok": true,
+			"data": {
+				"quantities": [
+					{
+						"value": "30s",
+						"dimension": "duration",
+						"baseUnit": "milliseconds",
+						"base": "30000",
+						"line": 2,
+						"column": 3
+					},
+					{
+						"value": "512MiB",
+						"dimension": "bytes",
+						"baseUnit": "bytes",
+						"base": "536870912",
+						"line": 2,
+						"column": 7
+					},
+					{
+						"value": "1h",
+						"dimension": "duration",
+						"baseUnit": "milliseconds",
+						"base": "3600000",
+						"line": 3,
+						"column": 3
+					},
+					{
+						"value": "1GiB",
+						"dimension": "bytes",
+						"baseUnit": "bytes",
+						"base": "1073741824",
+						"line": 3,
+						"column": 6
+					}
+				],
+				"fileType": "csv",
+				"refused": 0
+			},
+			"diagnostics": [],
+			"meta": {
+				"tool": "extract_units",
+				"count": 4,
+				"truncated": false
+			}
+		}
+	},
+	{
+		"name": "prose, with the format inferred from the filename",
+		"file": "units.txt",
+		"arguments": {
+			"filename": "units.txt"
+		},
+		"expected": {
+			"ok": true,
+			"data": {
+				"quantities": [
+					{
+						"value": "512MiB",
+						"dimension": "bytes",
+						"baseUnit": "bytes",
+						"base": "536870912",
+						"line": 1,
+						"column": 17
+					},
+					{
+						"value": "1h30m",
+						"dimension": "duration",
+						"baseUnit": "milliseconds",
+						"base": "5400000",
+						"line": 1,
+						"column": 42
+					},
+					{
+						"value": "44.1kHz",
+						"dimension": "frequency",
+						"baseUnit": "hertz",
+						"base": "44100",
+						"line": 2,
+						"column": 21
+					},
+					{
+						"value": "250ms",
+						"dimension": "duration",
+						"baseUnit": "milliseconds",
+						"base": "250",
+						"line": 2,
+						"column": 50
+					}
+				],
+				"fileType": "unknown",
+				"refused": 0
+			},
+			"diagnostics": [],
+			"meta": {
+				"tool": "extract_units",
+				"count": 4,
+				"truncated": false
+			}
+		}
+	},
+	{
+		"name": "a bare number is not a finding",
+		"content": "timeout: 30",
+		"arguments": {
+			"format": "yaml"
+		},
+		"expected": {
+			"ok": true,
+			"data": {
+				"quantities": [],
+				"fileType": "yaml",
+				"refused": 0
+			},
+			"diagnostics": [],
+			"meta": {
+				"tool": "extract_units",
+				"count": 0,
+				"truncated": false
+			}
+		}
+	},
+	{
+		"name": "an ambiguous unit comes back with a reason a person can act on",
+		"content": "cpu: 500m",
+		"arguments": {
+			"format": "yaml"
+		},
+		"expected": {
+			"ok": true,
+			"data": {
+				"quantities": [
+					{
+						"value": "500m",
+						"dimension": null,
+						"baseUnit": null,
+						"base": null,
+						"reason": "ambiguous_unit",
+						"detail": "`m` is minutes in one config format, milliseconds in another and millicores in Kubernetes. Write `min`, `ms`, or spell out the core count.",
+						"key": "cpu",
+						"line": 1,
+						"column": 6
+					}
+				],
+				"fileType": "yaml",
+				"refused": 1
+			},
+			"diagnostics": [],
+			"meta": {
+				"tool": "extract_units",
+				"count": 1,
+				"truncated": false
+			}
+		}
+	},
+	{
+		"name": "an SI byte multiple keeps its base value and carries the hazard",
+		"content": "memory: 1MB",
+		"arguments": {
+			"format": "yaml"
+		},
+		"expected": {
+			"ok": true,
+			"data": {
+				"quantities": [
+					{
+						"value": "1MB",
+						"dimension": "bytes",
+						"baseUnit": "bytes",
+						"base": "1000000",
+						"reason": "si_iec_hazard",
+						"detail": "reported as SI — 10^6 bytes to the megabyte — because that is what the symbol says. The writer may have meant 2^20; the IEC spelling (KiB, MiB, GiB) is the one that cannot be read two ways.",
+						"key": "memory",
+						"line": 1,
+						"column": 9
+					}
+				],
+				"fileType": "yaml",
+				"refused": 0
+			},
+			"diagnostics": [],
+			"meta": {
+				"tool": "extract_units",
+				"count": 1,
+				"truncated": false
+			}
+		}
+	},
+	{
+		"name": "a dimension filter narrows the answer",
+		"content": "a: 30s\nb: 1MiB",
+		"arguments": {
+			"format": "yaml",
+			"dimension": "bytes"
+		},
+		"expected": {
+			"ok": true,
+			"data": {
+				"quantities": [
+					{
+						"value": "1MiB",
+						"dimension": "bytes",
+						"baseUnit": "bytes",
+						"base": "1048576",
+						"key": "b",
+						"line": 2,
+						"column": 4
+					}
+				],
+				"fileType": "yaml",
+				"refused": 0
+			},
+			"diagnostics": [],
+			"meta": {
+				"tool": "extract_units",
+				"count": 1,
+				"truncated": false
+			}
+		}
+	},
+	{
+		"name": "a dimension nobody recognises is refused rather than ignored",
+		"content": "a: 30s",
+		"arguments": {
+			"format": "yaml",
+			"dimension": "length"
+		},
+		"expectedError": "length is not a dimension. It is one of duration, bytes, percent, frequency."
+	},
+	{
+		"name": "a fractional cap is refused",
+		"content": "a: 30s",
+		"arguments": {
+			"maxResults": 1.5
+		},
+		"expectedError": "maxResults must be a positive integer"
+	}
+]

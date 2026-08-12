@@ -1,0 +1,404 @@
+{
+	"documents": [
+		{
+			"name": "units.json as json",
+			"file": "units.json",
+			"fileType": "json",
+			"expected": [
+				{
+					"value": "30s",
+					"dimension": "duration",
+					"base": "30000",
+					"reason": null,
+					"key": "timeout"
+				},
+				{
+					"value": "300ms",
+					"dimension": "duration",
+					"base": "300",
+					"reason": null,
+					"key": "retry"
+				},
+				{
+					"value": "512MiB",
+					"dimension": "bytes",
+					"base": "536870912",
+					"reason": null,
+					"key": "memory"
+				},
+				{
+					"value": "2GB",
+					"dimension": "bytes",
+					"base": "2000000000",
+					"reason": "si_iec_hazard",
+					"key": "disk"
+				},
+				{
+					"value": "44.1kHz",
+					"dimension": "frequency",
+					"base": "44100",
+					"reason": null,
+					"key": "sample"
+				},
+				{
+					"value": "15%",
+					"dimension": "percent",
+					"base": "0.15",
+					"reason": null,
+					"key": "headroom"
+				},
+				{
+					"value": "1h30m",
+					"dimension": "duration",
+					"base": "5400000",
+					"reason": null,
+					"key": "cache.ttl"
+				},
+				{
+					"value": "PT1H30M",
+					"dimension": "duration",
+					"base": "5400000",
+					"reason": null,
+					"key": "cache.window"
+				}
+			],
+			"errors": []
+		},
+		{
+			"name": "units.yaml as yaml",
+			"file": "units.yaml",
+			"fileType": "yaml",
+			"expected": [
+				{
+					"value": "30s",
+					"dimension": "duration",
+					"base": "30000",
+					"reason": null,
+					"key": "timeout"
+				},
+				{
+					"value": "500ms",
+					"dimension": "duration",
+					"base": "500",
+					"reason": null,
+					"key": "poll"
+				},
+				{
+					"value": "512Mi",
+					"dimension": "bytes",
+					"base": "536870912",
+					"reason": null,
+					"key": "memory"
+				},
+				{
+					"value": "15%",
+					"dimension": "percent",
+					"base": "0.15",
+					"reason": null,
+					"key": "headroom"
+				},
+				{
+					"value": "48kHz",
+					"dimension": "frequency",
+					"base": "48000",
+					"reason": null,
+					"key": "sample"
+				},
+				{
+					"value": "1h",
+					"dimension": "duration",
+					"base": "3600000",
+					"reason": null,
+					"key": "limits[0]"
+				},
+				{
+					"value": "7d",
+					"dimension": "duration",
+					"base": "604800000",
+					"reason": null,
+					"key": "limits[1]"
+				}
+			],
+			"errors": []
+		},
+		{
+			"name": "units.toml as toml",
+			"file": "units.toml",
+			"fileType": "toml",
+			"expected": [
+				{
+					"value": "30s",
+					"dimension": "duration",
+					"base": "30000",
+					"reason": null,
+					"key": "timeout"
+				},
+				{
+					"value": "1GiB",
+					"dimension": "bytes",
+					"base": "1073741824",
+					"reason": null,
+					"key": "memory"
+				},
+				{
+					"value": "15%",
+					"dimension": "percent",
+					"base": "0.15",
+					"reason": null,
+					"key": "headroom"
+				},
+				{
+					"value": "1h30m",
+					"dimension": "duration",
+					"base": "5400000",
+					"reason": null,
+					"key": "cache.ttl"
+				},
+				{
+					"value": "256KB",
+					"dimension": "bytes",
+					"base": "256000",
+					"reason": "si_iec_hazard",
+					"key": "cache.size"
+				}
+			],
+			"errors": []
+		},
+		{
+			"name": "units.ini as ini",
+			"file": "units.ini",
+			"fileType": "ini",
+			"expected": [
+				{
+					"value": "30s",
+					"dimension": "duration",
+					"base": "30000",
+					"reason": null,
+					"key": "server.timeout"
+				},
+				{
+					"value": "512MiB",
+					"dimension": "bytes",
+					"base": "536870912",
+					"reason": null,
+					"key": "server.memory"
+				},
+				{
+					"value": "15%",
+					"dimension": "percent",
+					"base": "0.15",
+					"reason": null,
+					"key": "server.headroom"
+				},
+				{
+					"value": "1h30m",
+					"dimension": "duration",
+					"base": "5400000",
+					"reason": null,
+					"key": "cache.ttl"
+				}
+			],
+			"errors": []
+		},
+		{
+			"name": "units.env as env",
+			"file": "units.env",
+			"fileType": "env",
+			"expected": [
+				{
+					"value": "30s",
+					"dimension": "duration",
+					"base": "30000",
+					"reason": null,
+					"key": "TIMEOUT"
+				},
+				{
+					"value": "1GiB",
+					"dimension": "bytes",
+					"base": "1073741824",
+					"reason": null,
+					"key": "MEMORY"
+				},
+				{
+					"value": "48kHz",
+					"dimension": "frequency",
+					"base": "48000",
+					"reason": null,
+					"key": "SAMPLE_RATE"
+				},
+				{
+					"value": "15%",
+					"dimension": "percent",
+					"base": "0.15",
+					"reason": null,
+					"key": "HEADROOM"
+				}
+			],
+			"errors": []
+		},
+		{
+			"name": "units.csv as csv",
+			"file": "units.csv",
+			"fileType": "csv",
+			"expected": [
+				{
+					"value": "30s",
+					"dimension": "duration",
+					"base": "30000",
+					"reason": null,
+					"key": null
+				},
+				{
+					"value": "512MiB",
+					"dimension": "bytes",
+					"base": "536870912",
+					"reason": null,
+					"key": null
+				},
+				{
+					"value": "1h",
+					"dimension": "duration",
+					"base": "3600000",
+					"reason": null,
+					"key": null
+				},
+				{
+					"value": "1GiB",
+					"dimension": "bytes",
+					"base": "1073741824",
+					"reason": null,
+					"key": null
+				}
+			],
+			"errors": []
+		},
+		{
+			"name": "units.txt as a text scan",
+			"file": "units.txt",
+			"fileType": "unknown",
+			"expected": [
+				{
+					"value": "512MiB",
+					"dimension": "bytes",
+					"base": "536870912",
+					"reason": null,
+					"key": null
+				},
+				{
+					"value": "1h30m",
+					"dimension": "duration",
+					"base": "5400000",
+					"reason": null,
+					"key": null
+				},
+				{
+					"value": "44.1kHz",
+					"dimension": "frequency",
+					"base": "44100",
+					"reason": null,
+					"key": null
+				},
+				{
+					"value": "250ms",
+					"dimension": "duration",
+					"base": "250",
+					"reason": null,
+					"key": null
+				}
+			],
+			"errors": []
+		},
+		{
+			"name": "the ambiguity set: every case is refused by name",
+			"file": "ambiguous.yaml",
+			"fileType": "yaml",
+			"expected": [
+				{
+					"value": "500m",
+					"dimension": null,
+					"base": null,
+					"reason": "ambiguous_unit",
+					"key": "cpu"
+				},
+				{
+					"value": "10M",
+					"dimension": null,
+					"base": null,
+					"reason": "ambiguous_unit",
+					"key": "size"
+				},
+				{
+					"value": "30m",
+					"dimension": null,
+					"base": null,
+					"reason": "ambiguous_unit",
+					"key": "window"
+				},
+				{
+					"value": "5k",
+					"dimension": null,
+					"base": null,
+					"reason": "ambiguous_unit",
+					"key": "quota"
+				},
+				{
+					"value": "1.5KB",
+					"dimension": "bytes",
+					"base": null,
+					"reason": "fractional_bytes",
+					"key": "disk"
+				},
+				{
+					"value": "1,5s",
+					"dimension": "duration",
+					"base": null,
+					"reason": "locale_separator",
+					"key": "latency"
+				},
+				{
+					"value": "1.000s",
+					"dimension": "duration",
+					"base": null,
+					"reason": "locale_separator",
+					"key": "budget"
+				},
+				{
+					"value": "1h + 30m",
+					"dimension": null,
+					"base": null,
+					"reason": "compound_arithmetic",
+					"key": "total"
+				},
+				{
+					"value": "1MB",
+					"dimension": "bytes",
+					"base": "1000000",
+					"reason": "si_iec_hazard",
+					"key": "memory"
+				},
+				{
+					"value": "1y",
+					"dimension": null,
+					"base": null,
+					"reason": "ambiguous_unit",
+					"key": "retention"
+				},
+				{
+					"value": "100Mb",
+					"dimension": null,
+					"base": null,
+					"reason": "ambiguous_unit",
+					"key": "bandwidth"
+				},
+				{
+					"value": "99999999999999999999999999999999999PiB",
+					"dimension": "bytes",
+					"base": null,
+					"reason": "out_of_range",
+					"key": "overflow"
+				}
+			],
+			"errors": []
+		}
+	]
+}

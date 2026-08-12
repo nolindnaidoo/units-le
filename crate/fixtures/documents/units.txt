@@ -1,0 +1,3 @@
+The cache holds 512MiB and expires after 1h30m.
+The sampler runs at 44.1kHz; the queue drains in 250ms.
+Released v1.2.3 with no quantities on this line.

@@ -1,0 +1,11 @@
+{
+  "timeout": "30s",
+  "retry": "300ms",
+  "memory": "512MiB",
+  "disk": "2GB",
+  "sample": "44.1kHz",
+  "headroom": "15%",
+  "plain": 30,
+  "name": "standard",
+  "cache": { "ttl": "1h30m", "window": "PT1H30M" }
+}

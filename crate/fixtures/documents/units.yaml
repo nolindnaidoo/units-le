@@ -1,0 +1,10 @@
+timeout: 30s
+poll: 500ms
+memory: 512Mi
+headroom: 15%
+sample: 48kHz
+plain: 30
+name: standard
+limits:
+  - 1h
+  - 7d
