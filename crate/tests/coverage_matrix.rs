@@ -185,6 +185,28 @@ fn pinned(field: &str) -> BTreeSet<String> {
 /// never read rather than that its content was wrong.
 const READABLE: &str = "# ttl 30s\n";
 
+/// **The list above is a hand copy, and a hand copy drifts.** The alias
+/// table is `pub(crate)` inside a binary crate, so an integration test
+/// cannot walk it; the declared length is what closes the gap. Add an
+/// alias and this fails until a file for it is added here — which is the
+/// only thing that proves the new extension is ever opened.
+#[test]
+fn the_alias_list_here_still_matches_the_table_it_copies() {
+    const FORMAT_RS: &str = include_str!("../src/extract/format.rs");
+
+    assert!(
+        FORMAT_RS.contains(&format!("const ALIASES: [(&str, &str); {}]", ALIASES.len())),
+        "extract/format.rs maps a different number of aliases than the {} named here",
+        ALIASES.len()
+    );
+    for alias in ALIASES {
+        assert!(
+            FORMAT_RS.contains(&format!("(\"{alias}\", ")),
+            "{alias} is named here and extract/format.rs does not map it"
+        );
+    }
+}
+
 #[test]
 fn every_extension_the_alias_table_names_produces_a_report_line() {
     let tree = Tree::new("aliases");
