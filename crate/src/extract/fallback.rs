@@ -313,25 +313,30 @@ mod tests {
     /// the scan noisier. The floor fails a change that makes it quieter
     /// — which would be welcome, and is a behaviour change that belongs
     /// in SPEC.md and the CHANGELOG rather than in a silently greener
-    /// test.
+    /// test. The third assertion is the one that keeps the *documents*
+    /// honest: the rate is quoted in prose in two of them, and a number
+    /// in prose is the half of a measurement that rots.
     #[test]
     fn the_false_finding_rate_over_opaque_content_is_measured_rather_than_imagined() {
+        const SPEC: &str = include_str!("../../SPEC.md");
+        const README: &str = include_str!("../../README.md");
+
         let document = crate::extract::corpus::document("opaque.txt");
         let opaque = document
             .lines()
             .filter(|line| !line.trim().is_empty() && !line.trim_start().starts_with('#'))
             .count();
         let findings = scan(document);
-        // Tenths of a percent, in integers. A crate whose whole contract
-        // is that a base value never goes through an `f64` does not
-        // reach for one to print its own measurement either.
-        let tenths = findings.len() * 1000 / opaque;
+        // Tenths of a percent, in integers, rounded rather than
+        // truncated: a crate whose whole contract is that a base value
+        // never goes through an `f64` does not reach for one to print
+        // its own measurement either, and 5 in 280 is 1.8% to the tenth.
+        let tenths = (findings.len() * 1000 + opaque / 2) / opaque;
+        let rate = format!("{}.{}%", tenths / 10, tenths % 10);
 
         eprintln!(
-            "opaque: {} false findings over {opaque} opaque tokens \u{2014} {}.{}%",
-            findings.len(),
-            tenths / 10,
-            tenths % 10
+            "opaque: {} false findings over {opaque} opaque tokens \u{2014} {rate}",
+            findings.len()
         );
         for (quantity, _) in &findings {
             eprintln!("opaque:   {}", quantity.value);
@@ -339,17 +344,22 @@ mod tests {
 
         assert!(
             findings.len() <= opaque / 20,
-            "the text scan reports {} findings over {opaque} opaque tokens ({}.{}%), \
+            "the text scan reports {} findings over {opaque} opaque tokens ({rate}), \
              above the 5% this crate documents",
-            findings.len(),
-            tenths / 10,
-            tenths % 10
+            findings.len()
         );
         assert!(
             !findings.is_empty(),
             "the opaque-blob class is documented in SPEC.md and the README as a known \
              limitation; if it has been fixed, say so there rather than here"
         );
+        for (name, document) in [("SPEC.md", SPEC), ("README.md", README)] {
+            assert!(
+                document.contains(&rate),
+                "the measured rate is {rate} and {name} quotes another one — the number \
+                 there is a claim about this measurement, not a note beside it"
+            );
+        }
     }
 
     #[test]
