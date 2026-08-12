@@ -92,6 +92,9 @@ pub(crate) fn run(arguments: &Value) -> Result<Value, String> {
         .iter()
         .filter(|found| found.quantity.is_refused())
         .count();
+    // A quantity is plain data — strings, integers and unit-variant
+    // enums, every map keyed by a string and no float anywhere — so
+    // there is no input on which `to_value` can fail.
     let mut quantities: Vec<Value> = found
         .into_iter()
         .map(|found| serde_json::to_value(found).expect("a quantity serializes"))
@@ -115,13 +118,15 @@ pub(crate) fn run(arguments: &Value) -> Result<Value, String> {
 
 /// Clamp quietly, reject loudly.
 fn read_max_results(arguments: &Value) -> Result<usize, String> {
+    const INVALID: &str = "maxResults must be a positive integer";
+
     let Some(raw) = arguments.get("maxResults") else {
         return Ok(DEFAULT_MAX_RESULTS);
     };
-    let invalid = "maxResults must be a positive integer".to_string();
-    let value = raw.as_u64().ok_or(invalid.clone())?;
+    // `as_u64` refuses a string, a fraction and a negative in one test.
+    let value = raw.as_u64().ok_or_else(|| INVALID.to_string())?;
     if value < 1 {
-        return Err(invalid);
+        return Err(INVALID.to_string());
     }
     Ok(usize::try_from(value)
         .unwrap_or(MAX_MAX_RESULTS)
