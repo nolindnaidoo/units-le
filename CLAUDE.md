@@ -39,14 +39,19 @@ All three, exactly as CI runs them. The gated suites are extra:
   overflow is `out_of_range`, not a wrap.
 - **Case is part of a unit symbol** (`MB` is bytes, `Mb` is refused), and **a
   bare number is not a finding** — that is numbers-le's question.
-- **No inline `#[allow(...)]`.** The `policy` CI job greps for it. Fix the lint
-  or relax it visibly in `[lints.clippy]`.
+- **No inline lint attribute** — `#[allow]`, `#[expect]` or a `cfg_attr`
+  carrying one. The `policy` CI job greps for `#[allow(`, and the rule is wider
+  than the grep. Fix the lint, relax it visibly in `[lints.clippy]`, or make
+  the item `#[cfg(test)]` if only the tests read it.
 - **Every claim must be provable.** No metric, format or behaviour goes in a
   README, a help text or SPEC.md unless the code backs it — and the numbers in
   the README's Testing section come from a real `cargo llvm-cov` run.
-- **This repo shares config and workflows with the LE family.** `ci.yml`, the
-  agent-rules files and the dotfiles are byte-identical across it;
-  `ci-crate.yml` and `release-crate.yml` are this repo's own.
+- **Nothing here is byte-identical with the rest of the family.** The siblings'
+  `ci.yml`, dotfiles and agent-rules files describe a repository with a VS Code
+  extension at its root; this one is crate-only, so its workflows
+  (`ci-crate.yml`, `release-crate.yml`, a CodeQL job scanning `rust`), its
+  dotfiles and its agent-rules files are its own. Copying one over from a
+  sibling re-imposes a shape this repo does not have.
 - **Coverage thresholds are a floor**, per module on `extract/`, never lowered
   to make CI pass.
 - **Run the binary, not only the tests.** The text scan's false-positive class

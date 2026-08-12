@@ -10,8 +10,10 @@ on any conflict.
   `cargo fmt --all --check`,
   `cargo clippy --all-targets -- -D warnings`,
   `cargo test --locked`.
-- Never add inline `#[allow(...)]`. Fix the lint, or add a commented
-  relaxation to `[lints.clippy]` in `Cargo.toml`. There are none today.
+- Never add an inline lint attribute — `#[allow]`, `#[expect]`, or a
+  `cfg_attr` carrying one. Fix the lint, add a commented relaxation to
+  `[lints.clippy]` in `Cargo.toml`, or make the item `#[cfg(test)]` if
+  only the tests read it. There are none today.
 - **A refusal is a finding, and this is the whole product.** Do not let
   a test pass by normalising something that should be refused, and do
   not "fix" a refusal by resolving it. If a case should change, change

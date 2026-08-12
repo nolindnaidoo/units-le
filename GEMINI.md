@@ -25,8 +25,9 @@ lives in one place so it cannot drift between tools.
   wrap.
 - `extract/` is pure and touches no filesystem; only `walk.rs` and `scan.rs`
   may. A `std::fs` call in `extract/` is a bug.
-- **No inline `#[allow(...)]`.** Fix the lint, or relax it visibly in
-  `[lints.clippy]` in `crate/Cargo.toml`.
+- **No inline lint attribute** — `#[allow]`, `#[expect]`, or a `cfg_attr`
+  carrying one. Fix the lint, relax it visibly in `[lints.clippy]` in
+  `crate/Cargo.toml`, or make the item `#[cfg(test)]` if only tests read it.
 - No `anyhow`, no `thiserror`, no `clap`, no async runtime, no regex engine.
   Fallible functions return `Result<T, String>`.
 - **Never report success you did not achieve**, and never a resolution you did

@@ -17,9 +17,11 @@ lives in one place so it cannot drift between tools.
 - **`Result<T, String>` for fallible functions.** No `anyhow`, no `thiserror`
   in the library; one error enum only where a domain genuinely needs it.
 - `#![forbid(unsafe_code)]`, crate-wide, no platform exemption.
-- **No inline `#[allow(...)]` anywhere.** CI greps for it. A lint you mean to
-  relax goes in `[lints.clippy]` in `crate/Cargo.toml` with a comment saying
-  why.
+- **No inline lint attribute anywhere** — `#[allow]`, `#[expect]`, or a
+  `cfg_attr` carrying one. CI greps for `#[allow(` and the rule is wider than
+  the grep. A lint you mean to relax goes in `[lints.clippy]` in
+  `crate/Cargo.toml` with a comment saying why; an item only the tests read is
+  `#[cfg(test)]`.
 - Flat modules. No layers, registries, managers or services, and no trait with
   a single implementation.
 - **Refuse rather than guess.** Ambiguous input returns a named refusal reason,
