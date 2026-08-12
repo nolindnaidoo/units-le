@@ -124,8 +124,29 @@ fn is_binary(bytes: &[u8]) -> bool {
         .any(|byte| *byte == b'\0')
 }
 
+/// The path as the report spells it: **separated by `/` on every
+/// platform**.
+///
+/// A report is diffed against one produced on another machine and read
+/// by someone who does not have the tree. envsync-le shipped `\` on
+/// Windows for a release, which made every path in a Windows report
+/// differ from the same path in a Linux one for no reason a reader could
+/// see.
+#[cfg(windows)]
+fn report_path(path: &StdPath) -> String {
+    path.to_string_lossy().replace('\\', "/")
+}
+
+/// The path as the report spells it. Nothing to rewrite here: `\` is a
+/// legal character in a Unix filename, and replacing it would rename the
+/// file in the report.
+#[cfg(not(windows))]
+fn report_path(path: &StdPath) -> String {
+    path.to_string_lossy().into_owned()
+}
+
 pub(crate) fn scan_file(path: &PathBuf, options: ScanOptions) -> Scanned {
-    let file = path.to_string_lossy().into_owned();
+    let file = report_path(path);
     let format = options.format.unwrap_or_else(|| format_of(path));
 
     match std::fs::read(path) {
@@ -438,6 +459,18 @@ mod tests {
         assert_eq!(
             describe(&report, &report.quantities[0]),
             "a.json:1:9  30s  30000 milliseconds"
+        );
+    }
+
+    /// Windows only, because on Unix there is nothing to rewrite: `\` is
+    /// a legal character in a filename there, and replacing it would
+    /// rename the file in the report.
+    #[cfg(windows)]
+    #[test]
+    fn a_reported_path_is_separated_by_forward_slashes() {
+        assert_eq!(
+            report_path(StdPath::new(r"C:\config\cache.yaml")),
+            "C:/config/cache.yaml"
         );
     }
 
