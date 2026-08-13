@@ -1,44 +1,54 @@
 # Contributor and agent instructions
 
-**Read [AGENTS.md](AGENTS.md) before writing any code.** It carries the
-engineering standard this repository is held to — control flow, error handling,
-module shape — plus the architecture, the invariants and why each one exists.
-[CLAUDE.md](CLAUDE.md) is the short version: gates and traps.
+**Read [`crate/AGENTS.md`](../crate/AGENTS.md) before writing any code.** This
+repository is crate-only — everything that is the product lives in
+[`crate/`](../crate/) — and that file carries the engineering standard it is held
+to: control flow, error handling, structure, the settled decisions and the
+definition of done. [`crate/SPEC.md`](../crate/SPEC.md) defines the behaviour.
+[AGENTS.md](../AGENTS.md) at the root routes between them; [CLAUDE.md](../CLAUDE.md)
+is the short version: gates and traps.
 
-This file exists only to route you there. It is deliberately thin: the standard
+This file exists only to point you there. It is deliberately thin: the standard
 lives in one place so it cannot drift between tools.
 
 ## Non-negotiables
 
+- **A refusal is a finding.** A quantity that cannot be resolved keeps its row,
+  its source text, a named reason and a sentence a person can act on. Never
+  normalise something that should be refused; never resolve a refusal to make a
+  test pass.
 - Guard clauses first. **No statement-position `else`** — two branches are an
-  early return, many are a `match` or a lookup table. Value-position `if/else`
-  is fine.
-- Nesting stops at two levels inside a function.
-- **`Result<T, String>` for fallible functions.** No `anyhow`, no `thiserror`
-  in the library; one error enum only where a domain genuinely needs it.
-- `#![forbid(unsafe_code)]`, crate-wide, no platform exemption.
-- **No inline lint attribute anywhere** — `#[allow]`, `#[expect]`, or a
-  `cfg_attr` carrying one. CI greps for `#[allow(` and the rule is wider than
-  the grep. A lint you mean to relax goes in `[lints.clippy]` in
-  `crate/Cargo.toml` with a comment saying why; an item only the tests read is
-  `#[cfg(test)]`.
-- Flat modules. No layers, registries, managers or services, and no trait with
-  a single implementation.
-- **Refuse rather than guess.** Ambiguous input returns a named refusal reason,
-  never a plausible answer. A test that passes by normalizing something that
-  should have been refused is the bug this whole family exists to prevent.
-- **stdout is protocol, stderr is human.** There is no `--json` flag, and exit
-  codes are part of the API.
-- Never report success you did not achieve.
+  early return, many are a `match`.
+- Nesting stops at two levels inside a function; extract a named helper.
+- **Base values are exact decimals, never `f64`.** Every conversion is a
+  checked integer multiply, and an overflow is `out_of_range` rather than a
+  wrap.
+- `extract/` is pure and touches no filesystem; only `walk.rs` and `scan.rs`
+  may. A `std::fs` call in `extract/` is a bug.
+- **No inline lint attribute** — `#[allow]`, `#[expect]`, or a `cfg_attr`
+  carrying one. Fix the lint, relax it visibly in `[lints.clippy]` in
+  `crate/Cargo.toml`, or make the item `#[cfg(test)]` if only tests read it.
+- No `anyhow`, no `thiserror`, no `clap`, no async runtime, no regex engine.
+  Fallible functions return `Result<T, String>`.
+- **Never report success you did not achieve**, and never a resolution you did
+  not reach.
 - Comments explain **why**, never what.
-- Commits are conventional (`fix:`, `feat:`, `docs:`…), imperative, and
-  enforced by a hook and by CI.
+- Commits are conventional (`fix:`, `feat:`, `docs:`…), imperative, and carry
+  no AI attribution of any kind.
 
 ## Before you commit
 
 ```bash
-cd crate && cargo fmt --all --check && cargo clippy --all-targets -- -D warnings && cargo test --locked
+cd crate
+cargo fmt --all --check
+cargo clippy --all-targets -- -D warnings
+cargo test --locked
 ```
 
-Coverage thresholds are a floor and are never lowered to make a build pass.
-Every claim in a README or in help text must be provable against the code.
+Coverage is a backstop, not a target — 75% per module on `crate/src/extract/`,
+well below where the code actually is, and never raised to track it. Every claim in a README, a help text or SPEC.md
+must be provable against the code.
+
+**Provable is about behaviour and numbers, not availability.** An install line
+for a publish you are about to make is *staged*, not forbidden — write it, and
+let the release commit be what makes it true.

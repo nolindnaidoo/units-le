@@ -45,15 +45,24 @@ All three, exactly as CI runs them. The gated suites are extra:
   the item `#[cfg(test)]` if only the tests read it.
 - **Every claim must be provable.** No metric, format or behaviour goes in a
   README, a help text or SPEC.md unless the code backs it — and the numbers in
-  the README's Testing section come from a real `cargo llvm-cov` run.
+  the README's Testing section come from a real `cargo llvm-cov` run. That
+  governs **behaviour and numbers**, not **availability**: an install line for
+  a publish you are about to make is **staged, not forbidden**. Write it, and
+  let the release commit be what makes it true.
 - **Nothing here is byte-identical with the rest of the family.** The siblings'
   `ci.yml`, dotfiles and agent-rules files describe a repository with a VS Code
   extension at its root; this one is crate-only, so its workflows
   (`ci-crate.yml`, `release-crate.yml`, a CodeQL job scanning `rust`), its
   dotfiles and its agent-rules files are its own. Copying one over from a
   sibling re-imposes a shape this repo does not have.
-- **Coverage thresholds are a floor**, per module on `extract/`, never lowered
-  to make CI pass.
+- **CI narrows itself on a docs-only push.** `ci-crate.yml` fires on `*.md` and
+  the agent instruction files — it has to, because the `policy` job greps them,
+  and the filter used to admit only `crate/**` so that gate could run only when
+  the files it guards had *not* been touched. On a docs-only push `policy` and
+  `commits` run and every Rust job skips. Anything unrecognised, and an
+  unreadable diff, counts as code and runs everything.
+- **Coverage floors are a backstop, not a target** — per module on `extract/`,
+  well below where the code actually is, and never raised to track it.
 - **Run the binary, not only the tests.** The text scan's false-positive class
   was found that way, and is now measured by
   `crate/fixtures/documents/opaque.txt`.

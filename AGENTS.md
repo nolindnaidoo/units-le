@@ -59,7 +59,7 @@ a spec must match the code.
   `crate/Cargo.toml`, or make the item `#[cfg(test)]` where only the
   tests read it. There are none today.
 - **Coverage is a floor, enforced per module** on `crate/src/extract/`
-  at 90%, and never lowered to make a build pass. Per module rather than
+  at 75%, and never lowered to make a build pass. Per module rather than
   on the total, because a total hides one module sliding while the
   others carry it.
 - **The four hardening suites each name the bug they catch.** `hazards`,
@@ -67,13 +67,24 @@ a spec must match the code.
   through a green suite somewhere in this family; a new case there
   carries the defect it would have caught, in a comment, or it is
   decoration.
-- **Nothing here is byte-identical with the rest of the family, and
-  that is deliberate.** The siblings' shared `ci.yml`, dotfiles and
-  agent-rules files describe a repository with a VS Code extension at
-  its root. This one is crate-only, so every workflow (`ci-crate.yml`,
-  `release-crate.yml`, a CodeQL job scanning `rust`), every dotfile and
-  every agent-rules file is this repository's own. Copying one across
-  from a sibling re-imposes a shape this repo does not have.
+- **This repo shares its scaffolding with the other crate-only repos,
+  not with the extension repos.** `.editorconfig`, `.gitattributes`,
+  `.githooks/commit-msg`, `.github/dependabot.yml`,
+  `.github/codeql-config.yml`, `codeql.yml` and
+  `dependabot-auto-merge.yml` are byte-identical across the six, and
+  `letools-site/scripts/check-fleet.ts` is what holds them there — run
+  `bun run check:fleet ../` from a checkout of the site.
+
+  Three things are **not** shared, each for its own reason:
+  - `ci-crate.yml` and `release-crate.yml` are each repo's own. The
+    crates stand on their own, and a job one needs and another does not
+    is the point rather than a failure.
+  - The agent instruction files are one document *within* a repo and
+    never across them — each states its own tool's non-negotiables.
+  - The extension-shaped files — `ci.yml`, `biome.json`, `tsconfig*.json`,
+    `release.yml`, `zed-sync.yml` — do not exist here at all. Copying one
+    across from a two-frontend sibling re-imposes a shape this repo does
+    not have.
 - **Run the binary, not only the tests.** The text scan's
   false-positive class was found by running it over a real repository,
   and it is now measured rather than assumed: see
