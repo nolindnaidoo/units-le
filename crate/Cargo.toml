@@ -1,11 +1,11 @@
 [package]
 name = "units-le"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 rust-version = "1.88"
 license = "MIT"
 readme = "README.md"
-description = "Extract every quantity in a codebase with its unit, normalised, and refuse the ambiguous ones by name"
+description = "Extract every quantity with its unit, normalized, and refuse the ambiguous ones by name"
 authors = ["Nolin D Naidoo"]
 homepage = "https://letools.dev/tools/units-le"
 repository = "https://github.com/nolindnaidoo/units-le"
