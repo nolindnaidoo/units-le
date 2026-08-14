@@ -92,7 +92,7 @@ a spec must match the code.
 
 ## Git and commits
 
-Conventional, imperative, subject under 72 characters, scoped to the
+Conventional, imperative, subject under 100 characters, scoped to the
 files the change touches. No AI attribution of any kind — not a
 trailer, not a footer, not a comment. Commits are the author's alone.
 
