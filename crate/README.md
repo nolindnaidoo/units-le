@@ -94,7 +94,8 @@ units-le config/ | jq -r '.quantities[] | select(.dimension=="duration") | "\(.k
 
 | Route | Command | Worth knowing |
 |---|---|---|
-| **From source** | `git clone https://github.com/nolindnaidoo/units-le`<br>`cd units-le/crate && cargo build --release` | Needs **Rust 1.88+**. Not on crates.io yet. |
+| **crates.io** | `cargo install units-le` | Needs **Rust 1.88+**. |
+| **From source** | `git clone https://github.com/nolindnaidoo/units-le`<br>`cd units-le/crate && cargo build --release` | The same build CI runs. |
 
 No runtime, no network, nothing written.
 

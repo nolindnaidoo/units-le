@@ -84,7 +84,11 @@ drift.
 
 ## Install
 
-**Not on crates.io yet.** Build it from this repository:
+```bash
+cargo install units-le
+```
+
+Or build it from this repository:
 
 ```bash
 git clone https://github.com/nolindnaidoo/units-le

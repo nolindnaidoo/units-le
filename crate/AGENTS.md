@@ -13,11 +13,11 @@ has no unit concept; this extracts **quantities** — a number with its
 unit — and reports each one as the document wrote it *and* in a base
 unit, so two of them can be compared.
 
-**Status: v0.1.0, hardened, unpublished.** The grammar, the six format
+**Status: published, hardened.** The grammar, the six format
 readers, the text scan, both surfaces and the corpus are built and
 green, and the family's hardening is in place: the four suites, the
 coverage-matrix, the 75% per-module floor on `extract/`, and the CI
-workflows that run them. It is **not on crates.io**, and this repository
+workflows that run them. It is **on crates.io**, and this repository
 is **crate-only** — there is no extension beside it, so the `parity` and
 `differential` jobs the two-frontend siblings run are deliberately
 absent rather than present and vacuous.
@@ -328,10 +328,9 @@ serves it for any public repo, and scrapers harvest it. A repo-local
 
 ## Not built yet
 
-Written down so nobody assumes otherwise: this crate is **not published
-to crates.io**, and there is no VS Code extension in this repository.
-The absent `parity` and `differential` CI jobs arrive with an extension
-or not at all.
+Written down so nobody assumes otherwise: there is **no VS Code extension
+in this repository**. The absent `parity` and `differential` CI jobs
+arrive with an extension or not at all.
 
 `release-crate.yml` is in place and unused. It is **dispatch-only and
 never triggered by a tag** — a crates.io version can never be reused, so
