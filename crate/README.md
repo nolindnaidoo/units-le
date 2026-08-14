@@ -233,6 +233,15 @@ Two tools, both returning `{ ok, data, diagnostics, meta }`:
 A refusal is a successful answer carrying a reason, never an error. Only
 a malformed question is an error.
 
+## Documentation
+
+| What | Where |
+|---|---|
+| What this tool is allowed to say — scope, output contract, refusals, non-goals | [SPEC.md](https://github.com/nolindnaidoo/units-le/blob/main/crate/SPEC.md) |
+| How the code is written and held together — architecture, invariants, the gates | [AGENTS.md](https://github.com/nolindnaidoo/units-le/blob/main/crate/AGENTS.md) |
+| What changed | [CHANGELOG.md](https://github.com/nolindnaidoo/units-le/blob/main/crate/CHANGELOG.md) |
+| The tool's page, and the other fifteen | [letools.dev/tools/units-le](https://letools.dev/tools/units-le) |
+
 ## More from the LE family
 
 Sixteen single-purpose tools for the work in front of every model. Each ships
