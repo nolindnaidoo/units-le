@@ -7,7 +7,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-0.1.0 has not shipped, so everything below lands in it when it does.
+0.1.0 is on crates.io, so everything below lands in the next release.
 Each entry is a behaviour change found by auditing the crate against
 SPEC.md and this crate's own stated invariants.
 
@@ -38,6 +38,12 @@ SPEC.md and this crate's own stated invariants.
   rule costs no noise on opaque content.
 
 ### Changed
+
+- **One sentence describes this crate everywhere it is described.** The
+  `description` in `Cargo.toml`, the line under the title in
+  `README.md`, and the entry on letools.dev had drifted into three
+  paraphrases, so the crate a reader met on crates.io was not obviously
+  the one they met on the site. Nothing about the tool moved.
 
 - **`extract_units` refuses a `maxResults` outside its schema instead of
   clamping it.** The schema declares `minimum: 1` and `maximum: 5000`,
@@ -160,4 +166,4 @@ Written down rather than left to be discovered, each pinned by a test.
   detecting it would mean writing a second CSV lexer to disagree with
   the first.
 
-[0.1.0]: https://github.com/nolindnaidoo/units-le/releases/tag/crate-v0.1.0
+[0.1.0]: https://crates.io/crates/units-le/0.1.0

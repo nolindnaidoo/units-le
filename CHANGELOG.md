@@ -9,12 +9,35 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-0.1.0 has not shipped, so everything below lands in it when it does.
-The crate's own behaviour changes are in
+0.1.0 is on crates.io and `crate/Cargo.toml` carries 0.1.1, so
+everything below lands in that. The crate's own behaviour changes are in
 [`crate/CHANGELOG.md`](crate/CHANGELOG.md); this file covers the
 repository around it.
 
+### Added
+
+- **A terminal demo** at [`assets/demo.gif`](assets/demo.gif), driving
+  the real binary over the files in [`assets/demo/`](assets/demo/).
+  [`assets/demo.tape`](assets/demo.tape) is the `vhs` script that
+  produced it, so `cd assets && vhs demo.tape` reproduces the recording
+  rather than leaving an artifact nobody can regenerate. Both sit above
+  `crate/`, where `cargo package` cannot reach them.
+
+### Changed
+
+- **New icon artwork.** All sixteen tools were redrawn in one style, so
+  the family reads as one set wherever the cards sit side by side. The
+  framing is unchanged — the drawing fills 65.8% of an 800×800 canvas
+  and every smaller size is derived from that one file rather than drawn
+  again.
+
 ### Fixed
+
+- **The README's images resolve away from GitHub.** They were repository
+  paths, which crates.io and every other renderer resolves against its
+  own origin, so the demo and the icon were broken everywhere this file
+  is read that is not this repository. They are absolute URLs now.
+
 
 - **The documentation now describes the repository that exists.** An
   audit against `crate/AGENTS.md` found five claims it had outgrown: a
@@ -115,4 +138,4 @@ a tree — a number welded to a unit — reports it as the document wrote it
   [`crate/SPEC.md`](crate/SPEC.md); the number now exists so a change to
   it is visible.
 
-[0.1.0]: https://github.com/nolindnaidoo/units-le/releases/tag/v0.1.0
+[0.1.0]: https://crates.io/crates/units-le/0.1.0
