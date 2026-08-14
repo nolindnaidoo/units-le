@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/nolindnaidoo/units-le/main/assets/icon.png" alt="Units-LE logo" width="96" height="96"/>
+</p>
 <h1 align="center">units-le</h1>
 
 <p align="center">
@@ -14,7 +17,7 @@
 ---
 
 <p align="center">
-  <img src="assets/demo.gif" alt="Units-LE demo — the real binary, recorded by assets/demo.tape" style="max-width: 100%; height: auto;" />
+  <img src="https://raw.githubusercontent.com/nolindnaidoo/units-le/main/assets/demo.gif" alt="Units-LE demo — the real binary, recorded by assets/demo.tape" style="max-width: 100%; height: auto;" />
 </p>
 
 ## What it does
