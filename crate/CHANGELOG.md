@@ -5,9 +5,8 @@ The Rust CLI and MCP server.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.1] - 2026-08-14
 
-0.1.0 is on crates.io, so everything below lands in the next release.
 Each entry is a behaviour change found by auditing the crate against
 SPEC.md and this crate's own stated invariants.
 
@@ -167,3 +166,4 @@ Written down rather than left to be discovered, each pinned by a test.
   the first.
 
 [0.1.0]: https://crates.io/crates/units-le/0.1.0
+[0.1.1]: https://crates.io/crates/units-le/0.1.1

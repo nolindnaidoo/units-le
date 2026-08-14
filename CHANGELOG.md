@@ -7,10 +7,9 @@ repository around it.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.1] - 2026-08-14
 
-0.1.0 is on crates.io and `crate/Cargo.toml` carries 0.1.1, so
-everything below lands in that. The crate's own behaviour changes are in
+The crate's own behaviour changes are in
 [`crate/CHANGELOG.md`](crate/CHANGELOG.md); this file covers the
 repository around it.
 
@@ -139,3 +138,4 @@ a tree — a number welded to a unit — reports it as the document wrote it
   it is visible.
 
 [0.1.0]: https://crates.io/crates/units-le/0.1.0
+[0.1.1]: https://crates.io/crates/units-le/0.1.1
