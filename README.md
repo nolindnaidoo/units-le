@@ -285,57 +285,15 @@ no rewriting, no arithmetic. It reports what a document says and what
 that means in one base unit; which limits are right is the reviewer's
 call.
 
-## Development
+## Documentation
 
-```bash
-cd crate
-cargo fmt --all --check
-cargo clippy --all-targets -- -D warnings
-cargo test --locked
-```
-
-Those three are the definition of done and exactly what CI runs.
-Architecture and conventions live in [AGENTS.md](AGENTS.md), which
-routes to [`crate/AGENTS.md`](crate/AGENTS.md); the product behaviour is
-[`crate/SPEC.md`](crate/SPEC.md). Changes are tracked in
-[CHANGELOG.md](CHANGELOG.md).
-
-## Testing
-
-266 tests: 208 unit tests inside the modules they cover, and seven
-integration suites against the built binary.
-
-| Suite | What it holds | Run |
-|---|---|---|
-| `contracts` | the exit codes and the stdout contract — the API a shell branches on | `cargo test --test contracts` |
-| `coverage_matrix` | every extension, format reader, dimension and reason, reached through the binary | `cargo test --test coverage_matrix` |
-| `hazards` | a byte-order mark, invalid UTF-8, a UTF-16 document, a FIFO, permission denied, a symlink loop, a path over 260 characters, several megabytes on one line | `cargo test --test hazards` |
-| `platform` | report paths, TZ independence, case folding, reserved Windows names, CRLF, early stdin | `cargo test --test platform` |
-| `fuzz` | hostile quantity text against the grammar and the exact decimals — never a panic, never a hang, never an overflow | `UNITS_LE_FUZZ_SECONDS=60 cargo test --release --test fuzz` |
-| `budget` | a wall-clock ceiling and three linearity checks | `UNITS_LE_BUDGET=1 cargo test --release --test budget` |
-| `scenarios` | documents larger than an editor opens | `UNITS_LE_SCENARIOS=1 cargo test --test scenarios` |
-
-`budget` and `scenarios` are gated because they are timing and size
-tests with no business running mid-edit; a skipped one says so by name
-rather than reporting a pass.
-
-Line coverage in `crate/src/extract/`, the pure layer, with a **90% floor
-enforced per module** in CI — per module rather than on the total,
-because a total hides one module sliding while the others carry it:
-
-| Module | Lines | Module | Lines |
-|---|---|---|---|
-| `corpus.rs` | 96.59% | `locate.rs` | 100.00% |
-| `csv.rs` | 96.23% | `mod.rs` | 100.00% |
-| `decimal.rs` | 99.07% | `policy.rs` | 100.00% |
-| `dotenv.rs` | 100.00% | `position.rs` | 100.00% |
-| `fallback.rs` | 98.81% | `toml.rs` | 100.00% |
-| `format.rs` | 99.05% | `yaml.rs` | 95.77% |
-| `grammar.rs` | 92.69% | `ini.rs` | 100.00% |
-| `json.rs` | 100.00% | | |
-
-Reproduce with `cargo llvm-cov` in `crate/`. The floor is a floor and is
-never lowered to make a build pass.
+| What | Where |
+|---|---|
+| What the tool is allowed to say — scope, output contract, refusals, non-goals | [`crate/SPEC.md`](crate/SPEC.md) |
+| How the code is written and held together — architecture, invariants, the gates | [`crate/AGENTS.md`](crate/AGENTS.md) |
+| The crate's own front page | [`crate/README.md`](crate/README.md) |
+| What changed | [CHANGELOG.md](CHANGELOG.md) · [`crate/CHANGELOG.md`](crate/CHANGELOG.md) |
+| The tool's page, and the other fifteen | [letools.dev/tools/units-le](https://letools.dev/tools/units-le) |
 
 ## More from the LE family
 
@@ -371,6 +329,7 @@ Each stands on its own: no shared crate, no published core. Where two of them
 agree, it is because the same answer was right twice.
 
 **Contact** — [nolindnaidoo.com](https://nolindnaidoo.com) · [GitHub](https://github.com/nolindnaidoo) · [LinkedIn](https://www.linkedin.com/in/nolindnaidoo/)
+
 ## Also by nolindnaidoo
 
 **Rust** — pixelcoords and pixelactions are one loop: pixelcoords answers
