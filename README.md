@@ -1,17 +1,22 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/nolindnaidoo/units-le/main/assets/icon.png" alt="Units-LE logo" width="96" height="96"/>
 </p>
-<h1 align="center">units-le</h1>
-
+<h1 align="center">Units-LE</h1>
 <p align="center">
   <b>Extract every quantity in a codebase — the number <i>and</i> its unit</b><br/>
   <i>normalised to one base unit so two configs can be compared, and refused by name when it cannot be</i>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/rustc-1.88+-93450a.svg" alt="MSRV: Rust 1.88+" />
-  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT" />
-  <img src="https://img.shields.io/badge/status-v0.1.0-lightgrey.svg" alt="Status: v0.1.0" />
+  <a href="https://crates.io/crates/units-le">
+    <img src="https://img.shields.io/crates/v/units-le?style=for-the-badge&label=Rust%20CLI&color=blue&logo=rust" alt="units-le on crates.io" />
+  </a>
+  <a href="https://letools.dev/tools/units-le">
+    <img src="https://img.shields.io/badge/LE%20Tools-letools.dev-blue?style=for-the-badge" alt="LE Tools" />
+  </a>
+  <a href="https://github.com/nolindnaidoo/units-le/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue?style=for-the-badge" alt="MIT licensed" />
+  </a>
 </p>
 
 ---
@@ -19,6 +24,10 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/nolindnaidoo/units-le/main/assets/demo.gif" alt="Units-LE demo — the real binary, recorded by assets/demo.tape" style="max-width: 100%; height: auto;" />
 </p>
+
+> **Useful?** A star is how other developers find it —
+> [★ GitHub](https://github.com/nolindnaidoo/units-le) ·
+> [letools.dev/tools/units-le](https://letools.dev/tools/units-le)
 
 ## What it does
 

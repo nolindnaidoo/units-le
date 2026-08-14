@@ -6,10 +6,27 @@
 </p>
 
 <p align="center">
+  <a href="https://crates.io/crates/units-le">
+    <img src="https://img.shields.io/crates/v/units-le.svg" alt="units-le on crates.io" />
+  </a>
+  <a href="https://crates.io/crates/units-le">
+    <img src="https://img.shields.io/crates/d/units-le.svg" alt="crates.io downloads" />
+  </a>
+  <a href="https://github.com/nolindnaidoo/units-le/actions/workflows/ci-crate.yml">
+    <img src="https://github.com/nolindnaidoo/units-le/actions/workflows/ci-crate.yml/badge.svg" alt="Build Status" />
+  </a>
   <img src="https://img.shields.io/badge/rustc-1.88+-93450a.svg" alt="MSRV: Rust 1.88+" />
-  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT" />
-  <img src="https://img.shields.io/badge/status-v0.1.0%20core-lightgrey.svg" alt="Status: v0.1.0 core" />
+  <a href="https://github.com/nolindnaidoo/units-le/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT" />
+  </a>
+  <a href="https://letools.dev/tools/units-le">
+    <img src="https://img.shields.io/badge/web-letools.dev-00A0FF.svg" alt="letools.dev" />
+  </a>
 </p>
+
+> **Useful?** A star is how other developers find it —
+> [★ GitHub](https://github.com/nolindnaidoo/units-le) ·
+> [letools.dev/tools/units-le](https://letools.dev/tools/units-le)
 
 `timeout: 30s` in one service and `timeout: 30000` in another are the
 same number of milliseconds, and nothing about the text says so.
