@@ -13,6 +13,10 @@
 
 ---
 
+<p align="center">
+  <img src="assets/demo.gif" alt="Units-LE demo — the real binary, recorded by assets/demo.tape" style="max-width: 100%; height: auto;" />
+</p>
+
 ## What it does
 
 `timeout: 30s` in one service and `timeout: 30000` in another are the

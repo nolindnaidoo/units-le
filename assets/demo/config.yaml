@@ -1,0 +1,13 @@
+cpu: 500m
+size: 10M
+window: 30m
+quota: 5k
+disk: 1.5KB
+latency: 1,5s
+budget: 1.000s
+total: 1h + 30m
+doubled: 30s*2
+memory: 1MB
+retention: 1y
+bandwidth: 100Mb
+overflow: 99999999999999999999999999999999999PiB
