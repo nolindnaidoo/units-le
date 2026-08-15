@@ -5,6 +5,44 @@ The Rust CLI and MCP server.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-08-15
+
+A behavioural audit drove the real binary against SPEC.md rather than
+reading it. Three formats named a reader that could not read them.
+
+### Fixed
+
+- **`.conf` and `.cfg` are scanned as text instead of named at the INI
+  reader.** `rust-ini` accepts free-form text as a valid document holding
+  no key/value pairs, so an nginx or redis config — the shape where
+  quantities actually live — came back with no quantities, an empty
+  `diagnostics` and exit 1. That is a file reading to whoever ran it as a
+  file that was clean, which this SPEC names as the one outcome never
+  allowed. `properties` still names the INI reader, because
+  `app.timeout=30s` really is INI.
+
+- **`.tsv` is read with a tab delimiter.** It named the comma reader, so
+  a whole row arrived as one cell, no cell was a quantity, and the file
+  reported clean with no diagnostic.
+
+- **`.jsonc` reads comments and trailing commas.** It named the strict
+  reader, which rejects both — so the one thing the format exists for
+  made the file unreadable. The reader was always `jsonc-parser`; only
+  the two options that define JSONC were off.
+
+### Added
+
+- `jsonc` and `tsv` are formats in their own right: they resolve, they
+  name themselves in a report, they are offered in the MCP schema, and
+  `fixtures/documents/units.jsonc` and `units.tsv` pin their answers.
+
+- **A contract test asserting that naming a format never finds less than
+  not naming one.** All three bugs above are the same shape, and the
+  corpus could not see any of them — every case in it named a format
+  whose reader agreed. The gate compares each extension against the same
+  bytes read as text, and fails unless the results match or a diagnostic
+  says why they do not.
+
 ## [0.1.2] - 2026-08-15
 
 ### Fixed
@@ -180,3 +218,4 @@ Written down rather than left to be discovered, each pinned by a test.
 [0.1.0]: https://crates.io/crates/units-le/0.1.0
 [0.1.1]: https://crates.io/crates/units-le/0.1.1
 [0.1.2]: https://crates.io/crates/units-le/0.1.2
+[0.2.0]: https://crates.io/crates/units-le/0.2.0

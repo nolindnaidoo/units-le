@@ -122,8 +122,14 @@ crate/
 
 ### A quantity is a string value
 
-The six formats — json, yaml, toml, ini, env, csv — plus a text scan for
-everything else. numbers-le splits them into typed and untyped, because
+The eight formats — json, jsonc, yaml, toml, ini, env, csv, tsv — plus a
+text scan for everything else. `jsonc` and `tsv` are the same readers as
+`json` and `csv` with one setting changed; they are separate names
+because a `.jsonc` routed at the strict reader could not read a comment,
+and a `.tsv` routed at the comma reader made a whole row one cell. `.conf`
+and `.cfg` name no reader at all: they went to `ini`, which accepts
+free-form text as a document holding no values, so an nginx or redis
+config — where quantities actually live — came back clean. numbers-le splits them into typed and untyped, because
 there the same text is data in JSON and a number in `.env`. There is no
 such split here: a unit is spelled out in characters, so `30s` is a
 string in every one of these formats. The *typed* value is the one that

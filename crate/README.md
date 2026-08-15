@@ -175,10 +175,11 @@ and a byte count past 2^53 comes back as a different number.
 
 ## Formats
 
-JSON, YAML, CSV, TOML, INI and dotenv are parsed. **Everything else is
-scanned as text** — a Kubernetes manifest, a Terraform file, a Markdown
-table of limits, a log — so the files where quantities actually live
-yield them rather than nothing.
+JSON, JSONC, YAML, CSV, TSV, TOML, INI and dotenv are parsed.
+**Everything else is scanned as text** — a Kubernetes manifest, a
+Terraform file, a Markdown table of limits, a log, and `.conf` and
+`.cfg`, which are almost never INI — so the files where quantities
+actually live yield them rather than nothing.
 
 Unlike numbers-le's text scan, this one has a shape to look for, so
 `v1.2.3` yields nothing rather than two numbers. Its known

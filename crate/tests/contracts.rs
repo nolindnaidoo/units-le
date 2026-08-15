@@ -475,3 +475,92 @@ fn the_cli_and_the_mcp_server_report_the_same_thing() {
         .clone();
     assert_eq!(from_mcp, from_cli, "the two surfaces disagree");
 }
+
+/// Every value in a document, whatever it is called.
+fn values(run: &Run) -> Vec<String> {
+    reports(run)
+        .iter()
+        .flat_map(|report| {
+            report["quantities"]
+                .as_array()
+                .expect("quantities")
+                .iter()
+                .map(|q| q["value"].as_str().expect("a value").to_string())
+                .collect::<Vec<_>>()
+        })
+        .collect()
+}
+
+/// **Naming a format may never find less than not naming one.**
+///
+/// This is the audit's own differential, kept as a gate. Each of these
+/// shipped: `.conf` and `.cfg` named the INI reader, which accepts
+/// free-form text as a valid document holding no values; `.tsv` named
+/// the comma reader, which made a whole tab row one cell. Both returned
+/// no quantities, an empty `diagnostics` and exit 1 — a file that reads
+/// to whoever ran it as a file that was clean, which SPEC.md calls the
+/// one outcome never allowed.
+///
+/// The property is deliberately wider than those three cases: any
+/// extension that resolves to a reader must find at least what the same
+/// bytes find with no extension at all, or say on `diagnostics` why it
+/// could not.
+#[test]
+fn a_named_format_never_finds_less_than_the_text_scan() {
+    let tree = Tree::new("named-vs-scan");
+    for (name, body) in [
+        (
+            "nginx.conf",
+            "http {\n  client_max_body_size 512MiB;\n  keepalive_timeout 30s;\n}\n",
+        ),
+        ("app.cfg", "port 8080\ntimeout 30s\nmaxmemory 512MiB\n"),
+        ("limits.tsv", "name\tttl\tmemory\napi\t30s\t512MiB\n"),
+        (
+            "settings.jsonc",
+            "{\n  // the request budget\n  \"timeout\": \"30s\",\n}\n",
+        ),
+    ] {
+        let named = tree.write(name, body);
+        let bare = tree.write(&format!("{name}.unknown-to-this-tool"), body);
+
+        let named_run = run(&[&named.to_string_lossy()]);
+        let bare_run = run(&[&bare.to_string_lossy()]);
+
+        let mut found = values(&named_run);
+        let mut baseline = values(&bare_run);
+        found.sort();
+        baseline.sort();
+
+        let diagnosed = !reports(&named_run)[0]["diagnostics"]
+            .as_array()
+            .expect("diagnostics")
+            .is_empty();
+
+        assert!(
+            found == baseline || diagnosed,
+            "{name} found {found:?} where the text scan found {baseline:?}, \
+             and said nothing about the difference"
+        );
+    }
+}
+
+/// The two readers that changed, at the level a user meets them.
+#[test]
+fn a_tab_separated_file_and_a_commented_json_file_are_read() {
+    let tree = Tree::new("tsv-jsonc");
+    let tsv = tree.write("limits.tsv", "name\tttl\napi\t30s\n");
+    let jsonc = tree.write(
+        "s.jsonc",
+        "{\n  // a comment, which is the point\n  \"t\": \"1h\",\n}\n",
+    );
+
+    let tsv_run = run(&[&tsv.to_string_lossy()]);
+    assert_eq!(tsv_run.code, 0, "{}", tsv_run.stderr);
+    assert_eq!(values(&tsv_run), ["30s"]);
+    assert_eq!(reports(&tsv_run)[0]["format"], "tsv");
+
+    let jsonc_run = run(&[&jsonc.to_string_lossy()]);
+    assert_eq!(jsonc_run.code, 0, "{}", jsonc_run.stderr);
+    assert_eq!(values(&jsonc_run), ["1h"]);
+    assert_eq!(reports(&jsonc_run)[0]["format"], "jsonc");
+}

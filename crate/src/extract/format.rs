@@ -29,8 +29,17 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "lowercase")]
 pub(crate) enum Format {
     Json,
+    /// JSON with comments and trailing commas — the same reader, with the
+    /// two loosenings that define the format turned on. Routing `.jsonc`
+    /// at the strict reader made the one thing the extension exists for
+    /// the one thing it could not read.
+    Jsonc,
     Yaml,
     Csv,
+    /// Tab-separated, which is the same reader with a different
+    /// delimiter. Routing `.tsv` at the comma reader made a whole row one
+    /// cell, so no cell was a quantity and the file reported clean.
+    Tsv,
     Toml,
     Ini,
     Env,
@@ -44,10 +53,12 @@ impl Format {
     /// alone rather than shipped behind a `dead_code` relaxation — this
     /// crate carries no inline lint attribute.
     #[cfg(test)]
-    pub(crate) const ALL: [Self; 7] = [
+    pub(crate) const ALL: [Self; 9] = [
         Self::Json,
+        Self::Jsonc,
         Self::Yaml,
         Self::Csv,
+        Self::Tsv,
         Self::Toml,
         Self::Ini,
         Self::Env,
@@ -58,8 +69,10 @@ impl Format {
     pub(crate) const fn name(self) -> &'static str {
         match self {
             Self::Json => "json",
+            Self::Jsonc => "jsonc",
             Self::Yaml => "yaml",
             Self::Csv => "csv",
+            Self::Tsv => "tsv",
             Self::Toml => "toml",
             Self::Ini => "ini",
             Self::Env => "env",
@@ -71,17 +84,21 @@ impl Format {
 /// Every name a caller might send, mapped to the reader it means. Both a
 /// VS Code `languageId` and a file extension appear here, because a
 /// caller may resolve by either.
-const ALIASES: [(&str, Format); 15] = [
+/// `conf` and `cfg` are deliberately absent. They named the INI reader,
+/// which accepts free-form text as a valid document holding no values —
+/// so an nginx or redis config, which is where quantities actually live,
+/// came back with no findings and no diagnostic, reading as a file that
+/// was clean. They fall to the text scan, which reads them.
+/// `properties` stays: `app.timeout=30s` really is INI.
+const ALIASES: [(&str, Format); 13] = [
     ("json", Format::Json),
-    ("jsonc", Format::Json),
+    ("jsonc", Format::Jsonc),
     ("yaml", Format::Yaml),
     ("yml", Format::Yaml),
     ("csv", Format::Csv),
-    ("tsv", Format::Csv),
+    ("tsv", Format::Tsv),
     ("toml", Format::Toml),
     ("ini", Format::Ini),
-    ("cfg", Format::Ini),
-    ("conf", Format::Ini),
     ("properties", Format::Ini),
     ("env", Format::Env),
     ("dotenv", Format::Env),
@@ -94,10 +111,12 @@ const ALIASES: [(&str, Format); 15] = [
 /// so a format can never be offered and then not resolve. `Unknown` is
 /// not offered: it is where an unrecognised name lands, not a name to
 /// ask for.
-pub(crate) const SUPPORTED_FORMATS: [&str; 6] = [
+pub(crate) const SUPPORTED_FORMATS: [&str; 8] = [
     Format::Json.name(),
+    Format::Jsonc.name(),
     Format::Yaml.name(),
     Format::Csv.name(),
+    Format::Tsv.name(),
     Format::Toml.name(),
     Format::Ini.name(),
     Format::Env.name(),
@@ -165,11 +184,9 @@ mod tests {
     #[test]
     fn the_aliases_are_honoured() {
         for (alias, expected) in [
-            ("jsonc", Format::Json),
+            ("jsonc", Format::Jsonc),
             ("yml", Format::Yaml),
-            ("tsv", Format::Csv),
-            ("cfg", Format::Ini),
-            ("conf", Format::Ini),
+            ("tsv", Format::Tsv),
             ("dotenv", Format::Env),
         ] {
             assert_eq!(resolve_format(Some(alias), None), expected, "{alias}");

@@ -22,11 +22,13 @@
 pub(crate) fn document(name: &str) -> &'static str {
     match name {
         "units.json" => include_str!("../../fixtures/documents/units.json"),
+        "units.jsonc" => include_str!("../../fixtures/documents/units.jsonc"),
         "units.yaml" => include_str!("../../fixtures/documents/units.yaml"),
         "units.toml" => include_str!("../../fixtures/documents/units.toml"),
         "units.ini" => include_str!("../../fixtures/documents/units.ini"),
         "units.env" => include_str!("../../fixtures/documents/units.env"),
         "units.csv" => include_str!("../../fixtures/documents/units.csv"),
+        "units.tsv" => include_str!("../../fixtures/documents/units.tsv"),
         "units.txt" => include_str!("../../fixtures/documents/units.txt"),
         "ambiguous.yaml" => include_str!("../../fixtures/documents/ambiguous.yaml"),
         // Not an expectation set: a page of opaque content whose rows

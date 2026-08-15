@@ -81,12 +81,14 @@ fn harvest(text: &str, format: Format) -> Harvest {
     // that resolves, names itself in the report, and is quietly scanned
     // as text.
     let fields = match format {
-        Format::Json => json::extract(text),
+        Format::Json => json::extract(text, false),
+        Format::Jsonc => json::extract(text, true),
         Format::Yaml => yaml::extract(text),
         Format::Toml => toml::extract(text),
         Format::Ini => ini::extract(text),
         Format::Env => dotenv::extract(text),
-        Format::Csv => csv::extract(text),
+        Format::Csv => csv::extract(text, csv::COMMA),
+        Format::Tsv => csv::extract(text, csv::TAB),
         Format::Unknown => return Harvest::Runs(fallback::scan(text)),
     };
     Harvest::Fields(
@@ -100,11 +102,13 @@ fn harvest(text: &str, format: Format) -> Harvest {
 /// Why a document yielded nothing, when the reason is a parse failure.
 pub(crate) fn parse_error(text: &str, format: Format) -> Option<String> {
     match format {
-        Format::Json => json::parse_error(text),
+        Format::Json => json::parse_error(text, false),
+        Format::Jsonc => json::parse_error(text, true),
         Format::Yaml => yaml::parse_error(text),
         Format::Toml => toml::parse_error(text),
         Format::Ini => ini::parse_error(text),
-        Format::Csv => csv::parse_error(text),
+        Format::Csv => csv::parse_error(text, csv::COMMA),
+        Format::Tsv => csv::parse_error(text, csv::TAB),
         // dotenv reads lines and the fallback scans runs; neither has a
         // shape it can reject. Named rather than swept into a catch-all,
         // so a reader that grows a parse failure has to say so here.

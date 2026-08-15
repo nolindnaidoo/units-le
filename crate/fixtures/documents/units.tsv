@@ -1,0 +1,3 @@
+id	timeout	memory
+1	30s	512MiB
+2	1h	1GiB

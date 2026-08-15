@@ -10,11 +10,15 @@ use jsonc_parser::{CollectOptions, ParseOptions, parse_to_ast};
 
 use super::policy::{Field, Value, collect};
 
-fn strict() -> ParseOptions {
+/// The two loosenings that define JSONC, and nothing else. `.jsonc` used
+/// to name the strict reader, so a comment — the one thing the format
+/// exists for — made the file unreadable. Everything past these two stays
+/// off: JSONC is JSON with comments and trailing commas, not JSON5.
+fn options(comments: bool) -> ParseOptions {
     ParseOptions {
-        allow_comments: false,
+        allow_comments: comments,
+        allow_trailing_commas: comments,
         allow_loose_object_property_names: false,
-        allow_trailing_commas: false,
         allow_missing_commas: false,
         allow_single_quoted_strings: false,
         allow_hexadecimal_numbers: false,
@@ -22,12 +26,12 @@ fn strict() -> ParseOptions {
     }
 }
 
-pub(crate) fn extract(text: &str) -> Vec<Field> {
-    collect(&parsed(text).unwrap_or(Value::Other))
+pub(crate) fn extract(text: &str, comments: bool) -> Vec<Field> {
+    collect(&parsed(text, comments).unwrap_or(Value::Other))
 }
 
-fn parsed(text: &str) -> Option<Value> {
-    let result = parse_to_ast(text, &CollectOptions::default(), &strict()).ok()?;
+fn parsed(text: &str, comments: bool) -> Option<Value> {
+    let result = parse_to_ast(text, &CollectOptions::default(), &options(comments)).ok()?;
     result.value.as_ref().map(convert)
 }
 
@@ -55,8 +59,8 @@ fn convert_object(object: &Object) -> Value {
     )
 }
 
-pub(crate) fn parse_error(text: &str) -> Option<String> {
-    match parse_to_ast(text, &CollectOptions::default(), &strict()) {
+pub(crate) fn parse_error(text: &str, comments: bool) -> Option<String> {
+    match parse_to_ast(text, &CollectOptions::default(), &options(comments)) {
         Err(error) => Some(format!("Failed to parse JSON: {error}")),
         // jsonc-parser reads an empty document as a successful parse of
         // nothing; `JSON.parse("")` throws, and a caller who asked for
@@ -73,7 +77,7 @@ mod tests {
     use super::*;
 
     fn fields(text: &str) -> Vec<(Option<String>, String)> {
-        extract(text)
+        extract(text, false)
             .into_iter()
             .map(|field| (field.key, field.text))
             .collect()
@@ -113,20 +117,20 @@ mod tests {
     #[test]
     fn a_broken_document_yields_nothing_and_says_why() {
         assert!(fields("{not json").is_empty());
-        assert!(parse_error("{not json").is_some());
-        assert!(parse_error(r#"{"a":"1h"}"#).is_none());
+        assert!(parse_error("{not json", false).is_some());
+        assert!(parse_error(r#"{"a":"1h"}"#, false).is_none());
     }
 
     #[test]
     fn an_empty_document_is_a_parse_failure() {
-        assert!(parse_error("").is_some());
-        assert!(parse_error("   \n ").is_some());
-        assert!(parse_error("{}").is_none());
+        assert!(parse_error("", false).is_some());
+        assert!(parse_error("   \n ", false).is_some());
+        assert!(parse_error("{}", false).is_none());
     }
 
     #[test]
     fn the_loosenings_are_off() {
-        assert!(parse_error(r#"{"a":"1h",}"#).is_some());
-        assert!(parse_error("{'a':'1h'}").is_some());
+        assert!(parse_error(r#"{"a":"1h",}"#, false).is_some());
+        assert!(parse_error("{'a':'1h'}", false).is_some());
     }
 }

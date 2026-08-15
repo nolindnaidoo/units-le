@@ -44,7 +44,7 @@ const CORPUS: &str = include_str!("../fixtures/extraction.json");
 /// Every alias `extract/format.rs` maps, as the file extension a caller
 /// would actually have. A new alias with no file here is an alias
 /// nothing proves opens.
-const ALIASES: [&str; 15] = [
+const ALIASES: [&str; 13] = [
     "json",
     "jsonc",
     "yaml",
@@ -53,8 +53,6 @@ const ALIASES: [&str; 15] = [
     "tsv",
     "toml",
     "ini",
-    "cfg",
-    "conf",
     "properties",
     "env",
     "dotenv",

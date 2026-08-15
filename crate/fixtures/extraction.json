@@ -65,6 +65,42 @@
 			"errors": []
 		},
 		{
+			"name": "units.jsonc as jsonc",
+			"file": "units.jsonc",
+			"fileType": "jsonc",
+			"expected": [
+				{
+					"value": "30s",
+					"dimension": "duration",
+					"base": "30000",
+					"reason": null,
+					"key": "timeout"
+				},
+				{
+					"value": "300ms",
+					"dimension": "duration",
+					"base": "300",
+					"reason": null,
+					"key": "retry"
+				},
+				{
+					"value": "512MiB",
+					"dimension": "bytes",
+					"base": "536870912",
+					"reason": null,
+					"key": "memory"
+				},
+				{
+					"value": "2GB",
+					"dimension": "bytes",
+					"base": "2000000000",
+					"reason": "si_iec_hazard",
+					"key": "disk"
+				}
+			],
+			"errors": []
+		},
+		{
 			"name": "units.yaml as yaml",
 			"file": "units.yaml",
 			"fileType": "yaml",
@@ -240,6 +276,42 @@
 			"name": "units.csv as csv",
 			"file": "units.csv",
 			"fileType": "csv",
+			"expected": [
+				{
+					"value": "30s",
+					"dimension": "duration",
+					"base": "30000",
+					"reason": null,
+					"key": null
+				},
+				{
+					"value": "512MiB",
+					"dimension": "bytes",
+					"base": "536870912",
+					"reason": null,
+					"key": null
+				},
+				{
+					"value": "1h",
+					"dimension": "duration",
+					"base": "3600000",
+					"reason": null,
+					"key": null
+				},
+				{
+					"value": "1GiB",
+					"dimension": "bytes",
+					"base": "1073741824",
+					"reason": null,
+					"key": null
+				}
+			],
+			"errors": []
+		},
+		{
+			"name": "units.tsv as tsv",
+			"file": "units.tsv",
+			"fileType": "tsv",
 			"expected": [
 				{
 					"value": "30s",
