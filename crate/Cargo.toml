@@ -53,7 +53,7 @@ toml = { version = "1", features = ["preserve_order"] }
 rust-ini = "0.21"
 # YAML 1.2 with the core schema, which is what `30s` being a *string*
 # rather than a typed scalar depends on.
-saphyr = "0.0.11"
+saphyr = "0.0.12"
 # CSV, read with no header row of its own and a flexible record length —
 # a ragged row is data rather than a failure.
 csv = "1"
