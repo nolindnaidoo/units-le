@@ -10,10 +10,6 @@
  * csv are transcribed in this repo, and their acceptance and their error text
  * are part of every answer.
  *
- * One class is left out on purpose: a YAML document whose last line is a
- * directive with no line break after it. The crate's YAML library never
- * returns from that input, so there is no answer to compare; see AGENTS.md.
- *
  * Run: bun scripts/check-extraction-differential.ts
  *   UNITS_LE_DIFFERENTIAL_SEED=<n>  reproduce a specific failure
  *   UNITS_LE_DIFFERENTIAL_CASES=<n> how many calls (default 1500)
@@ -21,8 +17,6 @@
  */
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { resolveFormat } from '../src/extract';
-import { yamlNeverReturns } from '../src/extract/yaml';
 import { TOOLS } from '../src/mcp/tools';
 
 const ROOT = join(import.meta.dir, '..');
@@ -73,7 +67,7 @@ function generate(count: number, seed: number) {
 			content = values.map((v, i) => (random() < 0.2 ? `- ${v}` : `${pick(KEYS).replace(/ /g, '_')}${i}: ${random() < 0.3 ? JSON.stringify(v) : v}`)).join('\n');
 			if (random() < 0.15) content = `---\n${content}\n---\nother: ${quantity()}`;
 			if (random() < 0.1) content = pick([`${content}\n  bad: [`, `a: b: c`, `${content}\n\t- tab`, `key: "unterminated`, `- a\nb: c`, `%YAML 1.2\n---\n${content}`, `&a x: *b`]);
-			content += '\n';
+			content += random() < 0.05 ? pick(['\n%YAML', '\n%TAG', '\n%FOO bar', '\n%a: 1']) : '\n';
 		} else if (format === 'toml') {
 			content = values.map((v, i) => `${pick(['a', 'b', '"c d"', 'e.f'])}${i} = ${random() < 0.9 ? JSON.stringify(v) : v}`).join('\n');
 			if (random() < 0.3) content = `[section]\n${content}\n[[arr]]\nx = ${JSON.stringify(quantity())}`;
@@ -103,9 +97,6 @@ function generate(count: number, seed: number) {
 		if (random() < 0.08) args.maxResults = pick([1, 2, 3, 0, 5001, 1.5, '10', null]);
 		if (random() < 0.03) args.format = pick(['YAML', ' .json ', 'yml', 'properties', 'conf', 42]);
 		if (random() < 0.02) delete args.content;
-		// Judged on the format the servers will actually use, which an override can change.
-		const effective = resolveFormat(typeof args.format === 'string' ? args.format : undefined, typeof args.filename === 'string' ? args.filename : undefined);
-		if (effective === 'yaml' && typeof args.content === 'string' && yamlNeverReturns(args.content)) continue;
 		out.push({ name: `${index}`, args });
 	}
 	return out;

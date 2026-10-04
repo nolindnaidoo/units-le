@@ -242,5 +242,32 @@
 			"maxResults": 1.5
 		},
 		"expectedError": "maxResults must be a whole number between 1 and 5000"
+	},
+	{
+		"name": "a YAML directive that runs off the end of the input is refused, not read for ever",
+		"content": "a: 30s\n%TAG",
+		"arguments": {
+			"format": "yaml"
+		},
+		"expected": {
+			"ok": false,
+			"data": {
+				"quantities": [],
+				"fileType": "yaml",
+				"refused": 0
+			},
+			"diagnostics": [
+				{
+					"severity": "error",
+					"code": "parse-error",
+					"message": "Failed to parse YAML: a directive runs to the end of the input with no line break after it"
+				}
+			],
+			"meta": {
+				"tool": "extract_units",
+				"count": 0,
+				"truncated": false
+			}
+		}
 	}
 ]

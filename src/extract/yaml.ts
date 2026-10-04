@@ -267,7 +267,7 @@ function outcome(text: string): Node[] | string {
 	} catch (error) {
 		if (error instanceof ScanError) return error.message;
 		if (error instanceof UnboundedScan) {
-			return 'a directive runs to the end of the document with no line break after it, which the crate never returns from';
+			return 'a directive runs to the end of the input with no line break after it';
 		}
 		throw error;
 	}
@@ -288,14 +288,4 @@ export function yamlParseError(text: string): string | undefined {
 	return typeof documents === 'string'
 		? `Failed to parse YAML: ${documents}`
 		: undefined;
-}
-
-/** Whether this is the one input the crate's YAML library never returns from, so a differential can leave it out. */
-export function yamlNeverReturns(text: string): boolean {
-	try {
-		load(text);
-		return false;
-	} catch (error) {
-		return error instanceof UnboundedScan;
-	}
 }

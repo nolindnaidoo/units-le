@@ -7,7 +7,7 @@ import { extractIni, iniParseError } from './ini';
 import { extractJson, jsonParseError } from './json';
 import type { Field } from './policy';
 import { extractToml, tomlParseError } from './toml';
-import { extractYaml, yamlNeverReturns, yamlParseError } from './yaml';
+import { extractYaml, yamlParseError } from './yaml';
 
 /**
  * Two tables of answers read back from the crates, one row per case: what
@@ -72,12 +72,16 @@ describe('grammar cases, from the crate', () => {
 	}
 });
 
-describe('the one YAML input the crate never returns from', () => {
-	it('is recognised, so the port can stop where the crate would loop', () => {
-		for (const text of ['%YAML', 'a: 1\n%TAG', '%a: 1'])
-			expect(yamlNeverReturns(text)).toBe(true);
-		for (const text of ['%YAML 1.2\n---\na: 1\n', 'a: "%TAG"', ''])
-			expect(yamlNeverReturns(text)).toBe(false);
-		expect(extractYaml('%YAML')).toEqual([]);
+describe('a YAML directive that runs off the end of the input', () => {
+	it('is refused by name, as the crate refuses it, and a directive with its line break still reads', () => {
+		for (const text of ['%YAML', 'a: 1\n%TAG', '%a: 1', '%FOO bar']) {
+			expect(extractYaml(text)).toEqual([]);
+			expect(yamlParseError(text)).toBe(
+				'Failed to parse YAML: a directive runs to the end of the input with no line break after it',
+			);
+		}
+		expect(extractYaml('%YAML 1.2\n---\na: 30s\n').map((f) => f.text)).toEqual([
+			'30s',
+		]);
 	});
 });
