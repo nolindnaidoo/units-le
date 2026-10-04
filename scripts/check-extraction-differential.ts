@@ -67,8 +67,8 @@ function generate(count: number, seed: number) {
 			const body: Record<string, unknown> = {};
 			for (const [i, v] of values.entries()) body[`${pick(KEYS)}${i}`] = random() < 0.3 ? { nested: v, list: [v, 30, true] } : random() < 0.1 ? 30 : v;
 			content = JSON.stringify(body, null, random() < 0.5 ? 2 : undefined);
-			if (format === 'jsonc' && random() < 0.4) content = content.replace('{', '{ // comment\n').replace(/}$/, ',}');
-			if (random() < 0.1) content = pick([content.slice(0, -1), `${content} trailing`, '', '   ', `// c\n${content}`, content.replace('{', '{,'), "{'a': '30s'}"]);
+			if (format === 'jsonc' && random() < 0.4) content = `{ // comment\n${content.slice(1).replace(/}$/, ',}')}`;
+			if (random() < 0.1) content = pick([content.slice(0, -1), `${content} trailing`, '', '   ', `// c\n${content}`, `{,${content.slice(1)}`, "{'a': '30s'}"]);
 		} else if (format === 'yaml') {
 			content = values.map((v, i) => (random() < 0.2 ? `- ${v}` : `${pick(KEYS).replace(/ /g, '_')}${i}: ${random() < 0.3 ? JSON.stringify(v) : v}`)).join('\n');
 			if (random() < 0.15) content = `---\n${content}\n---\nother: ${quantity()}`;
