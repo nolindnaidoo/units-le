@@ -1,7 +1,7 @@
 id = "units-le"
 name = "Units-LE"
 description = "Extract durations, sizes, percentages and frequencies in one base unit, refusing ambiguous ones."
-version = "1.0.0"
+version = "1.0.1"
 schema_version = 1
 authors = ["nolindnaidoo"]
 repository = "https://github.com/nolindnaidoo/units-le"
