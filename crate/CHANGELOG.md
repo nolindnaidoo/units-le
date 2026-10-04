@@ -5,6 +5,20 @@ The Rust CLI and MCP server.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-10-04
+
+### Fixed
+
+- **A YAML document that ends inside a directive no longer hangs.** saphyr
+  0.1.0 pads the end of its input with `'\0'` and counts `'\0'` as a
+  non-space character, so a directive whose name or parameter ran to the
+  end of the input — `%YAML`, `a: 1\n%TAG`, `%FOO bar`, with no line break
+  after it — was read for ever: the CLI never exited and the MCP server
+  stopped answering. The input saphyr reads is now bounded, and such a
+  document is refused with `Failed to parse YAML: a directive runs to the
+  end of the input with no line break after it`. Found by the npm twin's
+  differential, which has to answer that input too.
+
 ## [0.2.0] - 2026-08-15
 
 A behavioural audit drove the real binary against SPEC.md rather than

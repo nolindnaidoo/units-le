@@ -9,8 +9,59 @@ use saphyr::{LoadableYamlNode, Scalar, Yaml};
 
 use super::policy::{Field, Value, collect};
 
+/// What a document is refused with when its directive runs off the end.
+const UNBOUNDED: &str = "a directive runs to the end of the input with no line break after it";
+
+/// How far past the end saphyr may read before the read is runaway. Its
+/// own lookahead past the end is a handful of characters; the runaway one
+/// never stops.
+const OVERRUN: usize = 64;
+
+/// The document's characters, then — where saphyr reads on past the end —
+/// a line break that ends the read, and a note that it had to.
+///
+/// saphyr 0.1.0 pads the end of its input with `'\0'` and counts `'\0'` as
+/// a non-space character, so a directive whose name or parameter runs to
+/// the end of the input (`%YAML`, `a: 1\n%TAG`) is read for ever. This is
+/// the only place the crate can see that happen, and what it read past the
+/// end is not a document, so the load is refused rather than answered.
+struct Bounded<'a> {
+    chars: core::str::Chars<'a>,
+    past_end: usize,
+    overran: bool,
+}
+
+impl Iterator for Bounded<'_> {
+    type Item = char;
+
+    fn next(&mut self) -> Option<char> {
+        if let Some(character) = self.chars.next() {
+            return Some(character);
+        }
+        self.past_end += 1;
+        if self.past_end.is_multiple_of(OVERRUN) {
+            self.overran = true;
+            return Some('\n');
+        }
+        None
+    }
+}
+
+fn load(text: &str) -> Result<Vec<Yaml<'static>>, String> {
+    let mut input = Bounded {
+        chars: text.chars(),
+        past_end: 0,
+        overran: false,
+    };
+    let loaded = Yaml::load_from_iter(&mut input);
+    if input.overran {
+        return Err(UNBOUNDED.to_string());
+    }
+    loaded.map_err(|error| error.to_string())
+}
+
 pub(crate) fn extract(text: &str) -> Vec<Field> {
-    let Ok(documents) = Yaml::load_from_str(text) else {
+    let Ok(documents) = load(text) else {
         return Vec::new();
     };
     // A multi-document file is a sequence of documents, so a key in the
@@ -49,7 +100,7 @@ fn key_of(node: &Yaml<'_>) -> Option<String> {
 }
 
 pub(crate) fn parse_error(text: &str) -> Option<String> {
-    Yaml::load_from_str(text)
+    load(text)
         .err()
         .map(|error| format!("Failed to parse YAML: {error}"))
 }
@@ -63,6 +114,26 @@ mod tests {
             .into_iter()
             .map(|field| (field.key, field.text))
             .collect()
+    }
+
+    /// saphyr reads for ever past a directive that runs to the end of the
+    /// input. Each of these hung the CLI and the MCP server before the
+    /// bounded input; now each is refused by name, and a directive with
+    /// its line break still reads.
+    #[test]
+    fn a_directive_that_runs_off_the_end_is_refused_rather_than_read_for_ever() {
+        for text in ["%YAML", "a: 1\n%TAG", "%a: 1", "%FOO bar"] {
+            assert!(fields(text).is_empty(), "{text:?}");
+            assert_eq!(
+                parse_error(text).as_deref(),
+                Some(
+                    "Failed to parse YAML: a directive runs to the end of the input with no line break after it"
+                ),
+                "{text:?}"
+            );
+        }
+        assert_eq!(fields("%YAML 1.2\n---\na: 30s\n")[0].1, "30s");
+        assert_eq!(parse_error("a: \"%TAG\""), None);
     }
 
     /// The property everything else here rests on.
