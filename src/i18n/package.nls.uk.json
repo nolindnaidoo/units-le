@@ -1,0 +1,20 @@
+{
+	"manifest.command.category": "Units-LE",
+	"manifest.command.extract.title": "Видобути величини",
+	"manifest.command.settings.title": "Відкрити налаштування",
+	"manifest.command.help.title": "Довідка та усунення проблем",
+	"manifest.settings.title": "Налаштування Units-LE",
+	"manifest.settings.copy.clipboard.desc": "Копіювати кожен звіт у буфер обміну, а не лише відкривати його",
+	"manifest.settings.dimensions.desc": "Повідомляти лише про ці виміри. Порожній список — про всі чотири. Відмову без зазначення виміру повідомляють завжди, бо вона може стосуватися будь-якого з них.",
+	"manifest.settings.notifications.level.desc": "Керує докладністю сповіщень",
+	"manifest.settings.notifications.level.option.all": "Показувати всі сповіщення",
+	"manifest.settings.notifications.level.option.important": "Показувати лише важливі сповіщення",
+	"manifest.settings.notifications.level.option.silent": "Приховувати всі сповіщення",
+	"manifest.settings.open.side-by-side.desc": "Відкривати звіт у новому редакторі збоку",
+	"manifest.settings.safety.enabled.desc": "Увімкнути перевірки безпеки для великих файлів",
+	"manifest.settings.safety.warn.file-size.desc": "Розмір у байтах, починаючи з якого для активного документа виводиться попередження",
+	"manifest.settings.statusbar.enabled.desc": "Показувати елемент Units-LE у рядку стану для швидкого доступу",
+	"manifest.settings.telemetry.desc": "Увімкнути лише локальні журнали телеметрії на панелі «Вивід»",
+	"manifest.capability.untrusted-workspaces.desc": "Обмежена функціональність у ненадійних робочих областях",
+	"manifest.mcp.label": "Видобування величин Units-LE для режиму агента"
+}

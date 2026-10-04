@@ -1,0 +1,20 @@
+{
+	"manifest.command.category": "Units-LE",
+	"manifest.command.extract.title": "Extraer cantidades",
+	"manifest.command.settings.title": "Abrir configuración",
+	"manifest.command.help.title": "Ayuda y solución de problemas",
+	"manifest.settings.title": "Configuración de Units-LE",
+	"manifest.settings.copy.clipboard.desc": "Copiar cada informe al portapapeles además de abrirlo",
+	"manifest.settings.dimensions.desc": "Informar solo de estas dimensiones. Vacío informa de las cuatro. Un rechazo que no nombra ninguna dimensión siempre se informa, porque podría haber sido una de ellas.",
+	"manifest.settings.notifications.level.desc": "Controla el nivel de detalle de las notificaciones",
+	"manifest.settings.notifications.level.option.all": "Mostrar todas las notificaciones",
+	"manifest.settings.notifications.level.option.important": "Mostrar solo las notificaciones importantes",
+	"manifest.settings.notifications.level.option.silent": "Suprimir todas las notificaciones",
+	"manifest.settings.open.side-by-side.desc": "Abrir el informe en un editor nuevo al lado",
+	"manifest.settings.safety.enabled.desc": "Activar comprobaciones de seguridad para archivos grandes",
+	"manifest.settings.safety.warn.file-size.desc": "Tamaño en bytes a partir del cual el documento activo recibe una advertencia",
+	"manifest.settings.statusbar.enabled.desc": "Mostrar la entrada de Units-LE en la barra de estado para un acceso rápido",
+	"manifest.settings.telemetry.desc": "Activar registros de telemetría solo locales en el panel de salida",
+	"manifest.capability.untrusted-workspaces.desc": "Funcionalidad limitada en áreas de trabajo que no son de confianza",
+	"manifest.mcp.label": "Extracción de cantidades de Units-LE para el modo agente"
+}

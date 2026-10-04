@@ -1,54 +1,40 @@
 # Contributor and agent instructions
 
-**Read [`crate/AGENTS.md`](crate/AGENTS.md) before writing any code.** This
-repository is crate-only — everything that is the product lives in
-[`crate/`](crate/) — and that file carries the engineering standard it is held
-to: control flow, error handling, structure, the settled decisions and the
-definition of done. [`crate/SPEC.md`](crate/SPEC.md) defines the behaviour.
-[AGENTS.md](AGENTS.md) at the root routes between them; [CLAUDE.md](CLAUDE.md)
-is the short version: gates and traps.
+**Read [AGENTS.md](AGENTS.md) before writing any code.** It carries the
+engineering standard this repository is held to — control flow, error handling,
+immutability, structure — plus the architecture, the invariants and why each
+one exists. [CLAUDE.md](CLAUDE.md) is the short version: gates and traps.
 
-This file exists only to point you there. It is deliberately thin: the standard
+This file exists only to route you there. It is deliberately thin: the standard
 lives in one place so it cannot drift between tools.
 
 ## Non-negotiables
 
-- **A refusal is a finding.** A quantity that cannot be resolved keeps its row,
-  its source text, a named reason and a sentence a person can act on. Never
-  normalise something that should be refused; never resolve a refusal to make a
-  test pass.
-- Guard clauses first. **No statement-position `else`** — two branches are an
-  early return, many are a `match`.
-- Nesting stops at two levels inside a function; extract a named helper.
-- **Base values are exact decimals, never `f64`.** Every conversion is a
-  checked integer multiply, and an overflow is `out_of_range` rather than a
-  wrap.
-- `extract/` is pure and touches no filesystem; only `walk.rs` and `scan.rs`
-  may. A `std::fs` call in `extract/` is a bug.
-- **No inline lint attribute** — `#[allow]`, `#[expect]`, or a `cfg_attr`
-  carrying one. Fix the lint, relax it visibly in `[lints.clippy]` in
-  `crate/Cargo.toml`, or make the item `#[cfg(test)]` if only tests read it.
-- No `anyhow`, no `thiserror`, no `clap`, no async runtime, no regex engine.
-  Fallible functions return `Result<T, String>`.
-- **Never report success you did not achieve**, and never a resolution you did
-  not reach.
+- Guard clauses first. **No `else`, no `else if`** — two branches are an early
+  return, many are a lookup table.
+- Nesting stops at two levels inside a function.
+- Immutable by default: `readonly`, `ReadonlyArray`, `Object.freeze`. Never
+  mutate a parameter.
+- Composition, never inheritance. Factory functions returning frozen objects,
+  dependencies passed in as a typed bag.
+- Logic never touches `vscode.window.*`; `ui/` renders and `commands/`
+  orchestrates.
+- **Never report success you did not achieve** — check what the API returned.
+- Errors are descriptive and never swallowed.
 - Comments explain **why**, never what.
-- Commits are conventional (`fix:`, `feat:`, `docs:`…), imperative, and carry
-  no AI attribution of any kind.
+- Commits are conventional (`fix:`, `feat:`, `docs:`…), imperative, and
+  enforced by a hook and by CI.
 
 ## Before you commit
 
 ```bash
-cd crate
-cargo fmt --all --check
-cargo clippy --all-targets -- -D warnings
-cargo test --locked
+bun run typecheck && bun run lint && bun run test
 ```
 
-Coverage is a backstop, not a target — 75% per module on `crate/src/extract/`,
-well below where the code actually is, and never raised to track it. Every claim in a README, a help text or SPEC.md
-must be provable against the code.
+Coverage floors are a backstop against an untested module, not a target: they
+sit well below where the code actually is and are never raised to track it.
+Every claim in a README or manifest must be provable against the code.
 
 **Provable is about behaviour and numbers, not availability.** An install line
-for a publish you are about to make is *staged*, not forbidden — write it, and
+for a release you are about to make is *staged*, not forbidden — write it, and
 let the release commit be what makes it true.

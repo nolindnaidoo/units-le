@@ -1,27 +1,24 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/nolindnaidoo/units-le/main/assets/icon.png" alt="Units-LE logo" width="96" height="96"/>
+  <img src="src/assets/images/icon.png" alt="Units-LE Logo" width="96" height="96"/>
 </p>
-<h1 align="center">Units-LE</h1>
+<h1 align="center">Units-LE: One Quantity, One Unit</h1>
 <p align="center">
-  <b>Extract every quantity in a codebase — the number <i>and</i> its unit</b><br/>
-  <i>normalised to one base unit so two configs can be compared, and refused by name when it cannot be</i>
+  <b>Find every quantity in a document — durations, sizes, percentages, frequencies — with its value in one base unit, and refuse the ambiguous ones by name</b><br/>
+  <i>YAML · TOML · JSON · INI · dotenv · CSV · and anything else, scanned as text</i>
 </p>
 
 <p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.units-le">
+    <img src="https://img.shields.io/badge/Install%20from-VS%20Code-blue?style=for-the-badge&logo=visualstudiocode" alt="Install from VS Code Marketplace" />
+  </a>
+  <a href="https://open-vsx.org/extension/OffensiveEdge/units-le">
+    <img src="https://img.shields.io/open-vsx/dt/OffensiveEdge/units-le?style=for-the-badge&label=Open%20VSX&color=blue" alt="Open VSX downloads" />
+  </a>
+  <a href="https://www.npmjs.com/package/units-le-mcp">
+    <img src="https://img.shields.io/npm/v/units-le-mcp?style=for-the-badge&label=MCP%20server&color=blue&logo=npm" alt="units-le-mcp on npm" />
+  </a>
   <a href="https://crates.io/crates/units-le">
     <img src="https://img.shields.io/crates/v/units-le?style=for-the-badge&label=Rust%20CLI&color=blue&logo=rust" alt="units-le on crates.io" />
-  </a>
-  <a href="https://crates.io/crates/units-le">
-    <img src="https://img.shields.io/crates/d/units-le?style=for-the-badge&label=Downloads&color=blue" alt="crates.io downloads" />
-  </a>
-  <a href="https://github.com/nolindnaidoo/units-le/actions/workflows/ci-crate.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/nolindnaidoo/units-le/ci-crate.yml?branch=main&style=for-the-badge&label=CI&color=blue&logo=githubactions&logoColor=white" alt="CI" />
-  </a>
-  <a href="https://github.com/nolindnaidoo/units-le/blob/main/crate/Cargo.toml">
-    <img src="https://img.shields.io/badge/rustc-1.88+-blue?style=for-the-badge&logo=rust" alt="MSRV: Rust 1.88+" />
-  </a>
-  <a href="https://github.com/nolindnaidoo/units-le/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-blue?style=for-the-badge" alt="MIT licensed" />
   </a>
   <a href="https://letools.dev/tools/units-le">
     <img src="https://img.shields.io/badge/LE%20Tools-letools.dev-blue?style=for-the-badge" alt="LE Tools" />
@@ -30,99 +27,32 @@
 
 ---
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/nolindnaidoo/units-le/main/assets/demo.gif" alt="Units-LE demo — the real binary, recorded by assets/demo.tape" style="max-width: 100%; height: auto;" />
-</p>
-
-> **Useful?** A star is how other developers find it —
+> **Useful?** A star or rating is how other developers find it —
 > [★ GitHub](https://github.com/nolindnaidoo/units-le) ·
-> [letools.dev/tools/units-le](https://letools.dev/tools/units-le)
+> [★ Open VSX](https://open-vsx.org/extension/OffensiveEdge/units-le/reviews) ·
+> [★ Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.units-le&ssr=false#review-details)
 
 ## What it does
 
-`timeout: 30s` in one service and `timeout: 30000` in another are the
-same number of milliseconds, and nothing about the text says so.
-`memory: 1GB` and `memory: 1GiB` differ by 7% and look identical at a
-glance. Someone has to reconcile them — before a migration, against a
-runbook, against a retention policy that states the limit in words.
+`timeout: 30s` in one service and `timeout: 30000` in another are the same number of milliseconds, and nothing about the text says so. `memory: 1GB` and `memory: 1GiB` differ by 7% and look identical at a glance.
 
-A schema validator does not serve them: it checks that a field is a
-string. A duration-parsing library does not either — it resolves
-`1.5KB` to 1500 and a bare `m` to whichever unit its author picked,
-silently, which is the failure this tool exists to prevent.
+Press `Ctrl+Alt+Q` (`Cmd+Alt+Q` on Mac) and every quantity in the active document — a number welded to a unit — opens in a report beside the editor: as the document wrote it, in one base unit so two of them can be compared, with its line, column and key path. A quantity it cannot read unambiguously keeps its row and gets a reason instead of a guess. Works in VS Code and in VS Code–based editors like Cursor and VSCodium (installable from Open VSX).
 
-units-le walks a tree, finds every quantity in it — a number welded to
-a unit — and reports each one twice: as the document wrote it, and in
-one base unit so two of them can be compared.
+- **Before a migration** — every timeout and memory limit in a values file, in milliseconds and bytes
+- **Reviewing a config change** — the `500m` that means minutes to one reader and millicores to another
+- **Against a runbook or a retention policy** — the limit the document states, checked against the one the config sets
 
-```bash
-units-le config/
-```
-
-```
-config/api.yaml:1:10  1h30m  5400000 milliseconds
-config/api.yaml:2:9  1MB  1000000 bytes
-config/cache.yaml:1:6  512MiB  536870912 bytes
-config/cache.yaml:2:6  500m  refused: ambiguous_unit
-4 quantities in 2 files
-1 quantity refused, each with a reason
-```
-
-That is stderr, for a person. stdout is protocol — one JSON report per
-line, one line per file:
-
-```json
-{
-  "schema": 1,
-  "file": "config/cache.yaml",
-  "format": "yaml",
-  "quantities": [
-    {
-      "value": "512MiB",
-      "dimension": "bytes",
-      "baseUnit": "bytes",
-      "base": "536870912",
-      "key": "ttl",
-      "line": 1,
-      "column": 6
-    },
-    {
-      "value": "500m",
-      "dimension": null,
-      "baseUnit": null,
-      "base": null,
-      "reason": "ambiguous_unit",
-      "detail": "`m` is minutes in one config format, milliseconds in another and millicores in Kubernetes. Write `min`, `ms`, or spell out the core count.",
-      "key": "cpu",
-      "line": 2,
-      "column": 6
-    }
-  ],
-  "diagnostics": [],
-  "summary": { "quantities": 2, "refused": 1 }
-}
-```
-
-There is no `--json` flag. One mode, nothing to misremember, and the
-human summary is a projection of the same reports so the two cannot
-drift.
+**It never rewrites a document, and never guesses.**
 
 ## Install
 
-```bash
-cargo install units-le
-```
-
-Or build it from this repository:
-
-```bash
-git clone https://github.com/nolindnaidoo/units-le
-cd units-le/crate
-cargo build --release      # target/release/units-le
-```
-
-Needs **Rust 1.88+**, which is the version CI checks the declared MSRV
-against. No runtime, no network, nothing written.
+| Where | What you get | Install |
+|---|---|---|
+| **VS Code** | The report, in your editor, on a keystroke | [Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.units-le) |
+| **Cursor, VSCodium, Windsurf** | The same extension | [Open VSX](https://open-vsx.org/extension/OffensiveEdge/units-le) |
+| **A terminal or a CI step** | A whole tree, with exit codes | `cargo install units-le` · [crates.io](https://crates.io/crates/units-le) |
+| **Any MCP agent, via Node** | `extract_units` over stdio | `npx units-le-mcp` · [npm](https://www.npmjs.com/package/units-le-mcp) |
+| **Zed** | The MCP server as a context server | [add it by hand](https://zed.dev/docs/ai/mcp) *(no listing yet)* |
 
 ## A refusal is a finding
 
@@ -151,9 +81,9 @@ so `1MB` comes back as **1000000 bytes** *and* carries
 reporting the standard answer with the flag attached, and picking 2^20
 would be the guess this tool exists not to make.
 
-So it is **not counted in `summary.refused`** and it does **not** trip
-`--strict`. A row with `si_iec_hazard` is the only row that carries both
-a `base` and a `reason`; every other reason means the base is `null`.
+So it is **not counted as refused**. A row with `si_iec_hazard` is the
+only row that carries both a `base` and a `reason`; every other reason
+means the base is `null`.
 
 **A bare number with no unit is not a finding at all.** `timeout: 30`
 yields nothing here — that is
@@ -184,59 +114,6 @@ belong to a different question, and reading them would mean unit algebra
 (`m/s²`), which is what `uom` is for. See
 [`crate/SPEC.md`](crate/SPEC.md).
 
-## Exit codes are the API
-
-Following grep, as the rest of the family does:
-
-- **0** — quantities found.
-- **1** — none found. An answer, not an error.
-- **2** — the question was malformed: an unknown flag, an unrecognised
-  dimension, a path that does not exist.
-
-**A refusal does not change the exit code.** A tree full of ambiguous
-units is a real result, and `if units-le config/; then` has to see it as
-success. `--strict` is the opt-in for a pipeline that wants every
-quantity resolved or the build stopped: it exits 2 on any refusal, and
-on any text file that could not be read.
-
-Exit 2 does **not** mean one file in fifty thousand was a PNG. A binary
-file — a NUL byte in the first 8 KiB, ripgrep's own test — produces no
-report line and never affects the exit code; it is counted on stderr so
-a reader still knows coverage was narrower than the tree.
-
-## Options
-
-```
---dimension <name>   report only duration, bytes, percent or frequency
---format <format>    force a format instead of inferring from the name;
-                     an unknown name falls back to the text scan
---strict             exit 2 if any quantity was refused, or any text
-                     file could not be read
---stdin              read one document from stdin
---hidden             walk hidden files and directories too
---no-ignore          walk files that .gitignore excludes
-```
-
-```bash
-units-le .                                 # every quantity in the tree
-units-le --dimension duration config/      # only the timeouts
-units-le --strict config/                  # exit 2 if anything was refused
-cat values.yaml | units-le --stdin --format yaml
-
-# the point of the whole thing:
-units-le config/ | jq -r '.quantities[] | select(.dimension=="duration") | "\(.key)\t\(.base)"'
-```
-
-**A format falls back and a dimension does not.** A format nobody
-recognises still has an answer — scan the text. A dimension nobody
-recognises has none, and quietly reporting all four would answer a
-question that was not asked.
-
-**A refusal that names no dimension survives every filter.** A bare
-`500m` could be a duration or a byte count — that is why it was refused
-— so dropping it under `--dimension bytes` would be the tool deciding
-what it just said it could not decide.
-
 ## Formats
 
 JSON, YAML, CSV, TOML, INI and dotenv are parsed. **Everything else is
@@ -261,23 +138,6 @@ false findings, 1.8%**, and a test prints that number on every run.
 Each one carries its line and column, which is what makes it a row you
 discard rather than a number you trust.
 
-## As an MCP server
-
-```bash
-units-le mcp
-```
-
-Two tools, both returning `{ ok, data, diagnostics, meta }`:
-
-- **`extract_units`** — content in, quantities out, with key paths and
-  positions. Touches no filesystem.
-- **`units_le_scan`** — files or directories in, the same reports the
-  CLI writes.
-
-`ok` reports whether the check ran, never whether the answer was yes. A
-refusal is a successful answer carrying a reason; only a malformed
-question is an error.
-
 ## It has no opinions
 
 No "this timeout is too low". No defaults database. No conversion flag,
@@ -285,15 +145,146 @@ no rewriting, no arithmetic. It reports what a document says and what
 that means in one base unit; which limits are right is the reviewer's
 call.
 
+## Use it from an AI agent
+
+The same engine runs as an [MCP](https://modelcontextprotocol.io) server, so an agent can read quantities directly instead of converting units by hand.
+
+| Editor | How |
+|---|---|
+| **VS Code** 1.101+ | Nothing to install — the extension registers `extract_units` with agent mode |
+| **Zed** | No listing yet — [add the MCP server by hand](https://zed.dev/docs/ai/mcp) |
+| **Claude Code** | `claude mcp add units-le -- npx -y units-le-mcp` |
+| **Cursor, Windsurf, anything else** | point it at `npx units-le-mcp` |
+
+```
+extract_units(content, format?, filename?, dimension?, maxResults?)
+```
+
+It returns the report the editor renders, as data — quantities capped at 500 by default with `meta.truncated`. It reads no files and makes no network requests. Published as [`units-le-mcp`](https://www.npmjs.com/package/units-le-mcp) on npm and as `io.github.nolindnaidoo/units-le` in the [MCP registry](https://registry.modelcontextprotocol.io). It answers exactly as the Rust CLI's server does: one corpus runs against both, and a differential test feeds both thousands of generated documents in every format — broken ones included, so each parser's error text is compared too.
+
+<details>
+<summary><b>Configuring it by hand</b> — any host with an MCP config file</summary>
+
+```json
+{
+  "mcpServers": {
+    "units-le": {
+      "command": "npx",
+      "args": ["-y", "units-le-mcp"]
+    }
+  }
+}
+```
+
+Or install it once with `npm install -g units-le-mcp` and point at `units-le-mcp`. It needs no environment variables, no API key and no configuration of its own. To check it:
+
+```bash
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | npx -y units-le-mcp
+```
+
+</details>
+
+## The CLI
+
+The same extraction runs over a tree from a terminal or a CI step: a Rust CLI in [`crate/`](crate/README.md), sharing one corpus with the extension — [`crate/fixtures/`](crate/fixtures/) — so the two can never read a quantity differently.
+
+<p align="center">
+  <img src="assets/demo.gif" alt="units-le in a terminal" style="max-width: 100%; height: auto;" />
+</p>
+
+```bash
+units-le .                                 # every quantity in the tree, one JSON report per file
+units-le --dimension duration config/      # only the timeouts
+units-le --strict config/                  # exit 2 if anything was refused
+cat values.yaml | units-le --stdin --format yaml
+units-le mcp                               # extract_units and units_le_scan over MCP on stdio
+```
+
+**Exit codes follow grep** — 0 quantities found, 1 none found, 2 the question was malformed. A refusal does not change the exit code; `--strict` makes it one.
+
+## Commands
+
+| Command | Description |
+|---|---|
+| `Units-LE: Extract Quantities` (`Ctrl+Alt+Q` / `Cmd+Alt+Q`) | Every quantity in the active document, as the editor holds it |
+| `Units-LE: Open Settings` | Open Units-LE settings |
+| `Units-LE: Help & Troubleshooting` | Built-in documentation |
+
+## Settings
+
+| Setting | Default | Description |
+|---|---|---|
+| `units-le.dimensions` | `[]` | Report only these dimensions; empty reports all four. A refusal that names no dimension is always reported |
+| `units-le.openResultsSideBySide` | `true` | Open the report beside the current editor |
+| `units-le.copyToClipboardEnabled` | `false` | Also copy the report to the clipboard |
+| `units-le.notificationsLevel` | `silent` | `all` = every notification, `important` = warnings + errors, `silent` = errors only |
+| `units-le.safety.enabled` | `true` | Warn before reading a large file |
+| `units-le.safety.fileSizeWarnBytes` | `1000000` | Size above which the warning appears |
+| `units-le.statusBar.enabled` | `true` | Show the status bar item |
+| `units-le.telemetryEnabled` | `false` | Local-only event log (see Privacy) |
+
+## Languages
+
+Twelve languages besides English:
+
+German · Spanish · French · Indonesian · Italian · Japanese · Korean ·
+Portuguese (Brazil) · Russian · Ukrainian · Vietnamese · Chinese (Simplified)
+
+Both halves are covered — the manifest (command titles, setting names and descriptions) and everything shown while the extension runs (notifications, the status bar and the report's headings). A refusal's sentence and a parser's error are the engine's English, identical to the CLI's.
+
+## Privacy & security
+
+- **No network access.** The extension never sends data anywhere. The `telemetryEnabled` setting only writes events to a local Output Channel you can inspect (`Units-LE`).
+- **It reads the active document and nothing else**, and never writes to it.
+- **The MCP server holds the same line.** It takes content as an argument and returns data: no filesystem access, no network calls, no telemetry.
+- Error notifications redact home directories and credential-shaped fragments.
+
 ## Documentation
 
 | What | Where |
 |---|---|
-| What the tool is allowed to say — scope, output contract, refusals, non-goals | [`crate/SPEC.md`](crate/SPEC.md) |
-| How the code is written and held together — architecture, invariants, the gates | [`crate/AGENTS.md`](crate/AGENTS.md) |
-| The crate's own front page | [`crate/README.md`](crate/README.md) |
+| What the tool is allowed to say — the grammar, the refusals, the output contract, non-goals | [`crate/SPEC.md`](crate/SPEC.md) |
+| How the extension is built and held together — architecture, invariants, toolchain, release | [AGENTS.md](AGENTS.md) |
+| How the CLI is built and held together | [`crate/AGENTS.md`](crate/AGENTS.md) |
 | What changed | [CHANGELOG.md](CHANGELOG.md) · [`crate/CHANGELOG.md`](crate/CHANGELOG.md) |
 | The tool's page, and the other fifteen | [letools.dev/tools/units-le](https://letools.dev/tools/units-le) |
+
+## Performance
+
+<!-- performance:start -->
+| Input | Size | Found | Time | Rate | Scan speed |
+| --- | --- | --- | --- | --- | --- |
+| YAML config | 0.88 MB | 50,000 | 107.63 ms | 464,557/sec | 8.2 MB/s |
+| TOML config | 0.73 MB | 30,000 | 49.08 ms | 611,287/sec | 14.9 MB/s |
+| Log, scanned as text | 3.25 MB | 120,000 | 327.9 ms | 365,967/sec | 9.9 MB/s |
+
+Median of 7 runs after warmup, on Apple M5 Pro, 24 GB RAM, Node 24.3.0. Inputs are generated
+by `scripts/benchmark.ts` rather than checked in, so the sizes above are
+exactly what was measured. Reproduce with `bun run benchmark`.
+
+These are machine-specific and are not asserted in CI — a benchmark that gates
+a build only tells you how busy the runner was.
+<!-- performance:end -->
+
+## Testing
+
+<!-- coverage:start -->
+| Metric | Coverage |
+| --- | --- |
+| Statements | 86.17% |
+| Branches | 78.39% |
+| Functions | 95.24% |
+| Lines | 88.07% |
+
+530 test cases across 11 files, plus an integration suite that runs
+in a real VS Code extension host and an end-to-end test that installs the
+built `.vsix` into a clean profile.
+
+Generated from a real run — `coverage/coverage-summary.json` and
+`coverage/test-results.json` — by `scripts/coverage-readme.js`; CI fails if
+this section drifts. Reproduce with `bun run test:coverage`, and the case
+count is the one vitest prints.
+<!-- coverage:end -->
 
 ## More from the LE family
 
@@ -343,4 +334,4 @@ part of the LE family.
 
 ## License
 
-MIT © [nolindnaidoo](https://github.com/nolindnaidoo) — see [LICENSE](LICENSE).
+MIT © [nolindnaidoo](https://github.com/nolindnaidoo)

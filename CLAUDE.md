@@ -1,68 +1,92 @@
 # CLAUDE.md
 
-[AGENTS.md](AGENTS.md) is the technical source of truth for this repo. It is a
-router: **this repository is crate-only**, so everything that is the product
-lives in [`crate/`](crate/) and [`crate/AGENTS.md`](crate/AGENTS.md) is the
+[AGENTS.md](AGENTS.md) is the technical source of truth for this repo: the
 engineering standard the code is held to — control flow, error handling,
-structure, the settled decisions, the definition of done. Read it before
-writing code. [`crate/SPEC.md`](crate/SPEC.md) defines the product behaviour.
+immutability, structure — plus this repo's architecture, invariants, toolchain
+and release. Read it before writing code. README.md is user-facing and partly
+generated.
+
+The repo also hosts the Rust CLI in `crate/` — read `crate/CLAUDE.md` and
+`crate/AGENTS.md` for that side; the shared corpus is `crate/fixtures/`.
 
 ## Where to look
 
 | Question | File |
 |---|---|
-| How should this code be written? | [`crate/AGENTS.md`](crate/AGENTS.md) — the standard, the architecture, the invariants |
-| What is the tool supposed to do? | [`crate/SPEC.md`](crate/SPEC.md) — refusals, dimensions, exit codes, non-goals |
-| What does the user see? | [README.md](README.md) |
-| What changed? | [CHANGELOG.md](CHANGELOG.md) · [`crate/CHANGELOG.md`](crate/CHANGELOG.md) |
+| How should this code be written? | [AGENTS.md](AGENTS.md) — the standard, plus this repo's architecture and invariants |
+| What does the user see? | [README.md](README.md) — Testing and Performance are generated |
+| What changed? | [CHANGELOG.md](CHANGELOG.md) |
 
 ## Gates
 
 ```bash
-cd crate && cargo fmt --all --check && cargo clippy --all-targets -- -D warnings && cargo test --locked
+bun run typecheck && bun run lint && bun run test
 ```
 
-All three, exactly as CI runs them. The gated suites are extra:
-`UNITS_LE_BUDGET=1 cargo test --release --test budget`,
-`UNITS_LE_FUZZ_SECONDS=60 cargo test --release --test fuzz`,
-`UNITS_LE_SCENARIOS=1 cargo test --test scenarios`.
+Before a release, also `bun run test:integration`, `bun run package`, and
+`bun run test:e2e-vsix` — the last is the only test that exercises the
+artifact users actually install.
 
 ## Things that will bite you
 
-- **A refusal is a finding — that is the product, not a feature of it.** Never
-  let a test pass by normalising something that should be refused, and never
-  "fix" a refusal by resolving it. A changed case means a changed refusal table
-  in SPEC.md and a changed corpus, in the same commit.
-- **`si_iec_hazard` keeps its base value.** The one reason that annotates
-  rather than withholds. Making it a refusal is a behaviour change.
-- **Never reach for `f64`, never replace a `checked_mul` with a bare `*`.** An
-  overflow is `out_of_range`, not a wrap.
-- **Case is part of a unit symbol** (`MB` is bytes, `Mb` is refused), and **a
-  bare number is not a finding** — that is numbers-le's question.
-- **No inline lint attribute** — `#[allow]`, `#[expect]` or a `cfg_attr`
-  carrying one. The `policy` CI job greps for `#[allow(`, and the rule is wider
-  than the grep. Fix the lint, relax it visibly in `[lints.clippy]`, or make
-  the item `#[cfg(test)]` if only the tests read it.
-- **Every claim must be provable.** No metric, format or behaviour goes in a
-  README, a help text or SPEC.md unless the code backs it — and the numbers in
-  the README's Testing section come from a real `cargo llvm-cov` run. That
-  governs **behaviour and numbers**, not **availability**: an install line for
-  a publish you are about to make is **staged, not forbidden**. Write it, and
-  let the release commit be what makes it true.
-- **Nothing here is byte-identical with the rest of the family.** The siblings'
-  `ci.yml`, dotfiles and agent-rules files describe a repository with a VS Code
-  extension at its root; this one is crate-only, so its workflows
-  (`ci-crate.yml`, `release-crate.yml`, a CodeQL job scanning `rust`), its
-  dotfiles and its agent-rules files are its own. Copying one over from a
-  sibling re-imposes a shape this repo does not have.
-- **CI narrows itself on a docs-only push.** `ci-crate.yml` fires on `*.md` and
-  the agent instruction files — it has to, because the `policy` job greps them,
-  and the filter used to admit only `crate/**` so that gate could run only when
-  the files it guards had *not* been touched. On a docs-only push `policy` and
-  `commits` run and every Rust job skips. Anything unrecognised, and an
-  unreadable diff, counts as code and runs everything.
-- **Coverage floors are a backstop, not a target** — per module on `extract/`,
-  well below where the code actually is, and never raised to track it.
-- **Run the binary, not only the tests.** The text scan's false-positive class
-  was found that way, and is now measured by
-  `crate/fixtures/documents/opaque.txt`.
+- **Two README sections are generated.** Testing and Performance sit between
+  `<!-- coverage:start -->` / `<!-- performance:start -->` markers and come
+  from `scripts/coverage-readme.js` and `scripts/perf-readme.js`. Edit the
+  code and regenerate; do not type numbers in by hand. CI fails if the coverage
+  figures no longer match a real run.
+- **Refusals are the product, not an error path.** No filter may hide one,
+  and `500m` is never resolved to minutes, milliseconds or millicores: it is
+  `ambiguous_unit`, with the sentence that says which readings it has.
+- **A bare number is never a finding.** `timeout: 30` is numbers-le's
+  question, and the boundary is what keeps the two tools distinct.
+- **Every claim must be provable.** No feature, metric or format goes in a
+  README, the manifest, or help text unless the code backs it. That governs
+  **behaviour and numbers** — not **availability**. Whether something is
+  published, listed or installable is a fact about a registry at a moment in
+  time, and it is false right up until you make it true. Copy for a release you
+  are about to make is **staged, never forbidden**: write it, and let the
+  release commit be what makes it true.
+- **This repo is one of the family's extension repos.** The shared config
+  files, scripts and workflows are byte-identical across them, and
+  `letools-site/scripts/check-fleet.ts` is what holds them there rather than
+  memory: run `bun run check:fleet ../` from a checkout of the site with the
+  others beside it, or dispatch its **Fleet** workflow. It names the file and the
+  repos that drifted, so a missed copy is a report rather than something you
+  find months later. Anything under `crate/` is outside the check on purpose —
+  the crates stand on their own.
+- **The extraction is shared with the Rust CLI**, and the corpus under
+  `crate/` is the contract. Changing extraction behaviour means changing
+  `crate/src/extract/` and `src/extract/` together, updating the corpus, and
+  running `bun scripts/check-extraction-parity.ts` and the differential. CI
+  fails when either side drifts.
+- **What the contract holds equal is the shared `extract_units` MCP tool**, which
+  both servers offer and must answer identically; a difference there is a bug.
+  **The surfaces are meant to differ.** This one is IDE-first — the active
+  document, and a report a person reads. The CLI is terminal-first: a tree
+  walk, exit codes, `--strict` and one JSON line per file, none of which has an
+  editor equivalent. That is not drift, and nothing holds them equal — see
+  `crate/SPEC.md`.
+- **jsonc-parser, saphyr, toml, rust-ini and csv are transcribed, not
+  approximated.** Which document yields quantities, and what a broken one is
+  told, is those crates' answer, in `src/extract/`. Any npm parser answers
+  differently somewhere, and the differential will say so. AGENTS.md names
+  the behaviours that surprised us.
+- **TOML spans are UTF-8 bytes**, so the TOML port works on the document's
+  bytes; everything else is UTF-16 indices, which is also how the crate
+  counts columns.
+- **Localization is two mechanisms, and they fail separately.** `src/i18n/package.nls.*.json`
+  covers the manifest; `l10n/bundle.l10n.*.json` covers runtime strings through
+  `vscode.l10n.t()`. Twelve locales each, held in exact key parity by the
+  integration test. Never call `l10n.t()` at module scope, never compare a
+  translated label against an English literal, and use positional `{0}`
+  placeholders rather than template literals.
+- **CI narrows itself on a docs-only push.** A change touching only `*.md` and
+  `LICENSE` runs the Linux leg alone and skips the Zed build; `ci-crate.yml`
+  runs its `policy` gate with every Rust job skipped. Nothing that covers the
+  change is skipped — the README coverage gate, the integration suite and the
+  installed-VSIX end-to-end are Linux-only anyway. Anything unrecognised, and an
+  unreadable diff, counts as code and runs everything. A release commit always
+  touches `package.json`, so a release still sees the full three-OS matrix.
+- **Coverage floors are a backstop, not a target.** They sit well below where
+  the code actually is, and they are not raised to track it — a floor that
+  follows real coverage becomes a tax on writing the next module.

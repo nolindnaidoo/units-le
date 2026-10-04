@@ -1,0 +1,16 @@
+{
+	"Could not be resolved ({0})": "Не вдалося розв’язати ({0})",
+	"Could not copy to clipboard": "Не вдалося скопіювати в буфер обміну",
+	"Could not open results": "Не вдалося відкрити результати",
+	"File is empty": "Файл порожній",
+	"Large file detected ({0} bytes). Extraction may take longer.": "Виявлено великий файл ({0} байт). Витягування може тривати довше.",
+	"No active editor": "Немає активного редактора",
+	"No quantities found.": "Величин не знайдено.",
+	"Run Units-LE: Extract Quantities": "Запустити Units-LE: видобути величини",
+	"This {0} does not parse, so nothing in it was read": "Цей документ {0} не вдається розібрати, тому з нього нічого не прочитано",
+	"Units-LE report": "Звіт Units-LE",
+	"key": "ключ",
+	"{0} quantit(ies)": "величин: {0}",
+	"{0} quantit(ies) could not be resolved; the report gives each reason": "не вдалося розв’язати величин: {0}; причину кожної наведено у звіті",
+	"{0} quantit(ies), {1} could not be resolved": "величин: {0}, не вдалося розв’язати: {1}"
+}

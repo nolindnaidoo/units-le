@@ -57,8 +57,8 @@ pub(crate) enum Harvest {
 ///
 /// **There is one extraction function, and both surfaces use it.**
 /// numbers-le's shared MCP tool omits positions to stay byte-identical
-/// with its npm twin; this crate has no twin, so a second shape would
-/// be two answers to one question.
+/// with its npm twin; this one's twin carries positions as well, so a
+/// second shape would be two answers to one question.
 pub(crate) fn extract(text: &str, format: Format, options: Options) -> Vec<Found> {
     let found = locate::locate(text, harvest(text, format));
     let Some(wanted) = options.dimension else {

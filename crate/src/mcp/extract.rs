@@ -5,9 +5,10 @@
 //! capability. The tool that needs a filesystem is `units_le_scan`.
 //!
 //! Unlike numbers-le's shared tool this carries positions and key
-//! paths, because there is no second implementation to stay
-//! byte-identical with — and an agent that has been handed
-//! `cache.ttl` does not have to go looking for it.
+//! paths — an agent that has been handed `cache.ttl` does not have to
+//! go looking for it. The npm twin in the extension at the repository
+//! root carries them too, and answers identically: the shared corpus
+//! and a differential over generated documents hold the two equal.
 
 use serde_json::{Value, json};
 

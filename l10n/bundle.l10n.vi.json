@@ -1,0 +1,16 @@
+{
+	"Could not be resolved ({0})": "Không xác định được ({0})",
+	"Could not copy to clipboard": "Không thể sao chép vào khay nhớ tạm",
+	"Could not open results": "Không thể mở kết quả",
+	"File is empty": "Tệp trống",
+	"Large file detected ({0} bytes). Extraction may take longer.": "Phát hiện tệp lớn ({0} byte). Việc trích xuất có thể mất nhiều thời gian hơn.",
+	"No active editor": "Không có trình soạn thảo nào đang mở",
+	"No quantities found.": "Không tìm thấy đại lượng nào.",
+	"Run Units-LE: Extract Quantities": "Chạy Units-LE: Trích xuất đại lượng",
+	"This {0} does not parse, so nothing in it was read": "Tài liệu {0} này không phân tích được, nên không đọc được gì trong đó",
+	"Units-LE report": "Báo cáo Units-LE",
+	"key": "khóa",
+	"{0} quantit(ies)": "{0} đại lượng",
+	"{0} quantit(ies) could not be resolved; the report gives each reason": "{0} đại lượng không xác định được; báo cáo nêu lý do của từng cái",
+	"{0} quantit(ies), {1} could not be resolved": "{0} đại lượng, {1} không xác định được"
+}
