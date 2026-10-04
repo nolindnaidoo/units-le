@@ -43,7 +43,7 @@ serde_json = "1"
 #
 # JSON, with every loosening off, so a file this reads is a file
 # `JSON.parse` reads.
-jsonc-parser = "0.33"
+jsonc-parser = "0.34"
 # `preserve_order`, without which a TOML table iterates alphabetically
 # and extraction stops following the document, which is the order this
 # tool's whole output contract is.
