@@ -1,11 +1,34 @@
 # Changelog
 
-The units-le repository. The published crate keeps its own history in
-[`crate/CHANGELOG.md`](crate/CHANGELOG.md); this file covers the
-repository around it.
+All notable changes to Units-LE will be documented here.
 
-Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+This file covers the **VS Code extension**. The Rust CLI in `crate/` is a
+separate product on its own cadence and keeps its own
+[CHANGELOG](crate/CHANGELOG.md). The entries below 1.0.0 describe this
+repository while it held the CLI alone.
+
+## [Unreleased]
+
+### Added
+
+- **The VS Code extension.** `Units-LE: Extract Quantities` reports every
+  quantity in the active document — as written, in one base unit, with its
+  line, column and key path — and every quantity it cannot resolve, with the
+  reason. `units-le.dimensions` narrows the report without ever dropping a
+  refusal that names no dimension.
+- **The MCP server in the VSIX and on npm** as `units-le-mcp`: the same
+  `extract_units` tool the Rust CLI serves, answering identically.
+- **The engine is a port of the crate's**, with jsonc-parser, saphyr, toml
+  (with toml_parser and toml_datetime), rust-ini and csv transcribed, held to
+  the crate by the shared corpus, a differential that feeds both servers
+  thousands of generated documents in every format — broken ones included,
+  so each parser's error text is compared — and a check that both servers
+  define the tool identically.
+- Localized into twelve languages: the manifest and every runtime string.
+- A Zed extension that runs the MCP server as a context server.
 
 ## [0.1.1] - 2026-08-14
 

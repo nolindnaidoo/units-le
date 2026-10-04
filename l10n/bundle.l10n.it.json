@@ -1,0 +1,16 @@
+{
+	"Could not be resolved ({0})": "Non risolte ({0})",
+	"Could not copy to clipboard": "Impossibile copiare negli appunti",
+	"Could not open results": "Impossibile aprire i risultati",
+	"File is empty": "Il file è vuoto",
+	"Large file detected ({0} bytes). Extraction may take longer.": "Rilevato file di grandi dimensioni ({0} byte). L’estrazione potrebbe richiedere più tempo.",
+	"No active editor": "Nessun editor attivo",
+	"No quantities found.": "Nessuna quantità trovata.",
+	"Run Units-LE: Extract Quantities": "Esegui Units-LE: estrai quantità",
+	"This {0} does not parse, so nothing in it was read": "Questo documento {0} non è analizzabile, quindi non è stato letto nulla",
+	"Units-LE report": "Rapporto di Units-LE",
+	"key": "chiave",
+	"{0} quantit(ies)": "{0} quantità",
+	"{0} quantit(ies) could not be resolved; the report gives each reason": "{0} quantità non risolte; il rapporto indica ogni motivo",
+	"{0} quantit(ies), {1} could not be resolved": "{0} quantità, {1} non risolte"
+}

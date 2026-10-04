@@ -1,0 +1,16 @@
+{
+	"Could not be resolved ({0})": "无法解析的数量（{0}）",
+	"Could not copy to clipboard": "无法复制到剪贴板",
+	"Could not open results": "无法打开结果",
+	"File is empty": "文件为空",
+	"Large file detected ({0} bytes). Extraction may take longer.": "检测到大文件({0} 字节)。提取可能需要更长时间。",
+	"No active editor": "没有活动的编辑器",
+	"No quantities found.": "未找到数量。",
+	"Run Units-LE: Extract Quantities": "运行 Units-LE：提取数量",
+	"This {0} does not parse, so nothing in it was read": "此 {0} 文档无法解析，因此未读取其中任何内容",
+	"Units-LE report": "Units-LE 报告",
+	"key": "键",
+	"{0} quantit(ies)": "{0} 个数量",
+	"{0} quantit(ies) could not be resolved; the report gives each reason": "有 {0} 个数量无法解析；报告中给出了各自的原因",
+	"{0} quantit(ies), {1} could not be resolved": "{0} 个数量，{1} 个无法解析"
+}

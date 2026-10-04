@@ -1,0 +1,16 @@
+{
+	"Could not be resolved ({0})": "解決できなかったもの ({0})",
+	"Could not copy to clipboard": "クリップボードにコピーできませんでした",
+	"Could not open results": "結果を開けませんでした",
+	"File is empty": "ファイルが空です",
+	"Large file detected ({0} bytes). Extraction may take longer.": "大きなファイルを検出しました ({0} バイト)。抽出に時間がかかる場合があります。",
+	"No active editor": "アクティブなエディターがありません",
+	"No quantities found.": "数量は見つかりませんでした。",
+	"Run Units-LE: Extract Quantities": "Units-LE を実行: 数量を抽出",
+	"This {0} does not parse, so nothing in it was read": "この {0} は解析できないため、何も読み取れませんでした",
+	"Units-LE report": "Units-LE レポート",
+	"key": "キー",
+	"{0} quantit(ies)": "{0} 件の数量",
+	"{0} quantit(ies) could not be resolved; the report gives each reason": "{0} 件の数量を解決できませんでした。理由はレポートに記載されています",
+	"{0} quantit(ies), {1} could not be resolved": "数量 {0} 件、解決できなかったもの {1} 件"
+}

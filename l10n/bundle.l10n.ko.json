@@ -1,0 +1,16 @@
+{
+	"Could not be resolved ({0})": "해석하지 못한 수량 ({0})",
+	"Could not copy to clipboard": "클립보드에 복사할 수 없습니다",
+	"Could not open results": "결과를 열 수 없습니다",
+	"File is empty": "파일이 비어 있습니다",
+	"Large file detected ({0} bytes). Extraction may take longer.": "큰 파일이 감지되었습니다({0}바이트). 추출에 시간이 더 걸릴 수 있습니다.",
+	"No active editor": "활성 편집기가 없습니다",
+	"No quantities found.": "수량을 찾지 못했습니다.",
+	"Run Units-LE: Extract Quantities": "Units-LE 실행: 수량 추출",
+	"This {0} does not parse, so nothing in it was read": "이 {0} 문서는 구문 분석할 수 없어 아무것도 읽지 않았습니다",
+	"Units-LE report": "Units-LE 보고서",
+	"key": "키",
+	"{0} quantit(ies)": "수량 {0}개",
+	"{0} quantit(ies) could not be resolved; the report gives each reason": "수량 {0}개를 해석하지 못했습니다. 보고서에 각각의 이유가 있습니다",
+	"{0} quantit(ies), {1} could not be resolved": "수량 {0}개, 해석하지 못함 {1}개"
+}

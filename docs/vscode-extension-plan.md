@@ -1,7 +1,8 @@
 # The VS Code extension: plan
 
-**Status: deferred** (2026-10-04). Waiting on a choice between options O1–O4
-below. versions-le's extension was built first.
+**Status: built** (2026-10-04) on option O1: all five parsers transcribed,
+held to the crate by the corpus, the differential and a per-reader case table
+read back from the crates. AGENTS.md is the record of how it is built.
 
 ## Why this one is different
 

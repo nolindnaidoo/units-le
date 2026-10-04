@@ -1,0 +1,16 @@
+{
+	"Could not be resolved ({0})": "Could not be resolved ({0})",
+	"Could not copy to clipboard": "Could not copy to clipboard",
+	"Could not open results": "Could not open results",
+	"File is empty": "File is empty",
+	"Large file detected ({0} bytes). Extraction may take longer.": "Large file detected ({0} bytes). Extraction may take longer.",
+	"No active editor": "No active editor",
+	"No quantities found.": "No quantities found.",
+	"Run Units-LE: Extract Quantities": "Run Units-LE: Extract Quantities",
+	"This {0} does not parse, so nothing in it was read": "This {0} does not parse, so nothing in it was read",
+	"Units-LE report": "Units-LE report",
+	"key": "key",
+	"{0} quantit(ies)": "{0} quantit(ies)",
+	"{0} quantit(ies) could not be resolved; the report gives each reason": "{0} quantit(ies) could not be resolved; the report gives each reason",
+	"{0} quantit(ies), {1} could not be resolved": "{0} quantit(ies), {1} could not be resolved"
+}

@@ -1,0 +1,2926 @@
+{
+ "source": "the crate's own readers (json.rs, yaml.rs, toml.rs, ini.rs, csv.rs) over jsonc-parser 0.33.2, saphyr 0.1.0, toml 1.1.6, rust-ini 0.21.3 and csv 1.4.0, read back from a build of those crates",
+ "cases": [
+  {
+   "format": "yaml",
+   "document": "",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "\n",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "# only\n",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "---",
+   "fields": [
+    [
+     null,
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "---\n...\n---\n",
+   "fields": [
+    [
+     "[0]",
+     ""
+    ],
+    [
+     "[1]",
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "...",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "\ufeff",
+   "fields": [
+    [
+     null,
+     "\ufeff"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "\ufeffa: 30s",
+   "fields": [
+    [
+     "\ufeffa",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: 30s\n\ufeffb: 1h",
+   "fields": [
+    [
+     "a",
+     "30s"
+    ],
+    [
+     "\ufeffb",
+     "1h"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"x\ufeffy\"",
+   "fields": [
+    [
+     "a",
+     "x\ufeffy"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: 30s\u0000b: 1h",
+   "fields": [
+    [
+     "a",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"30\u0000s\"",
+   "fields": [],
+   "error": "Failed to parse YAML: while scanning a quoted scalar, found unexpected end of stream at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "\u0000",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\nb: 1",
+   "fields": [
+    [
+     "a",
+     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "? kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk\n: v",
+   "fields": [
+    [
+     "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
+     "v"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: 1]",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: 1",
+   "fields": [],
+   "error": "Failed to parse YAML: mapping values are not allowed in this context at byte 1030 line 1 column 1031"
+  },
+  {
+   "format": "yaml",
+   "document": "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]",
+   "fields": [],
+   "error": "Failed to parse YAML: recursion limit exceeded at byte 255 line 1 column 256"
+  },
+  {
+   "format": "yaml",
+   "document": "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}",
+   "fields": [
+    [
+     null,
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "%YAML 1234567890.1\n---\na: 1",
+   "fields": [],
+   "error": "Failed to parse YAML: while scanning a YAML directive, found extremely long version number at byte 0 line 1 column 1"
+  },
+  {
+   "format": "yaml",
+   "document": "%YAML 123456789.1\n---\na: 1",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "%YAML 1.2\n%YAML 1.1\n---\na: 1",
+   "fields": [],
+   "error": "Failed to parse YAML: duplicate version directive at byte 10 line 2 column 1"
+  },
+  {
+   "format": "yaml",
+   "document": "%TAG !e! tag:e,2000:\n%TAG !e! tag:f:\n--- !e!x 30s",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "%TAG !e! tag:e:\n%YAML 1.2\n--- !e!x 30s",
+   "fields": [],
+   "error": "Failed to parse YAML: the handle wasn't declared at byte 30 line 3 column 5"
+  },
+  {
+   "format": "yaml",
+   "document": "%TAG !! tag:other:\n--- !!str 30s",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "%TAG ! tag:loc:\n--- !x 30s",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "--- !x 30s\n...\n--- !e!y 30s",
+   "fields": [],
+   "error": "Failed to parse YAML: the handle wasn't declared at byte 19 line 3 column 5"
+  },
+  {
+   "format": "yaml",
+   "document": "a: |\n              x\n              y\n",
+   "fields": [
+    [
+     "a",
+     "x\ny\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: |\n                    deep\n",
+   "fields": [
+    [
+     "a",
+     "deep\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: |15\n                x\n",
+   "fields": [],
+   "error": "Failed to parse YAML: while scanning a block scalar, did not find expected comment or line break at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "- |9\n            x",
+   "fields": [
+    [
+     "[0]",
+     "   x\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: |\n  x\n\n\n",
+   "fields": [
+    [
+     "a",
+     "x\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: |+\n  x\n\n\n",
+   "fields": [
+    [
+     "a",
+     "x\n\n\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: |-\n  x\n\n",
+   "fields": [
+    [
+     "a",
+     "x"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: >\n  one\n  two\n\n  three\n   indented\n  back\n",
+   "fields": [
+    [
+     "a",
+     "one two\nthree\n indented\nback\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: |\n",
+   "fields": [
+    [
+     "a",
+     "\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: |+\n",
+   "fields": [
+    [
+     "a",
+     "\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: |+\n\n\n",
+   "fields": [
+    [
+     "a",
+     "\n\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "|\n x",
+   "fields": [
+    [
+     null,
+     "x\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": ">\n\n folded\n",
+   "fields": [
+    [
+     null,
+     "\nfolded\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: |\n \tx",
+   "fields": [
+    [
+     "a",
+     "\tx\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: |\n\tx",
+   "fields": [],
+   "error": "Failed to parse YAML: a block scalar content cannot start with a tab at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "a: 1\na: 2",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: 1\nb: 2\na: 3",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "1: x\n0x1: y\n+1: z\n01: w",
+   "fields": [
+    [
+     "1",
+     "w"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "true: a\nTrue: b",
+   "fields": [
+    [
+     "true",
+     "b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": ".nan: a\n.NaN: b",
+   "fields": [
+    [
+     null,
+     "b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "0.0: a\n-0.0: b",
+   "fields": [
+    [
+     null,
+     "b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "? [1, 2]\n: x\n? [1, 2]\n: y\nk: 30s",
+   "fields": [
+    [
+     null,
+     "y"
+    ],
+    [
+     "k",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "? {a: 1}\n: 30s",
+   "fields": [
+    [
+     null,
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "&k a: 1\n*k : 2",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "*x : 1",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing node, found unknown anchor at byte 0 line 1 column 1"
+  },
+  {
+   "format": "yaml",
+   "document": "a: &x 30s\nb: *x\n*x : 1h",
+   "fields": [
+    [
+     "a",
+     "30s"
+    ],
+    [
+     "b",
+     "30s"
+    ],
+    [
+     "30s",
+     "1h"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: &x [1, 30s]\nb: *x",
+   "fields": [
+    [
+     "a[1]",
+     "30s"
+    ],
+    [
+     "b[1]",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: &x {b: 30s}\nc: *x",
+   "fields": [
+    [
+     "a.b",
+     "30s"
+    ],
+    [
+     "c.b",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "&r a: *r",
+   "fields": [
+    [
+     "a",
+     "a"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: &x 1\na: &x 2\nb: *x",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "--- &x 1\n--- *x",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing node, found unknown anchor at byte 13 line 2 column 5"
+  },
+  {
+   "format": "yaml",
+   "document": "a: !!str 30s\nb: !!int 30s\nc: !!float 1\nd: !!bool true\ne: !!null ~\nf: !!null null\ng: !!null Null\nh: !!binary x\ni: !!int 0x1f",
+   "fields": [
+    [
+     "a",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: !foo 30s\nb: !foo [30s]\nc: !!map {d: 30s}\ne: !!seq [30s]\nf: !foo {g: 1h}",
+   "fields": [
+    [
+     "c.d",
+     "30s"
+    ],
+    [
+     "e[0]",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "!foo\na: 30s",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "!!map\na: 30s",
+   "fields": [
+    [
+     "a",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "--- !foo [30s]",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: ! 30s",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: !<tag:yaml.org,2002:str> 30s",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: !<!> 30s",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: !a%C3%A9 30s",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: !a%F0%9F%98%80 30s",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing a tag, found an invalid UTF-8 codepoint at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "a: !%41 x",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"\\x41\\u00e9\\U0001F600\"",
+   "fields": [
+    [
+     "a",
+     "A\u00e9\ud83d\ude00"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"\\ud800\"",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing a quoted scalar, found invalid Unicode character escape code at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"\\U00110000\"",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing a quoted scalar, found invalid Unicode character escape code at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"x\\\n   y\"",
+   "fields": [
+    [
+     "a",
+     "xy"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"x\n\n  y\"",
+   "fields": [
+    [
+     "a",
+     "x\ny"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: 'x\n\n  y'",
+   "fields": [
+    [
+     "a",
+     "x\ny"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"x\t\ty\"",
+   "fields": [
+    [
+     "a",
+     "x\t\ty"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"\t\n\t\"",
+   "fields": [],
+   "error": "Failed to parse YAML: tab cannot be used as indentation at byte 6 line 2 column 1"
+  },
+  {
+   "format": "yaml",
+   "document": "a: 'it''s'",
+   "fields": [
+    [
+     "a",
+     "it's"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"unterminated",
+   "fields": [],
+   "error": "Failed to parse YAML: while scanning a quoted scalar, found unexpected end of stream at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "a: 'x",
+   "fields": [],
+   "error": "Failed to parse YAML: while scanning a quoted scalar, found unexpected end of stream at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "\"a\": 30s",
+   "fields": [
+    [
+     "a",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "\"a\"x: 1",
+   "fields": [],
+   "error": "Failed to parse YAML: invalid trailing content after double-quoted scalar at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "\"a\" : 1",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"x\" # c",
+   "fields": [
+    [
+     "a",
+     "x"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: \"x\"#c",
+   "fields": [],
+   "error": "Failed to parse YAML: comments must be separated from other tokens by whitespace at byte 6 line 1 column 7"
+  },
+  {
+   "format": "yaml",
+   "document": "a: x#c",
+   "fields": [
+    [
+     "a",
+     "x#c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: x #c\n  y",
+   "fields": [],
+   "error": "Failed to parse YAML: comment intercepting the multiline text at byte 5 line 1 column 6"
+  },
+  {
+   "format": "yaml",
+   "document": "a: x\n#c\n  y",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing a block mapping, did not find expected key at byte 10 line 3 column 3"
+  },
+  {
+   "format": "yaml",
+   "document": "a: x\n  # c\n  y",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing a block mapping, did not find expected key at byte 13 line 3 column 3"
+  },
+  {
+   "format": "yaml",
+   "document": "- a\n-b",
+   "fields": [],
+   "error": "Failed to parse YAML: simple key expected at byte 6 line 3 column 1"
+  },
+  {
+   "format": "yaml",
+   "document": "-\ta",
+   "fields": [
+    [
+     "[0]",
+     "a"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "- \t- a",
+   "fields": [],
+   "error": "Failed to parse YAML: '-' must be followed by a valid YAML whitespace at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "a:\t30s",
+   "fields": [],
+   "error": "Failed to parse YAML: ':' must be followed by a valid YAML whitespace at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "a:\t-x",
+   "fields": [],
+   "error": "Failed to parse YAML: ':' must be followed by a valid YAML whitespace at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "a:\tb",
+   "fields": [],
+   "error": "Failed to parse YAML: ':' must be followed by a valid YAML whitespace at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "?\ta",
+   "fields": [],
+   "error": "Failed to parse YAML: expected whitespace at byte 1 line 1 column 2"
+  },
+  {
+   "format": "yaml",
+   "document": "\ta: 1",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a:\n\t- b",
+   "fields": [],
+   "error": "Failed to parse YAML: tabs disallowed within this context (block indentation) at byte 4 line 2 column 2"
+  },
+  {
+   "format": "yaml",
+   "document": "a:\n  - b\n  - c\n d: 1",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing a block mapping, did not find expected key at byte 16 line 4 column 2"
+  },
+  {
+   "format": "yaml",
+   "document": "a:\n- b\n- c",
+   "fields": [
+    [
+     "a[0]",
+     "b"
+    ],
+    [
+     "a[1]",
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "- - a\n  - b\n- c",
+   "fields": [
+    [
+     "[0][0]",
+     "a"
+    ],
+    [
+     "[0][1]",
+     "b"
+    ],
+    [
+     "[1]",
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "- a: 1\n  b: 30s\n- c",
+   "fields": [
+    [
+     "[0].b",
+     "30s"
+    ],
+    [
+     "[1]",
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: b: c",
+   "fields": [],
+   "error": "Failed to parse YAML: mapping values are not allowed in this context at byte 4 line 1 column 5"
+  },
+  {
+   "format": "yaml",
+   "document": "a: - b",
+   "fields": [],
+   "error": "Failed to parse YAML: block sequence entries are not allowed in this context at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "[a, b]: c",
+   "fields": [
+    [
+     null,
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "{a: 1}: 2",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[a: 1, b: 2]",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[? a : 1]",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[a:1]",
+   "fields": [
+    [
+     "[0]",
+     "a:1"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "{a:1}",
+   "fields": [
+    [
+     "a:1",
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "{\"a\":1}",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "{a: [b, c], d: {e: f}}",
+   "fields": [
+    [
+     "a[0]",
+     "b"
+    ],
+    [
+     "a[1]",
+     "c"
+    ],
+    [
+     "d.e",
+     "f"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[a,]",
+   "fields": [
+    [
+     "[0]",
+     "a"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "{a,}",
+   "fields": [
+    [
+     "a",
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[,]",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing a node, did not find expected node content at byte 1 line 1 column 2"
+  },
+  {
+   "format": "yaml",
+   "document": "{,}",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing a node, did not find expected node content at byte 1 line 1 column 2"
+  },
+  {
+   "format": "yaml",
+   "document": "[a b]",
+   "fields": [
+    [
+     "[0]",
+     "a b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[a\nb]",
+   "fields": [
+    [
+     "[0]",
+     "a b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "{a: 1\n}",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[\n- a]",
+   "fields": [],
+   "error": "Failed to parse YAML: \"-\" is only valid inside a block at byte 2 line 2 column 1"
+  },
+  {
+   "format": "yaml",
+   "document": "[-a]",
+   "fields": [
+    [
+     "[0]",
+     "-a"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[- a]",
+   "fields": [],
+   "error": "Failed to parse YAML: \"-\" is only valid inside a block at byte 1 line 1 column 2"
+  },
+  {
+   "format": "yaml",
+   "document": "a: [b,\n c]",
+   "fields": [
+    [
+     "a[0]",
+     "b"
+    ],
+    [
+     "a[1]",
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: [b,\nc]",
+   "fields": [],
+   "error": "Failed to parse YAML: invalid indentation in flow construct at byte 7 line 2 column 1"
+  },
+  {
+   "format": "yaml",
+   "document": "a:\n  [b,\n  c]",
+   "fields": [
+    [
+     "a[0]",
+     "b"
+    ],
+    [
+     "a[1]",
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "{a: 1, a: 2}",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "[*a]",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing node, found unknown anchor at byte 1 line 1 column 2"
+  },
+  {
+   "format": "yaml",
+   "document": "[&a x, *a]",
+   "fields": [
+    [
+     "[0]",
+     "x"
+    ],
+    [
+     "[1]",
+     "x"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "{&a k: v, *a : w}",
+   "fields": [
+    [
+     "k",
+     "w"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: 1\n...\nb: 2",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: 1\n---\nb: 2\n...\n",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "--- a\n--- b\n--- c",
+   "fields": [
+    [
+     "[0]",
+     "a"
+    ],
+    [
+     "[1]",
+     "b"
+    ],
+    [
+     "[2]",
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "---\n---\n",
+   "fields": [
+    [
+     "[0]",
+     ""
+    ],
+    [
+     "[1]",
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "--- |\n  x\n--- >\n  y",
+   "fields": [
+    [
+     "[0]",
+     "x\n"
+    ],
+    [
+     "[1]",
+     "y\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: x\n---b",
+   "fields": [],
+   "error": "Failed to parse YAML: simple key expected at byte 9 line 3 column 1"
+  },
+  {
+   "format": "yaml",
+   "document": "a: x\n--- b",
+   "fields": [
+    [
+     "[0].a",
+     "x"
+    ],
+    [
+     "[1]",
+     "b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "...x",
+   "fields": [
+    [
+     null,
+     "...x"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "... #c\na: 1",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "---x: 1",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "--- x: 1",
+   "fields": [],
+   "error": "Failed to parse YAML: mapping values are not allowed in this context at byte 5 line 1 column 6"
+  },
+  {
+   "format": "yaml",
+   "document": "a: ---",
+   "fields": [
+    [
+     "a",
+     "---"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: '\n---\n'",
+   "fields": [],
+   "error": "Failed to parse YAML: while scanning a quoted scalar, found unexpected document indicator at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "k: 1h30m\r\nm: 2d\r\n",
+   "fields": [
+    [
+     "k",
+     "1h30m"
+    ],
+    [
+     "m",
+     "2d"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "k: 1h\rm: 2d\r",
+   "fields": [
+    [
+     "k",
+     "1h"
+    ],
+    [
+     "m",
+     "2d"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "k: |\r\n  x\r\n  y\r\n",
+   "fields": [
+    [
+     "k",
+     "x\ny\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "k: \"a\r\n b\"",
+   "fields": [
+    [
+     "k",
+     "a b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "k: \u00e9\u2028x",
+   "fields": [
+    [
+     "k",
+     "\u00e9\u2028x"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "k: x\u0085y",
+   "fields": [
+    [
+     "k",
+     "x\u0085y"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "k: v\n  w\n   x",
+   "fields": [
+    [
+     "k",
+     "v w x"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "k:\n  v\n w",
+   "fields": [
+    [
+     "k",
+     "v w"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": " k: v\nl: w",
+   "fields": [],
+   "error": "Failed to parse YAML: did not find expected <document start> at byte 6 line 2 column 1"
+  },
+  {
+   "format": "yaml",
+   "document": "k: v\n l: w",
+   "fields": [],
+   "error": "Failed to parse YAML: mapping values are not allowed in this context at byte 7 line 2 column 3"
+  },
+  {
+   "format": "yaml",
+   "document": "k: >-\n  a\n\n  b\n",
+   "fields": [
+    [
+     "k",
+     "a\nb"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "- >\n  a\n  b\n- c",
+   "fields": [
+    [
+     "[0]",
+     "a b\n"
+    ],
+    [
+     "[1]",
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: 9223372036854775807\nb: -9223372036854775808\nc: 9223372036854775808\nd: 0x8000000000000000\ne: 0o777777777777777777777\nf: 0o7777777777777777777777",
+   "fields": [
+    [
+     "d",
+     "0x8000000000000000"
+    ],
+    [
+     "f",
+     "0o7777777777777777777777"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: 1e400\nb: -1e400\nc: 1.5e-400\nd: .5\ne: 5.\nf: +.5\ng: -.5e3\nh: 1.e2\ni: 1e\nj: e1\nk: 1_0\nl: 0x_1\nm: +0x1",
+   "fields": [
+    [
+     "i",
+     "1e"
+    ],
+    [
+     "j",
+     "e1"
+    ],
+    [
+     "k",
+     "1_0"
+    ],
+    [
+     "l",
+     "0x_1"
+    ],
+    [
+     "m",
+     "+0x1"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a: [1, 2]: 3",
+   "fields": [],
+   "error": "Failed to parse YAML: mapping values are not allowed in this context at byte 9 line 1 column 10"
+  },
+  {
+   "format": "yaml",
+   "document": "- [a]: b",
+   "fields": [
+    [
+     null,
+     "b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "? - a\n: b",
+   "fields": [
+    [
+     null,
+     "b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "? a\n? b\n: c",
+   "fields": [
+    [
+     "a",
+     ""
+    ],
+    [
+     "b",
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": ": a",
+   "fields": [
+    [
+     null,
+     "a"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "? \n: ",
+   "fields": [
+    [
+     null,
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "?",
+   "fields": [],
+   "error": "Failed to parse YAML: expected whitespace at byte 1 line 1 column 2"
+  },
+  {
+   "format": "yaml",
+   "document": ":",
+   "fields": [
+    [
+     null,
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "-",
+   "fields": [
+    [
+     "[0]",
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "- ",
+   "fields": [
+    [
+     "[0]",
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "?x: 1",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": ":x: 1",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a:\n  - b\n  -\n  - c",
+   "fields": [
+    [
+     "a[0]",
+     "b"
+    ],
+    [
+     "a[1]",
+     ""
+    ],
+    [
+     "a[2]",
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a:\n-\n-",
+   "fields": [
+    [
+     "a[0]",
+     ""
+    ],
+    [
+     "a[1]",
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "&a\n- x",
+   "fields": [
+    [
+     "[0]",
+     "x"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "!t\n- x",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "a:\n  &x\n  - b",
+   "fields": [
+    [
+     "a[0]",
+     "b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "- &a\n- *a",
+   "fields": [
+    [
+     "[0]",
+     ""
+    ],
+    [
+     "[1]",
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "yaml",
+   "document": "&a &b x",
+   "fields": [],
+   "error": "Failed to parse YAML: did not find expected <document start> at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "!a !b x",
+   "fields": [],
+   "error": "Failed to parse YAML: did not find expected <document start> at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "*a\n",
+   "fields": [],
+   "error": "Failed to parse YAML: while parsing node, found unknown anchor at byte 0 line 1 column 1"
+  },
+  {
+   "format": "yaml",
+   "document": "a: @x",
+   "fields": [],
+   "error": "Failed to parse YAML: unexpected character: `@' at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "a: `x",
+   "fields": [],
+   "error": "Failed to parse YAML: unexpected character: ``' at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "@a: 1",
+   "fields": [],
+   "error": "Failed to parse YAML: unexpected character: `@' at byte 0 line 1 column 1"
+  },
+  {
+   "format": "yaml",
+   "document": "a: %x",
+   "fields": [],
+   "error": "Failed to parse YAML: unexpected character: `%' at byte 3 line 1 column 4"
+  },
+  {
+   "format": "yaml",
+   "document": "a:\n  %x",
+   "fields": [],
+   "error": "Failed to parse YAML: unexpected character: `%' at byte 5 line 2 column 3"
+  },
+  {
+   "format": "yaml",
+   "document": " %YAML 1.2",
+   "fields": [],
+   "error": "Failed to parse YAML: unexpected character: `%' at byte 1 line 1 column 2"
+  },
+  {
+   "format": "toml",
+   "document": "a = \"tab\\there\" # comment",
+   "fields": [
+    [
+     "a",
+     "tab\there"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "b = 'literal \\\\ no escape'",
+   "fields": [
+    [
+     "b",
+     "literal \\\\ no escape"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "c = \"\"\"\nfirst\nsecond\"\"\"",
+   "fields": [
+    [
+     "c",
+     "first\nsecond"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "d = \"\"\"one \\\n    two\"\"\"",
+   "fields": [
+    [
+     "d",
+     "one two"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "e = '''\nraw\\n'''",
+   "fields": [
+    [
+     "e",
+     "raw\\n"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "f = \"\\u00e9\\U0001F600\\x41\\e\"",
+   "fields": [
+    [
+     "f",
+     "\u00e9\ud83d\ude00A\u001b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "g = \"bad \\q\"",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 11\n  |\n1 | g = \"bad \\q\"\n  |           ^\nmissing escaped value, expected `b`, `e`, `f`, `n`, `r`, `\\`, `\"`, `x`, `u`, `U`\n"
+  },
+  {
+   "format": "toml",
+   "document": "h = \"unterminated",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 18\n  |\n1 | h = \"unterminated\n  |                  ^\ninvalid basic string, expected `\"`\n"
+  },
+  {
+   "format": "toml",
+   "document": "i = \"\"\"a\"\"b\"\"\"",
+   "fields": [
+    [
+     "i",
+     "a\"\"b"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "j = 'x'\n'j' = 1",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 2, column 1\n  |\n2 | 'j' = 1\n  | ^^^\nduplicate key\n"
+  },
+  {
+   "format": "toml",
+   "document": "k = 0o17",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "l = 0b11",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "m = 0xDEAD_beef",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "n = 1_000_000",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "o = 01",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 5\n  |\n1 | o = 01\n  |     ^\nunexpected leading zero, expected nothing\n"
+  },
+  {
+   "format": "toml",
+   "document": "p = 1__0",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 6\n  |\n1 | p = 1__0\n  |      ^\n`_` may only go between digits, expected nothing\n"
+  },
+  {
+   "format": "toml",
+   "document": "q = +inf",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "r = -nan",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "s = 3.14e-2",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "t = 1979-05-27T07:32:00.5-07:00",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "u = 1979-02-30",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 5\n  |\n1 | u = 1979-02-30\n  |     ^^^^^^^^^^\ninvalid date, expected day between 01 and 28\n"
+  },
+  {
+   "format": "toml",
+   "document": "v = 23:59:60",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "w = [\n  1, # one\n  2,\n]",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "x = [1,,2]",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 8\n  |\n1 | x = [1,,2]\n  |        ^\nextra comma in array, expected value\n"
+  },
+  {
+   "format": "toml",
+   "document": "y = { a.b = 1, a.c = 2 }",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "z = { a = 1 }\nz.b = 2",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 2, column 1\n  |\n2 | z.b = 2\n  | ^\ncannot extend value of type inline table with a dotted key\n"
+  },
+  {
+   "format": "toml",
+   "document": "[t]\n[t]",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 2, column 2\n  |\n2 | [t]\n  |  ^\nduplicate key\n"
+  },
+  {
+   "format": "toml",
+   "document": "[[aot]]\nk = 1\n[[aot]]\nk = 2",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "arr = []\n[[arr]]",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 2, column 3\n  |\n2 | [[arr]]\n  |   ^^^\nduplicate key\n"
+  },
+  {
+   "format": "toml",
+   "document": "# only a comment\n",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "\ufeffbom = true",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "cr = 1\r",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 8\n  |\n1 | cr = 1\r\n  |        ^\ncarriage return must be followed by newline, expected newline\n"
+  },
+  {
+   "format": "toml",
+   "document": "key with space = 1",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 5\n  |\n1 | key with space = 1\n  |     ^\nkey with no value, expected `=`\n"
+  },
+  {
+   "format": "toml",
+   "document": "\"\" = 1",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "a.b.c = 1\na.b = 2",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 2, column 3\n  |\n2 | a.b = 2\n  |   ^\nduplicate key\n"
+  },
+  {
+   "format": "toml",
+   "document": "x = [1.5, \"t\\tb\", 1e21, nan, -0.0, { b = 2, a = \"q\\\"\" }]",
+   "fields": [
+    [
+     "x[1]",
+     "t\tb"
+    ],
+    [
+     "x[5].a",
+     "q\""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "y = ['it''s', \"a'b\", \"line\\nbreak\", 5e-7, 100.0]",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 10\n  |\n1 | y = ['it''s', \"a'b\", \"line\\nbreak\", 5e-7, 100.0]\n  |          ^\nmissing comma between array elements, expected `,`\n"
+  },
+  {
+   "format": "toml",
+   "document": "[a.b]\nk = \"1s\"\n[b]\nk = \"2s\"\n[a]\nk = \"3s\"\n",
+   "fields": [
+    [
+     "b.k",
+     "2s"
+    ],
+    [
+     "a.b.k",
+     "1s"
+    ],
+    [
+     "a.k",
+     "3s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "x.y = \"1s\"\nz = \"2s\"\n[x]\nw = \"3s\"\n",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 3, column 2\n  |\n3 | [x]\n  |  ^\nduplicate key\n"
+  },
+  {
+   "format": "toml",
+   "document": "a = 18446744073709551615",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 5\n  |\n1 | a = 18446744073709551615\n  |     ^^^^^^^^^^^^^^^^^^^^\nu64 value was too large\n"
+  },
+  {
+   "format": "toml",
+   "document": "a = 9223372036854775808",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 5\n  |\n1 | a = 9223372036854775808\n  |     ^^^^^^^^^^^^^^^^^^^\nu64 value was too large\n"
+  },
+  {
+   "format": "toml",
+   "document": "a = -9223372036854775809",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 5\n  |\n1 | a = -9223372036854775809\n  |     ^^^^^^^^^^^^^^^^^^^^\ninvalid type: integer `-9223372036854775809` as i128, expected any valid TOML value\n"
+  },
+  {
+   "format": "toml",
+   "document": "a = 340282366920938463463374607431768211456",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 5\n  |\n1 | a = 340282366920938463463374607431768211456\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ninteger number overflowed\n"
+  },
+  {
+   "format": "toml",
+   "document": "a = 1e400",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 5\n  |\n1 | a = 1e400\n  |     ^^^^^\nfloating-point number overflowed\n"
+  },
+  {
+   "format": "toml",
+   "document": "dt = { \"$__toml_private_datetime\" = \"1979-05-27\" }",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "dt = { \"$__toml_private_datetime\" = 1.5 }",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 37\n  |\n1 | dt = { \"$__toml_private_datetime\" = 1.5 }\n  |                                     ^^^\ninvalid type: floating point `1.5`, expected string containing a datetime\n"
+  },
+  {
+   "format": "toml",
+   "document": "dt = { \"$__toml_private_datetime\" = true }",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 37\n  |\n1 | dt = { \"$__toml_private_datetime\" = true }\n  |                                     ^^^^\ninvalid type: boolean `true`, expected string containing a datetime\n"
+  },
+  {
+   "format": "toml",
+   "document": "deep = [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 88\n  |\n1 | deep = [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n  |                                                                                        ^\ncannot recurse further; max recursion depth met\n"
+  },
+  {
+   "format": "toml",
+   "document": "k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k10.k11.k12.k13.k14.k15.k16.k17.k18.k19.k20.k21.k22.k23.k24.k25.k26.k27.k28.k29.k30.k31.k32.k33.k34.k35.k36.k37.k38.k39.k40.k41.k42.k43.k44.k45.k46.k47.k48.k49.k50.k51.k52.k53.k54.k55.k56.k57.k58.k59.k60.k61.k62.k63.k64.k65.k66.k67.k68.k69.k70.k71.k72.k73.k74.k75.k76.k77.k78.k79 = \"1s\"",
+   "fields": [
+    [
+     "k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k10.k11.k12.k13.k14.k15.k16.k17.k18.k19.k20.k21.k22.k23.k24.k25.k26.k27.k28.k29.k30.k31.k32.k33.k34.k35.k36.k37.k38.k39.k40.k41.k42.k43.k44.k45.k46.k47.k48.k49.k50.k51.k52.k53.k54.k55.k56.k57.k58.k59.k60.k61.k62.k63.k64.k65.k66.k67.k68.k69.k70.k71.k72.k73.k74.k75.k76.k77.k78.k79",
+     "1s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "a = \"1s\"\nb = = \"2s\"",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 2, column 5\n  |\n2 | b = = \"2s\"\n  |     ^\nextra `=`, expected nothing\n"
+  },
+  {
+   "format": "toml",
+   "document": "a = \"\\q\"\nb = = 1",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 2, column 5\n  |\n2 | b = = 1\n  |     ^\nextra `=`, expected nothing\n"
+  },
+  {
+   "format": "toml",
+   "document": "\ufeffa = \"x\"\nb = 'unterminated",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 2, column 18\n  |\n2 | b = 'unterminated\n  |                  ^\ninvalid literal string, expected `'`\n"
+  },
+  {
+   "format": "toml",
+   "document": "\u00e9 = \"1s\"",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 1\n  |\n1 | \u00e9 = \"1s\"\n  | ^^\ninvalid unquoted key, expected letters, numbers, `-`, `_`\n"
+  },
+  {
+   "format": "toml",
+   "document": "\"\u00e9\" = \"1s\"",
+   "fields": [
+    [
+     "\u00e9",
+     "1s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "a = 1979-05-27T25:00:00",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 5\n  |\n1 | a = 1979-05-27T25:00:00\n  |     ^^^^^^^^^^^^^^^^^^^\ninvalid time, expected hour between 00 and 23\n"
+  },
+  {
+   "format": "toml",
+   "document": "a = 1979-05-27 07:32",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "toml",
+   "document": "a = { b = 1, b.c = 2 }",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 14\n  |\n1 | a = { b = 1, b.c = 2 }\n  |              ^\ncannot extend value of type integer with a dotted key\n"
+  },
+  {
+   "format": "toml",
+   "document": "[[a]]\n[a]",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 2, column 2\n  |\n2 | [a]\n  |  ^\nduplicate key\n"
+  },
+  {
+   "format": "toml",
+   "document": "a = [1, 2\nb = 3",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 2, column 1\n  |\n2 | b = 3\n  | ^\nmissing comma between array elements, expected `,`\n"
+  },
+  {
+   "format": "toml",
+   "document": "a = \"\"\"\\  x\"\"\"",
+   "fields": [],
+   "error": "Failed to parse TOML: TOML parse error at line 1, column 11\n  |\n1 | a = \"\"\"\\  x\"\"\"\n  |           ^\ninvalid multi-line basic string, expected newline\n"
+  },
+  {
+   "format": "ini",
+   "document": "[s]\na = 30s",
+   "fields": [
+    [
+     "s.a",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "a = 1\n[s]\nb = 2\n[s]\nc = 3",
+   "fields": [
+    [
+     "a",
+     "1"
+    ],
+    [
+     "s.b",
+     "2"
+    ],
+    [
+     "s.c",
+     "3"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "[s] ; c\na = 1",
+   "fields": [],
+   "error": "Failed to parse INI: 1:6 doesn't support inline comment"
+  },
+  {
+   "format": "ini",
+   "document": "  ; c\na = 1",
+   "fields": [
+    [
+     "; c\na",
+     "1"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "k = \"q 30s\"",
+   "fields": [
+    [
+     "k",
+     "q 30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "k = 'q' 30s",
+   "fields": [
+    [
+     "k",
+     "q 30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "k = \"x",
+   "fields": [],
+   "error": "Failed to parse INI: 1:7 expecting \"[Some('\"')]\" but found EOF."
+  },
+  {
+   "format": "ini",
+   "document": "= v",
+   "fields": [],
+   "error": "Failed to parse INI: 1:2 missing key"
+  },
+  {
+   "format": "ini",
+   "document": "a\\\nb = 1",
+   "fields": [
+    [
+     "b",
+     "1"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "k = C:\\Users\\x",
+   "fields": [
+    [
+     "k",
+     "C:\\Users\\x"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "[s\na = 1",
+   "fields": [],
+   "error": "Failed to parse INI: 2:6 expecting \"[Some(']')]\" but found EOF."
+  },
+  {
+   "format": "ini",
+   "document": "bare\nk = 1s",
+   "fields": [
+    [
+     "k",
+     "1s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "  indented = 2s",
+   "fields": [
+    [
+     "indented",
+     "2s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "k: 3s",
+   "fields": [
+    [
+     "k",
+     "3s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "[]\nk = 1s",
+   "fields": [
+    [
+     ".k",
+     "1s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "\ufeffk = 1s",
+   "fields": [
+    [
+     "\ufeffk",
+     "1s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "k = v\r\nj = w",
+   "fields": [
+    [
+     "k",
+     "v"
+    ],
+    [
+     "j",
+     "w"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "ini",
+   "document": "[ spaced ]\nk = 1s",
+   "fields": [
+    [
+     "spaced.k",
+     "1s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "csv",
+   "document": "a,b\n30s,1h",
+   "fields": [
+    [
+     null,
+     "a"
+    ],
+    [
+     null,
+     "b"
+    ],
+    [
+     null,
+     "30s"
+    ],
+    [
+     null,
+     "1h"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "tsv",
+   "document": "a,b\n30s,1h",
+   "fields": [
+    [
+     null,
+     "a,b"
+    ],
+    [
+     null,
+     "30s,1h"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "csv",
+   "document": "\"30s\",\"1,5s\"",
+   "fields": [
+    [
+     null,
+     "30s"
+    ],
+    [
+     null,
+     "1,5s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "tsv",
+   "document": "\"30s\",\"1,5s\"",
+   "fields": [
+    [
+     null,
+     "30s,\"1,5s\""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "csv",
+   "document": "\"a\"\"b\",c",
+   "fields": [
+    [
+     null,
+     "a\"b"
+    ],
+    [
+     null,
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "tsv",
+   "document": "\"a\"\"b\",c",
+   "fields": [
+    [
+     null,
+     "a\"b,c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "csv",
+   "document": "\"unterminated, 30s",
+   "fields": [
+    [
+     null,
+     "unterminated, 30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "tsv",
+   "document": "\"unterminated, 30s",
+   "fields": [
+    [
+     null,
+     "unterminated, 30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "csv",
+   "document": "a\r\nb\rc",
+   "fields": [
+    [
+     null,
+     "a"
+    ],
+    [
+     null,
+     "b"
+    ],
+    [
+     null,
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "tsv",
+   "document": "a\r\nb\rc",
+   "fields": [
+    [
+     null,
+     "a"
+    ],
+    [
+     null,
+     "b"
+    ],
+    [
+     null,
+     "c"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "csv",
+   "document": "\ufeff30s,1h",
+   "fields": [
+    [
+     null,
+     "30s"
+    ],
+    [
+     null,
+     "1h"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "tsv",
+   "document": "\ufeff30s,1h",
+   "fields": [
+    [
+     null,
+     "30s,1h"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "csv",
+   "document": ",,\n,",
+   "fields": [
+    [
+     null,
+     ""
+    ],
+    [
+     null,
+     ""
+    ],
+    [
+     null,
+     ""
+    ],
+    [
+     null,
+     ""
+    ],
+    [
+     null,
+     ""
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "tsv",
+   "document": ",,\n,",
+   "fields": [
+    [
+     null,
+     ",,"
+    ],
+    [
+     null,
+     ","
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "csv",
+   "document": "\"x\"y,z",
+   "fields": [
+    [
+     null,
+     "xy"
+    ],
+    [
+     null,
+     "z"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "tsv",
+   "document": "\"x\"y,z",
+   "fields": [
+    [
+     null,
+     "xy,z"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "csv",
+   "document": "",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "tsv",
+   "document": "",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "csv",
+   "document": "\n\n30s\n\n",
+   "fields": [
+    [
+     null,
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "tsv",
+   "document": "\n\n30s\n\n",
+   "fields": [
+    [
+     null,
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "json",
+   "document": "{\"a\": \"30s\"}",
+   "fields": [
+    [
+     "a",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\": \"30s\"}",
+   "fields": [
+    [
+     "a",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "json",
+   "document": "{\"a\": \"30s\",}",
+   "fields": [],
+   "error": "Failed to parse JSON: Trailing commas are not allowed on line 1 column 12"
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\": \"30s\",}",
+   "fields": [
+    [
+     "a",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "json",
+   "document": "// c\n{\"a\": \"30s\"}",
+   "fields": [],
+   "error": "Failed to parse JSON: Comments are not allowed on line 1 column 1"
+  },
+  {
+   "format": "jsonc",
+   "document": "// c\n{\"a\": \"30s\"}",
+   "fields": [
+    [
+     "a",
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "json",
+   "document": "{\"a\": 30}",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\": 30}",
+   "fields": [],
+   "error": null
+  },
+  {
+   "format": "json",
+   "document": "[1, \"1h\", {\"b\": [\"2d\"]}]",
+   "fields": [
+    [
+     "[1]",
+     "1h"
+    ],
+    [
+     "[2].b[0]",
+     "2d"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "jsonc",
+   "document": "[1, \"1h\", {\"b\": [\"2d\"]}]",
+   "fields": [
+    [
+     "[1]",
+     "1h"
+    ],
+    [
+     "[2].b[0]",
+     "2d"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "json",
+   "document": "\"30s\"",
+   "fields": [
+    [
+     null,
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "jsonc",
+   "document": "\"30s\"",
+   "fields": [
+    [
+     null,
+     "30s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "json",
+   "document": "",
+   "fields": [],
+   "error": "Failed to parse JSON: unexpected end of input"
+  },
+  {
+   "format": "jsonc",
+   "document": "",
+   "fields": [],
+   "error": "Failed to parse JSON: unexpected end of input"
+  },
+  {
+   "format": "json",
+   "document": "   ",
+   "fields": [],
+   "error": "Failed to parse JSON: unexpected end of input"
+  },
+  {
+   "format": "jsonc",
+   "document": "   ",
+   "fields": [],
+   "error": "Failed to parse JSON: unexpected end of input"
+  },
+  {
+   "format": "json",
+   "document": "{\"a\": \"30s\"",
+   "fields": [],
+   "error": "Failed to parse JSON: Unterminated object on line 1 column 1"
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\": \"30s\"",
+   "fields": [],
+   "error": "Failed to parse JSON: Unterminated object on line 1 column 1"
+  },
+  {
+   "format": "json",
+   "document": "{\"a\": \"1s\"} x",
+   "fields": [],
+   "error": "Failed to parse JSON: Text cannot contain more than one JSON value on line 1 column 13"
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\": \"1s\"} x",
+   "fields": [],
+   "error": "Failed to parse JSON: Text cannot contain more than one JSON value on line 1 column 13"
+  },
+  {
+   "format": "json",
+   "document": "{'a': '1s'}",
+   "fields": [],
+   "error": "Failed to parse JSON: Single-quoted strings are not allowed on line 1 column 2"
+  },
+  {
+   "format": "jsonc",
+   "document": "{'a': '1s'}",
+   "fields": [],
+   "error": "Failed to parse JSON: Single-quoted strings are not allowed on line 1 column 2"
+  },
+  {
+   "format": "json",
+   "document": "{\"a\": +1}",
+   "fields": [],
+   "error": "Failed to parse JSON: Unary plus on numbers is not allowed on line 1 column 7"
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\": +1}",
+   "fields": [],
+   "error": "Failed to parse JSON: Unary plus on numbers is not allowed on line 1 column 7"
+  },
+  {
+   "format": "json",
+   "document": "{\"a\": 0x1}",
+   "fields": [],
+   "error": "Failed to parse JSON: Hexadecimal numbers are not allowed on line 1 column 7"
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\": 0x1}",
+   "fields": [],
+   "error": "Failed to parse JSON: Hexadecimal numbers are not allowed on line 1 column 7"
+  },
+  {
+   "format": "json",
+   "document": "{a: 1}",
+   "fields": [],
+   "error": "Failed to parse JSON: Expected string for object property on line 1 column 2"
+  },
+  {
+   "format": "jsonc",
+   "document": "{a: 1}",
+   "fields": [],
+   "error": "Failed to parse JSON: Expected string for object property on line 1 column 2"
+  },
+  {
+   "format": "json",
+   "document": "{\"a\": \"\\ud800\"}",
+   "fields": [],
+   "error": "Failed to parse JSON: Invalid unicode escape sequence. 'd800 (unpaired high surrogate)' is not a valid UTF8 character on line 1 column 8"
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\": \"\\ud800\"}",
+   "fields": [],
+   "error": "Failed to parse JSON: Invalid unicode escape sequence. 'd800 (unpaired high surrogate)' is not a valid UTF8 character on line 1 column 8"
+  },
+  {
+   "format": "json",
+   "document": "{\"a\": \"\\x\"}",
+   "fields": [],
+   "error": "Failed to parse JSON: Invalid escape on line 1 column 8"
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\": \"\\x\"}",
+   "fields": [],
+   "error": "Failed to parse JSON: Invalid escape on line 1 column 8"
+  },
+  {
+   "format": "json",
+   "document": "{\"a\" \"b\"}",
+   "fields": [],
+   "error": "Failed to parse JSON: Expected colon after the string or word in object property on line 1 column 6"
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\" \"b\"}",
+   "fields": [],
+   "error": "Failed to parse JSON: Expected colon after the string or word in object property on line 1 column 6"
+  },
+  {
+   "format": "json",
+   "document": "{\"a\": \"1s\" \"b\": \"2s\"}",
+   "fields": [],
+   "error": "Failed to parse JSON: Expected comma on line 1 column 11"
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\": \"1s\" \"b\": \"2s\"}",
+   "fields": [],
+   "error": "Failed to parse JSON: Expected comma on line 1 column 11"
+  },
+  {
+   "format": "json",
+   "document": "/* c */ {\"a\": \"1s\"}",
+   "fields": [],
+   "error": "Failed to parse JSON: Comments are not allowed on line 1 column 1"
+  },
+  {
+   "format": "jsonc",
+   "document": "/* c */ {\"a\": \"1s\"}",
+   "fields": [
+    [
+     "a",
+     "1s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "json",
+   "document": "{\"a\": \"1s\", \"a\": \"2s\"}",
+   "fields": [
+    [
+     "a",
+     "1s"
+    ],
+    [
+     "a",
+     "2s"
+    ]
+   ],
+   "error": null
+  },
+  {
+   "format": "jsonc",
+   "document": "{\"a\": \"1s\", \"a\": \"2s\"}",
+   "fields": [
+    [
+     "a",
+     "1s"
+    ],
+    [
+     "a",
+     "2s"
+    ]
+   ],
+   "error": null
+  }
+ ]
+}

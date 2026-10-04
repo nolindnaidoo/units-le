@@ -17,10 +17,11 @@ unit, so two of them can be compared.
 readers, the text scan, both surfaces and the corpus are built and
 green, and the family's hardening is in place: the four suites, the
 coverage-matrix, the 75% per-module floor on `extract/`, and the CI
-workflows that run them. It is **on crates.io**, and this repository
-is **crate-only** — there is no extension beside it, so the `parity` and
-`differential` jobs the two-frontend siblings run are deliberately
-absent rather than present and vacuous.
+workflows that run them. It is **on crates.io**, and the VS Code
+extension at the repository root carries an npm twin of `extract_units`.
+The two are held equal by the shared corpus and by the `parity` and
+`differential` jobs in `ci-crate.yml`, as in the other two-frontend
+siblings.
 
 **The reader is not the author.** Someone reconciling configuration
 across services, or against a document that states the limits — an SRE
@@ -105,8 +106,8 @@ crate/src/
   one thing that can never be a quantity.
 - **One extraction function, both surfaces.** numbers-le's shared MCP
   tool omits positions to stay byte-identical with its npm twin; this
-  crate has no twin, so a second shape would be two answers to one
-  question.
+  one's twin carries positions as well, so a second shape would be two
+  answers to one question.
 - **A format falls back, a dimension does not.** An unrecognised format
   is the text scan; an unrecognised dimension is exit 2. There is
   nothing for a dimension to fall back to.

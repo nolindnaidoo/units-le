@@ -1,0 +1,20 @@
+{
+	"manifest.command.category": "Units-LE",
+	"manifest.command.extract.title": "Extract Quantities",
+	"manifest.command.settings.title": "Open Settings",
+	"manifest.command.help.title": "Help & Troubleshooting",
+	"manifest.settings.title": "Units-LE Settings",
+	"manifest.settings.copy.clipboard.desc": "Copy each report to the clipboard as well as opening it",
+	"manifest.settings.dimensions.desc": "Report only these dimensions. Empty reports all four. A refusal that names no dimension is always reported, because it could have been one of them.",
+	"manifest.settings.notifications.level.desc": "Controls the verbosity of notifications",
+	"manifest.settings.notifications.level.option.all": "Show all notifications",
+	"manifest.settings.notifications.level.option.important": "Show only important notifications",
+	"manifest.settings.notifications.level.option.silent": "Suppress all notifications",
+	"manifest.settings.open.side-by-side.desc": "Open the report in a new editor to the side",
+	"manifest.settings.safety.enabled.desc": "Enable safety checks for large files",
+	"manifest.settings.safety.warn.file-size.desc": "Size in bytes above which the active document gets a warning",
+	"manifest.settings.statusbar.enabled.desc": "Show the Units-LE status bar entry for quick access",
+	"manifest.settings.telemetry.desc": "Enable local-only telemetry logs to the Output panel",
+	"manifest.capability.untrusted-workspaces.desc": "Limited functionality in untrusted workspaces",
+	"manifest.mcp.label": "Units-LE quantity extraction for agent mode"
+}

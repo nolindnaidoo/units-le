@@ -1,0 +1,56 @@
+{
+	"name": "units-le-mcp",
+	"version": "1.0.0",
+	"mcpName": "io.github.nolindnaidoo/units-le",
+	"description": "Extract durations, sizes, percentages and frequencies in one base unit, refusing ambiguous ones.",
+	"keywords": [
+		"mcp",
+		"modelcontextprotocol",
+		"model-context-protocol",
+		"mcp-server",
+		"ai-agent",
+		"claude",
+		"cursor",
+		"zed",
+		"vscode",
+		"llm-tools",
+		"units-le",
+		"units-le-mcp",
+		"nolindnaidoo",
+		"letools",
+		"units",
+		"duration",
+		"bytes",
+		"quantity"
+	],
+	"license": "MIT",
+	"author": {
+		"name": "Nolin Naidoo",
+		"url": "https://nolindnaidoo.com"
+	},
+	"homepage": "https://letools.dev/tools/units-le",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/nolindnaidoo/units-le.git",
+		"directory": "mcp"
+	},
+	"bugs": {
+		"url": "https://github.com/nolindnaidoo/units-le/issues"
+	},
+	"type": "commonjs",
+	"bin": {
+		"units-le-mcp": "server.js"
+	},
+	"files": [
+		"server.js",
+		"README.md",
+		"LICENSE"
+	],
+	"engines": {
+		"node": ">=20"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
+}

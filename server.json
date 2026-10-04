@@ -1,0 +1,33 @@
+{
+	"$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+	"name": "io.github.nolindnaidoo/units-le",
+	"title": "Units-LE",
+	"description": "Extract durations, sizes, percentages and frequencies in one base unit, refusing ambiguous ones.",
+	"websiteUrl": "https://letools.dev/tools/units-le",
+	"icons": [
+		{
+			"src": "https://raw.githubusercontent.com/nolindnaidoo/units-le/main/src/assets/images/icon.png",
+			"mimeType": "image/png",
+			"sizes": [
+				"128x128"
+			]
+		}
+	],
+	"repository": {
+		"url": "https://github.com/nolindnaidoo/units-le",
+		"source": "github"
+	},
+	"version": "1.0.0",
+	"packages": [
+		{
+			"registryType": "npm",
+			"registryBaseUrl": "https://registry.npmjs.org",
+			"identifier": "units-le-mcp",
+			"version": "1.0.0",
+			"runtimeHint": "npx",
+			"transport": {
+				"type": "stdio"
+			}
+		}
+	]
+}
