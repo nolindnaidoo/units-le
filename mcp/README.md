@@ -4,8 +4,8 @@
   <a href="https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.units-le">
     <img src="https://img.shields.io/badge/Install%20from-VS%20Code-blue?style=for-the-badge&logo=visualstudiocode" alt="Install from VS Code Marketplace" />
   </a>
-  <a href="https://open-vsx.org/extension/OffensiveEdge/units-le">
-    <img src="https://img.shields.io/open-vsx/dt/OffensiveEdge/units-le?style=for-the-badge&label=Open%20VSX&color=blue" alt="Open VSX downloads" />
+  <a href="https://open-vsx.org/extension/nolindnaidoo/units-le">
+    <img src="https://img.shields.io/open-vsx/dt/nolindnaidoo/units-le?style=for-the-badge&label=Open%20VSX&color=blue" alt="Open VSX downloads" />
   </a>
   <a href="https://www.npmjs.com/package/units-le-mcp">
     <img src="https://img.shields.io/npm/v/units-le-mcp?style=for-the-badge&label=MCP%20server&color=blue&logo=npm" alt="units-le-mcp on npm" />
@@ -59,7 +59,7 @@ claude mcp add units-le -- npx -y units-le-mcp
 **VS Code and Zed** need nothing here. Install the extension instead — it
 carries this server and registers it for you:
 [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.units-le)
-· [Open VSX](https://open-vsx.org/extension/OffensiveEdge/units-le)
+· [Open VSX](https://open-vsx.org/extension/nolindnaidoo/units-le)
 · [Zed](https://zed.dev/docs/ai/mcp) *(no listing yet — add it by hand)*
 
 **No Node?** The same `extract_units` tool ships in a static Rust binary:
