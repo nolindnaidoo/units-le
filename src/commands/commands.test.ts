@@ -181,6 +181,28 @@ describe('units-le.extract', () => {
 		await runCommand('units-le.extract');
 		expect(_clipboardText()).toBe(report());
 	});
+
+	it('shows no positions when the setting is off', async () => {
+		_setConfig('units-le.showPositions', false);
+		_setActiveEditor(
+			_createDocument({ content: DOCUMENT, languageId: 'yaml' }),
+		);
+		await runCommand('units-le.extract');
+		expect(report()).not.toMatch(/\*\*(\d+:\d+|—)\*\*/);
+		expect(report()).toMatch(/^- `/m);
+	});
+
+	it('decides positions for the clipboard separately from the report', async () => {
+		_setConfig('units-le.copyToClipboardEnabled', true);
+		_setConfig('units-le.clipboardIncludesPositions', false);
+		_setActiveEditor(
+			_createDocument({ content: DOCUMENT, languageId: 'yaml' }),
+		);
+		await runCommand('units-le.extract');
+		expect(report()).toMatch(/\*\*\d+:\d+\*\*/);
+		expect(_clipboardText()).not.toMatch(/\*\*(\d+:\d+|—)\*\*/);
+		expect(_clipboardText()).toMatch(/^- `/m);
+	});
 });
 
 describe('settings and help', () => {
