@@ -52,7 +52,6 @@ Press `Ctrl+Alt+Q` (`Cmd+Alt+Q` on Mac) and every quantity in the active documen
 | **Cursor, VSCodium, Windsurf** | The same extension | [Open VSX](https://open-vsx.org/extension/nolindnaidoo/units-le) |
 | **A terminal or a CI step** | A whole tree, with exit codes | `cargo install units-le` · [crates.io](https://crates.io/crates/units-le) |
 | **Any MCP agent, via Node** | `extract_units` over stdio | `npx units-le-mcp` · [npm](https://www.npmjs.com/package/units-le-mcp) |
-| **Zed** | The MCP server as a context server | [add it by hand](https://zed.dev/docs/ai/mcp) *(no listing yet)* |
 
 ## A refusal is a finding
 
@@ -152,7 +151,6 @@ The same engine runs as an [MCP](https://modelcontextprotocol.io) server, so an 
 | Editor | How |
 |---|---|
 | **VS Code** 1.101+ | Nothing to install — the extension registers `extract_units` with agent mode |
-| **Zed** | No listing yet — [add the MCP server by hand](https://zed.dev/docs/ai/mcp) |
 | **Claude Code** | `claude mcp add units-le -- npx -y units-le-mcp` |
 | **Cursor, Windsurf, anything else** | point it at `npx units-le-mcp` |
 
