@@ -216,7 +216,9 @@ No command is bound to a key by default. Give any of them one under **Keyboard S
 |---|---|---|
 | `units-le.dimensions` | `[]` | Report only these dimensions; empty reports all four. A refusal that names no dimension is always reported |
 | `units-le.openResultsSideBySide` | `true` | Open the report beside the current editor |
+| `units-le.showPositions` | `true` | Show the line and column of each quantity |
 | `units-le.copyToClipboardEnabled` | `false` | Also copy the report to the clipboard |
+| `units-le.clipboardIncludesPositions` | `true` | Include the line and column in that copy |
 | `units-le.notificationsLevel` | `silent` | `all` = every notification, `important` = warnings + errors, `silent` = errors only |
 | `units-le.safety.enabled` | `true` | Warn before reading a large file |
 | `units-le.safety.fileSizeWarnBytes` | `1000000` | Size above which the warning appears |
@@ -272,11 +274,11 @@ a build only tells you how busy the runner was.
 | Metric | Coverage |
 | --- | --- |
 | Statements | 86.16% |
-| Branches | 78.39% |
+| Branches | 78.42% |
 | Functions | 95.23% |
 | Lines | 88.06% |
 
-531 test cases across 11 files, plus an integration suite that runs
+535 test cases across 11 files, plus an integration suite that runs
 in a real VS Code extension host and an end-to-end test that installs the
 built `.vsix` into a clean profile.
 
