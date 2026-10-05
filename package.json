@@ -105,14 +105,6 @@
 				}
 			]
 		},
-		"keybindings": [
-			{
-				"command": "units-le.extract",
-				"key": "ctrl+alt+q",
-				"mac": "cmd+alt+q",
-				"when": "editorTextFocus"
-			}
-		],
 		"configuration": {
 			"title": "%manifest.settings.title%",
 			"properties": {

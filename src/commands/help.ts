@@ -38,7 +38,7 @@ export function generateHelpContent(): string {
 		'',
 		'## Commands',
 		'',
-		'- **Extract Quantities** (`Ctrl+Alt+Q`, Mac `Cmd+Alt+Q`): the active document, as the editor holds it.',
+		'- **Extract Quantities**: the active document, as the editor holds it.',
 		'',
 		'## Dimensions',
 		'',
