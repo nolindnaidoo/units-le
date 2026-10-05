@@ -36,7 +36,7 @@
 
 `timeout: 30s` in one service and `timeout: 30000` in another are the same number of milliseconds, and nothing about the text says so. `memory: 1GB` and `memory: 1GiB` differ by 7% and look identical at a glance.
 
-Press `Ctrl+Alt+Q` (`Cmd+Alt+Q` on Mac) and every quantity in the active document — a number welded to a unit — opens in a report beside the editor: as the document wrote it, in one base unit so two of them can be compared, with its line, column and key path. A quantity it cannot read unambiguously keeps its row and gets a reason instead of a guess. Works in VS Code and in VS Code–based editors like Cursor and VSCodium (installable from Open VSX).
+Run `Units-LE: Extract Quantities` and every quantity in the active document — a number welded to a unit — opens in a report beside the editor: as the document wrote it, in one base unit so two of them can be compared, with its line, column and key path. A quantity it cannot read unambiguously keeps its row and gets a reason instead of a guess. Works in VS Code and in VS Code–based editors like Cursor and VSCodium (installable from Open VSX).
 
 - **Before a migration** — every timeout and memory limit in a values file, in milliseconds and bytes
 - **Reviewing a config change** — the `500m` that means minutes to one reader and millicores to another
@@ -204,9 +204,11 @@ units-le mcp                               # extract_units and units_le_scan ove
 
 | Command | Description |
 |---|---|
-| `Units-LE: Extract Quantities` (`Ctrl+Alt+Q` / `Cmd+Alt+Q`) | Every quantity in the active document, as the editor holds it |
+| `Units-LE: Extract Quantities` | Every quantity in the active document, as the editor holds it |
 | `Units-LE: Open Settings` | Open Units-LE settings |
 | `Units-LE: Help & Troubleshooting` | Built-in documentation |
+
+No command is bound to a key by default. Give any of them one under **Keyboard Shortcuts** in the editor.
 
 ## Settings
 
