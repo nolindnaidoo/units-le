@@ -1,6 +1,6 @@
 {
 	"name": "units-le-mcp",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"mcpName": "io.github.nolindnaidoo/units-le",
 	"description": "Extract durations, sizes, percentages and frequencies in one base unit, refusing ambiguous ones.",
 	"keywords": [
