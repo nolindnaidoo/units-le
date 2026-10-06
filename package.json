@@ -3,7 +3,7 @@
 	"publisher": "nolindnaidoo",
 	"displayName": "Units-LE",
 	"description": "Find every quantity in a document — durations, sizes, percentages, frequencies — with its value in one base unit, and refuse the ambiguous ones by name",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"license": "MIT",
 	"author": {
 		"name": "nolindnaidoo",
