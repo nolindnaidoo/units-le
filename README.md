@@ -41,6 +41,7 @@ Run `Units-LE: Extract Quantities` and every quantity in the active document —
 - **Before a migration** — every timeout and memory limit in a values file, in milliseconds and bytes
 - **Reviewing a config change** — the `500m` that means minutes to one reader and millicores to another
 - **Against a runbook or a retention policy** — the limit the document states, checked against the one the config sets
+- **Across a project** — every file that holds a quantity, and how many, in one table
 
 **It never rewrites a document, and never guesses.**
 
@@ -144,6 +145,95 @@ no rewriting, no arithmetic. It reports what a document says and what
 that means in one base unit; which limits are right is the reviewer's
 call.
 
+## Across a folder or a workspace
+
+Extract reads the document you have open. A scan reads many files from disk and gives one report.
+
+- **The whole workspace**: run `Units-LE: Scan Workspace for Quantities` from the command palette.
+- **One folder**: right-click it in the Explorer and choose `Scan Folder for Quantities`, or run `Units-LE: Scan Folder for Quantities` and pick one.
+
+The report opens with a table of every file that holds something, then has a section per file:
+
+```markdown
+# Units-LE workspace report
+
+`my-project` · 113 file(s) read · 3 quantit(ies), 1 could not be resolved
+
+| File | Quantities | Could not be resolved |
+|---|---|---|
+| `deploy/values.yaml` | 3 | 1 |
+
+## `deploy/values.yaml` · yaml (3)
+
+- **2:8** · `1h30m` · duration · → `5400000` milliseconds · key `cache.ttl`
+- **3:9** · `512MiB` · bytes · → `536870912` bytes · key `memory`
+- **4:7** · `2GB` · bytes · → `2000000000` bytes · key `disk`
+
+> 2 file(s) larger than the safety limit were not read.
+```
+
+**What a scan reads.** Files come from disk, so an unsaved edit is not seen. A file over the safety size, or one that is not UTF-8 text, is left unread. It stops at 5,000 files or 10,000 listed quantities. The report ends with a line for each thing it left out, so a short report is never mistaken for a clean project.
+
+**What it skips, and how to change that.** Three switches are on by default, and each can be turned off on its own in Settings:
+
+| Switch | Skips |
+|---|---|
+| `scanUseDefaultExcludes` | Dependency folders, build output, tool caches and lockfiles. The full list is below |
+| `scanRespectGitignore` | Whatever the project's `.gitignore` files skip |
+| `scanSkipBinaryFiles` | Images, fonts, archives and other files that are not text |
+
+Two lists adjust the result without turning a switch off. To skip more, add a pattern to `scanExcludes`. To read something a switch would skip, add it to `scanAlwaysInclude`:
+
+```jsonc
+{
+	// Also skip the test fixtures.
+	"units-le.workspace.scanExcludes": ["**/fixtures/**"],
+	// Read the vendored code, though the built-in list skips it.
+	"units-le.workspace.scanAlwaysInclude": ["**/vendor/**"]
+}
+```
+
+`Units-LE: Open Settings` opens all of these in the Settings editor.
+
+<details>
+<summary>The built-in list</summary>
+
+Folders, wherever they appear:
+
+<!-- built-in-folders -->
+`.git`, `.hg`, `.svn`, `node_modules`, `bower_components`, `jspm_packages`, `.pnpm-store`, `.yarn`, `vendor`, `site-packages`, `Pods`, `Carthage`, `dist`, `build`, `out`, `target`, `_build`, `_site`, `dist-newstyle`, `zig-out`, `storybook-static`, `cdk.out`, `DerivedData`, `CMakeFiles`, `.next`, `.nuxt`, `.output`, `.svelte-kit`, `.angular`, `.astro`, `.docusaurus`, `.vuepress`, `.expo`, `.turbo`, `.parcel-cache`, `.cache`, `.sass-cache`, `.jekyll-cache`, `.dart_tool`, `.pub-cache`, `.gradle`, `.kotlin`, `.cxx`, `.externalNativeBuild`, `captures`, `ephemeral`, `.symlinks`, `.swiftpm`, `.build`, `.bundle`, `.stack-work`, `.zig-cache`, `.godot`, `elm-stuff`, `.vercel`, `.netlify`, `.serverless`, `.aws-sam`, `.terraform`, `.venv`, `venv`, `__pycache__`, `.tox`, `.nox`, `.mypy_cache`, `.pytest_cache`, `.ruff_cache`, `.ipynb_checkpoints`, `.eggs`, `coverage`, `htmlcov`, `.nyc_output`, `.vscode-test`, `.idea`, `.vs`, `xcuserdata`, `*.egg-info`
+<!-- /built-in-folders -->
+
+Files, wherever they appear:
+
+<!-- built-in-files -->
+`*.min.js`, `*.min.css`, `*.map`, `*.snap`, `*.lock`, `package-lock.json`, `pnpm-lock.yaml`, `npm-shrinkwrap.json`, `go.sum`, `*.pbxproj`, `*.iml`, `local.properties`, `output-metadata.json`, `.flutter-plugins`, `.flutter-plugins-dependencies`, `.packages`, `Generated.xcconfig`, `flutter_export_environment.sh`, `GeneratedPluginRegistrant.*`, `fastlane/report.xml`, `fastlane/test_output/**`, `doc/api/**`
+<!-- /built-in-files -->
+
+Not on the list, because they are ordinary folders in many projects: `bin`, `obj`, `tmp`, `logs`, `public`, `generated`. A project that generates those ignores them in git, and the scan reads `.gitignore`.
+
+</details>
+
+**What it could not resolve.** Across a project there can be many, and they crowd out the rest. So a scan counts them per file in the table and does not list them. `units-le.workspace.scanIncludeRefusals` lists each one with its reason, and `units-le.workspace.scanProblemsEnabled` also puts them in the Problems panel, where each is a line you can click.
+
+The settings that shape a scan are under [Settings](#settings).
+
+## Positions
+
+Each row leads with the line and column of the quantity:
+
+```markdown
+- **2:8** · `1h30m` · duration · → `5400000` milliseconds · key `cache.ttl`
+```
+
+Turn `units-le.showPositions` off and the same row is:
+
+```markdown
+- `1h30m` · duration · → `5400000` milliseconds · key `cache.ttl`
+```
+
+Nothing else changes: the same rows, the same counts. The copy on the clipboard is a separate choice, `units-le.clipboardIncludesPositions`, so a report can show positions on screen and paste without them. Both apply to a scan as they do to Extract.
+
 ## Use it from an AI agent
 
 The same engine runs as an [MCP](https://modelcontextprotocol.io) server, so an agent can read quantities directly instead of converting units by hand.
@@ -205,6 +295,8 @@ units-le mcp                               # extract_units and units_le_scan ove
 | Command | Description |
 |---|---|
 | `Units-LE: Extract Quantities` | Every quantity in the active document, as the editor holds it |
+| `Units-LE: Scan Workspace for Quantities` | Every quantity in every file in the workspace, one section per file |
+| `Units-LE: Scan Folder for Quantities` | The same for one folder. Also on a folder in the Explorer |
 | `Units-LE: Open Settings` | Open Units-LE settings |
 | `Units-LE: Help & Troubleshooting` | Built-in documentation |
 
@@ -220,6 +312,16 @@ No command is bound to a key by default. Give any of them one under **Keyboard S
 | `units-le.copyToClipboardEnabled` | `false` | Also copy the report to the clipboard |
 | `units-le.clipboardIncludesPositions` | `true` | Include the line and column in that copy |
 | `units-le.notificationsLevel` | `silent` | `all` = every notification, `important` = warnings + errors, `silent` = errors only |
+| `units-le.workspace.scanPatterns` | `["**/*"]` | The files a folder or workspace scan reads |
+| `units-le.workspace.scanUseDefaultExcludes` | `true` | Skip dependency folders, build output, caches and lockfiles |
+| `units-le.workspace.scanRespectGitignore` | `true` | Skip what the project's `.gitignore` files skip |
+| `units-le.workspace.scanSkipBinaryFiles` | `true` | Skip images, fonts, archives and other files that are not text |
+| `units-le.workspace.scanExcludes` | `[]` | More files to skip, as glob patterns |
+| `units-le.workspace.scanAlwaysInclude` | `[]` | Files to read even when one of the three above would skip them |
+| `units-le.workspace.scanMaxFiles` | `5000` | The most files one scan reads |
+| `units-le.workspace.scanMaxResults` | `10000` | The most quantities one scan lists before it stops reading |
+| `units-le.workspace.scanIncludeRefusals` | `false` | List each run that could not be resolved, not only how many per file |
+| `units-le.workspace.scanProblemsEnabled` | `false` | Also show the runs that could not be resolved in the Problems panel |
 | `units-le.safety.enabled` | `true` | Warn before reading a large file |
 | `units-le.safety.fileSizeWarnBytes` | `1000000` | Size above which the warning appears |
 | `units-le.statusBar.enabled` | `true` | Show the status bar item |
@@ -273,12 +375,12 @@ a build only tells you how busy the runner was.
 <!-- coverage:start -->
 | Metric | Coverage |
 | --- | --- |
-| Statements | 86.16% |
-| Branches | 78.42% |
-| Functions | 95.23% |
-| Lines | 88.06% |
+| Statements | 86.81% |
+| Branches | 78.95% |
+| Functions | 95.60% |
+| Lines | 88.72% |
 
-535 test cases across 11 files, plus an integration suite that runs
+588 test cases across 13 files, plus an integration suite that runs
 in a real VS Code extension host and an end-to-end test that installs the
 built `.vsix` into a clean profile.
 
