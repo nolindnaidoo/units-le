@@ -10,10 +10,36 @@ separate product on its own cadence and keeps its own
 [CHANGELOG](crate/CHANGELOG.md). The entries below 1.0.0 describe this
 repository while it held the CLI alone.
 
-## [1.1.0] - 2026-10-05
+## [1.1.0] - 2026-10-06
 
 ### Added
 
+- Scan a folder or the whole workspace. `Units-LE: Scan Workspace for Quantities`
+  reads every file in the workspace from disk. `Units-LE: Scan Folder for Quantities`
+  does the same for one folder, from the command palette or from a folder in
+  the Explorer. Files are read from disk, so an unsaved edit is not seen. The
+  report opens with a table of every file that holds a quantity, then has
+  a section per file, and ends with a line for each thing the scan left
+  unread.
+- A scan skips three things by default, each with its own switch:
+  dependency folders, build output, caches and lockfiles
+  (`units-le.workspace.scanUseDefaultExcludes`), whatever the project's
+  `.gitignore` files skip (`units-le.workspace.scanRespectGitignore`), and
+  images, fonts, archives and other files that are not text
+  (`units-le.workspace.scanSkipBinaryFiles`). `units-le.workspace.scanExcludes`
+  skips more, and `units-le.workspace.scanAlwaysInclude` reads a path whatever
+  the switches say. The report names which of these were on.
+  `units-le.workspace.scanPatterns` chooses the files to read in the first
+  place.
+- `units-le.workspace.scanMaxFiles` caps how many files are read and
+  `units-le.workspace.scanMaxResults` caps how many quantities are listed. A
+  file over the safety size, or one that is not UTF-8 text, is left unread,
+  and the report says how many were.
+- Runs that could not be resolved are counted per file in a scan, not listed.
+  `units-le.workspace.scanIncludeRefusals` lists each one, and
+  `units-le.workspace.scanProblemsEnabled` also shows them in the Problems
+  panel. Both are off by default, so a project's report stays short.
+- The positions settings apply to a scan as they do to Extract.
 - Positions are now a setting. `units-le.showPositions` decides whether the
   output gives the line and column of each quantity, and
   `units-le.clipboardIncludesPositions` decides the same for the copy on the

@@ -4,6 +4,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { _resetMockState, _setConfig } from '../__mocks__/vscode';
 import { DIMENSIONS } from '../extract';
 import {
+	DEFAULT_EXCLUDED_FILES,
+	DEFAULT_EXCLUDED_FOLDERS,
+	DEFAULT_EXCLUDED_PATHS,
+} from '../workspace/defaults';
+import {
 	CONFIG_DEFAULTS,
 	isValidNotificationLevel,
 	readConfig,
@@ -31,6 +36,17 @@ describe('config defaults parity with package.json', () => {
 		'units-le.showPositions': 'showPositions',
 		'units-le.statusBar.enabled': 'statusBarEnabled',
 		'units-le.telemetryEnabled': 'telemetryEnabled',
+		'units-le.workspace.scanAlwaysInclude': 'workspaceScanAlwaysInclude',
+		'units-le.workspace.scanExcludes': 'workspaceScanExcludes',
+		'units-le.workspace.scanIncludeRefusals': 'workspaceScanIncludeRefusals',
+		'units-le.workspace.scanMaxFiles': 'workspaceScanMaxFiles',
+		'units-le.workspace.scanMaxResults': 'workspaceScanMaxResults',
+		'units-le.workspace.scanPatterns': 'workspaceScanPatterns',
+		'units-le.workspace.scanProblemsEnabled': 'workspaceScanProblemsEnabled',
+		'units-le.workspace.scanRespectGitignore': 'workspaceScanRespectGitignore',
+		'units-le.workspace.scanSkipBinaryFiles': 'workspaceScanSkipBinaryFiles',
+		'units-le.workspace.scanUseDefaultExcludes':
+			'workspaceScanUseDefaultExcludes',
 	};
 
 	it('covers every declared setting', () => {
@@ -47,6 +63,56 @@ describe('config defaults parity with package.json', () => {
 		const items = (key: string) =>
 			(props[key] as unknown as { items: { enum: string[] } }).items.enum;
 		expect(items('units-le.dimensions')).toEqual([...DIMENSIONS]);
+	});
+});
+
+describe('the README states the scan limits the code uses', () => {
+	const readme = readFileSync(join(__dirname, '..', '..', 'README.md'), 'utf8');
+	const grouped = (n: number) => n.toLocaleString('en-US');
+
+	it('in the settings table', () => {
+		expect(readme).toContain(
+			`| \`units-le.workspace.scanMaxFiles\` | \`${CONFIG_DEFAULTS.workspaceScanMaxFiles}\` |`,
+		);
+		expect(readme).toContain(
+			`| \`units-le.workspace.scanMaxResults\` | \`${CONFIG_DEFAULTS.workspaceScanMaxResults}\` |`,
+		);
+	});
+
+	it('in the prose', () => {
+		expect(readme).toContain(
+			`It stops at ${grouped(CONFIG_DEFAULTS.workspaceScanMaxFiles)} files or ${grouped(CONFIG_DEFAULTS.workspaceScanMaxResults)} listed quantities.`,
+		);
+	});
+});
+
+describe('the README lists the folders a scan skips', () => {
+	it('exactly as the code has them', () => {
+		const readme = readFileSync(
+			join(__dirname, '..', '..', 'README.md'),
+			'utf8',
+		);
+		const listed =
+			/<!-- built-in-folders -->\n(.*)\n<!-- \/built-in-folders -->/
+				.exec(readme)?.[1]
+				?.split(', ')
+				.map((entry) => entry.replace(/`/g, ''));
+		expect(listed).toEqual([...DEFAULT_EXCLUDED_FOLDERS, '*.egg-info']);
+	});
+
+	it('and the files, exactly as the code has them', () => {
+		const readme = readFileSync(
+			join(__dirname, '..', '..', 'README.md'),
+			'utf8',
+		);
+		const listed = /<!-- built-in-files -->\n(.*)\n<!-- \/built-in-files -->/
+			.exec(readme)?.[1]
+			?.split(', ')
+			.map((entry) => entry.replace(/`/g, ''));
+		expect(listed).toEqual([
+			...DEFAULT_EXCLUDED_FILES,
+			...DEFAULT_EXCLUDED_PATHS,
+		]);
 	});
 });
 
