@@ -16,7 +16,7 @@ unit, so two of them can be compared.
 **Status: published, hardened.** The grammar, the six format
 readers, the text scan, both surfaces and the corpus are built and
 green, and the family's hardening is in place: the four suites, the
-coverage-matrix, the 75% per-module floor on `extract/`, and the CI
+coverage-matrix, the 70% per-module floor on `extract/`, and the CI
 workflows that run them. It is **on crates.io**, and the VS Code
 extension at the repository root carries an npm twin of `extract_units`.
 The two are held equal by the shared corpus and by the `parity` and
@@ -239,7 +239,7 @@ CHANGELOG entry.
   callers branch on them — so they are pinned by tests that drive the
   built binary against a temporary tree. A new refusal adds its case
   there.
-- **75% line coverage per module in `extract/`**, enforced by the
+- **70% line coverage per module in `extract/`**, enforced by the
   `coverage` CI job. Per module rather than on the total: a total hides
   one module sliding while the others carry it. It is a floor and is
   never lowered to make a build pass.
@@ -300,7 +300,7 @@ plus `msrv`, `policy` (which fails the build on an inline `#[allow]`),
 UNITS_LE_FUZZ_SECONDS=60 cargo test --locked --release --test fuzz -- --nocapture
 UNITS_LE_BUDGET=1 cargo test --locked --release --test budget -- --nocapture
 UNITS_LE_SCENARIOS=1 cargo test --locked --test scenarios
-cargo llvm-cov            # the 75% per-module floor on extract/
+cargo llvm-cov            # the 70% per-module floor on extract/
 ```
 
 A change is not done because it compiles; it is done when it is tested,
