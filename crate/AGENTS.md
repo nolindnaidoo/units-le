@@ -104,10 +104,9 @@ crate/src/
   coercion split does not exist here: a unit is spelled in characters,
   so a quantity is a string in all six formats, and a typed value is the
   one thing that can never be a quantity.
-- **One extraction function, both surfaces.** numbers-le's shared MCP
-  tool omits positions to stay byte-identical with its npm twin; this
-  one's twin carries positions as well, so a second shape would be two
-  answers to one question.
+- **One extraction function, both surfaces.** The shared MCP tool
+  carries positions, and so does its npm twin, so a second shape would
+  be two answers to one question.
 - **A format falls back, a dimension does not.** An unrecognised format
   is the text scan; an unrecognised dimension is exit 2. There is
   nothing for a dimension to fall back to.
