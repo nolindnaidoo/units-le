@@ -15,6 +15,8 @@
   </a>
 </p>
 
+![An agent in Claude Code calling the units-le MCP server](https://raw.githubusercontent.com/nolindnaidoo/units-le/main/assets/demos/mcp.gif)
+
 An [MCP](https://modelcontextprotocol.io) server that finds every quantity in
 a document — a number welded to a unit — and returns it twice: as the document
 wrote it, and in one base unit so two of them can be compared. Durations come

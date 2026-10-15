@@ -1,0 +1,16 @@
+{
+  "files": [
+    "config.yaml"
+  ],
+  "steps": [
+    {
+      "wait": 1500
+    },
+    {
+      "command": "Units-LE: Extract Quantities"
+    },
+    {
+      "wait": 5000
+    }
+  ]
+}
