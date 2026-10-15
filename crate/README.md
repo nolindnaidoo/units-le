@@ -106,7 +106,7 @@ the boundary is what keeps the two tools distinct.
 ## Sixty seconds
 
 ```bash
-units-le .                                 # every quantity in the tree, as JSON
+units-le .                                 # every quantity in the tree; JSON on stdout when piped
 units-le --dimension duration config/      # only the timeouts
 units-le --strict config/                  # exit 2 if anything was refused
 cat values.yaml | units-le --stdin --format yaml
@@ -114,6 +114,10 @@ cat values.yaml | units-le --stdin --format yaml
 # the point of the whole thing:
 units-le config/ | jq -r '.quantities[] | select(.dimension=="duration") | "\(.key)\t\(.base)"'
 ```
+
+At a terminal the quantities are listed on stderr and stdout stays silent.
+Piped or redirected, stdout carries one JSON report per line, one line per
+file.
 
 ## Install
 

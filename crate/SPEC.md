@@ -225,7 +225,9 @@ value finds the digits in the key.
 ## Output contract
 
 **stdout is protocol, stderr is human.** One JSON report per line, one
-line per file.
+line per file. stdout carries the reports when it is piped or redirected
+and stays silent when it is a terminal, where the stderr listing already
+says the same thing.
 
 ```json
 {

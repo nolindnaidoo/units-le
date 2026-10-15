@@ -1,10 +1,11 @@
 //! The terminal surface.
 //!
-//! stdout is always protocol — one JSON report per line, one line per
-//! file. stderr is always for the human, and is a projection of the same
+//! stdout is protocol — one JSON report per line, one line per file —
+//! whenever something is reading it, and silent when it is a terminal.
+//! stderr is always for the human, and is a projection of the same
 //! reports rather than parallel prose.
 
-use std::io::{Read, Write};
+use std::io::{IsTerminal, Read, Write};
 use std::path::PathBuf;
 use std::process::ExitCode;
 
@@ -34,6 +35,9 @@ dropped row.
 
 A bare number with no unit is not a finding at all — that is numbers-le's
 question.
+
+One JSON report per line on stdout when it is piped or redirected, human
+summary on stderr. At a terminal stdout stays silent.
 
 Options:
   --dimension <name>   report only duration, bytes, percent or frequency.
@@ -116,21 +120,34 @@ fn execute(args: &[String]) -> Result<u8, String> {
         scan::partition(scanned)
     };
 
-    write_reports(&reports)?;
+    let stdout = std::io::stdout();
+    let terminal = stdout.is_terminal();
+    write_reports(&mut stdout.lock(), &reports, terminal)
+        .map_err(|error| format!("could not write the report: {error}"))?;
     summarise(&reports, binary);
     Ok(scan::exit_code(&reports, options.strict))
 }
 
-fn write_reports(reports: &[FileReport]) -> Result<(), String> {
-    let mut stdout = std::io::stdout().lock();
+/// A terminal gets nothing here. The stderr summary already says
+/// everything a person reads, and the JSON beside it on the same screen
+/// is the same answer a second time in a form nobody reads by eye.
+/// Anything that can parse — a pipe, a file, a subprocess — still gets
+/// every report, so no script sees a difference.
+fn write_reports(
+    out: &mut impl Write,
+    reports: &[FileReport],
+    terminal: bool,
+) -> std::io::Result<()> {
+    if terminal {
+        return Ok(());
+    }
     for report in reports {
         // A report is plain data — strings, integers and unit-variant
         // enums, every map keyed by a string and no float anywhere — so
         // there is no input on which `to_string` can fail. The write is
         // the fallible half, and it is carried to the caller.
         let line = serde_json::to_string(report).expect("a report serializes");
-        writeln!(stdout, "{line}")
-            .map_err(|error| format!("could not write the report: {error}"))?;
+        writeln!(out, "{line}")?;
     }
     Ok(())
 }
@@ -217,8 +234,8 @@ fn parse(args: &[String]) -> Result<Cli, String> {
     Ok(options)
 }
 
-/// The human half. Every line restates something already on stdout —
-/// except the binary count, which is the one thing stdout cannot carry
+/// The human half. Every line restates something already in the reports —
+/// except the binary count, which is the one thing they cannot carry
 /// because those files produce no report line at all.
 fn summarise(reports: &[FileReport], binary: usize) {
     let quantities: usize = reports.iter().map(|report| report.summary.quantities).sum();
@@ -227,7 +244,8 @@ fn summarise(reports: &[FileReport], binary: usize) {
     // Every write below is deliberately unchecked. stderr is the human
     // half, and a reader who closed it — `| head`, a pipeline that
     // stopped listening — has not made the audit fail: the answer is on
-    // stdout, which is written first and whose failure is carried.
+    // stdout when anything reads it, which is written first and whose
+    // failure is carried.
     let mut stderr = std::io::stderr().lock();
     for report in reports {
         for diagnostic in &report.diagnostics {
@@ -272,6 +290,34 @@ fn plural(count: usize, one: &str, many: &str) -> String {
 mod tests {
     use super::*;
     use crate::extract::{Format, SUPPORTED_FORMATS};
+
+    fn sample_reports() -> Vec<FileReport> {
+        let options = ScanOptions::default();
+        vec![scan::scan_content(
+            "a: 30s",
+            "a.yaml".into(),
+            crate::extract::Format::Yaml,
+            options,
+        )]
+    }
+
+    #[test]
+    fn a_pipe_gets_one_report_per_line() {
+        let reports = sample_reports();
+        let mut out = Vec::new();
+        write_reports(&mut out, &reports, false).expect("a write");
+        let text = String::from_utf8(out).expect("utf-8");
+        assert_eq!(text.lines().count(), reports.len());
+        assert!(text.starts_with('{'), "{text}");
+    }
+
+    /// The summary on stderr already covers a person at a terminal.
+    #[test]
+    fn a_terminal_gets_no_json() {
+        let mut out = Vec::new();
+        write_reports(&mut out, &sample_reports(), true).expect("a write");
+        assert!(out.is_empty());
+    }
 
     #[test]
     fn every_documented_flag_is_parsed_and_the_reverse() {
