@@ -289,7 +289,7 @@ The same extraction runs over a tree from a terminal or a CI step: a Rust CLI in
 </p>
 
 ```bash
-units-le .                                 # every quantity in the tree, one JSON report per file
+units-le .                                 # every quantity in the tree; one JSON report per file when piped
 units-le --dimension duration config/      # only the timeouts
 units-le --strict config/                  # exit 2 if anything was refused
 cat values.yaml | units-le --stdin --format yaml
