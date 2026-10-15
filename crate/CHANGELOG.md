@@ -5,6 +5,14 @@ The Rust CLI and MCP server.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2026-10-15
+
+### Changed
+
+- **stdout is silent at a terminal.** The JSON reports printed on the same
+  screen as the stderr listing and said the same thing again. Piped or
+  redirected, stdout carries every report exactly as before.
+
 ## [0.2.2] - 2026-10-11
 
 ### Fixed
@@ -241,3 +249,4 @@ Written down rather than left to be discovered, each pinned by a test.
 [0.1.2]: https://crates.io/crates/units-le/0.1.2
 [0.2.0]: https://crates.io/crates/units-le/0.2.0
 [0.2.2]: https://crates.io/crates/units-le/0.2.2
+[0.2.3]: https://crates.io/crates/units-le/0.2.3
