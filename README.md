@@ -17,6 +17,9 @@
   <a href="https://www.npmjs.com/package/units-le-mcp">
     <img src="https://img.shields.io/npm/v/units-le-mcp?style=for-the-badge&label=MCP%20server&color=blue&logo=npm" alt="units-le-mcp on npm" />
   </a>
+  <a href="https://www.npmjs.com/package/units-le">
+    <img src="https://img.shields.io/npm/v/units-le?style=for-the-badge&label=npm%20CLI&color=blue&logo=npm" alt="units-le on npm" />
+  </a>
   <a href="https://crates.io/crates/units-le">
     <img src="https://img.shields.io/crates/v/units-le?style=for-the-badge&label=Rust%20CLI&color=blue&logo=rust" alt="units-le on crates.io" />
   </a>
@@ -288,6 +291,22 @@ The same extraction runs over a tree from a terminal or a CI step: a Rust CLI in
 <p align="center">
   <img src="assets/demos/cli.gif" alt="units-le in a terminal" style="max-width: 100%; height: auto;" />
 </p>
+
+**Install it from npm** ([`units-le`](https://www.npmjs.com/package/units-le)) **or from crates.io** ([`units-le`](https://crates.io/crates/units-le)). Both install the same `units-le` command.
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/units-le">
+    <img src="https://img.shields.io/npm/v/units-le?style=for-the-badge&label=npm%20CLI&color=blue&logo=npm" alt="units-le on npm" />
+  </a>
+  <a href="https://crates.io/crates/units-le">
+    <img src="https://img.shields.io/crates/v/units-le?style=for-the-badge&label=Rust%20CLI&color=blue&logo=rust" alt="units-le on crates.io" />
+  </a>
+</p>
+
+```bash
+npm install -g units-le   # or run it once: npx units-le
+cargo install units-le
+```
 
 ```bash
 units-le .                                 # every quantity in the tree; one JSON report per file when piped
