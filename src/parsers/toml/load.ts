@@ -1,17 +1,24 @@
-import { collect, type Field, OTHER, type Value } from '../policy';
 import { datetimeError } from './datetime';
-import {
-	buildDocument,
-	type DeTable,
-	type DeValue,
-	type Spanned,
-} from './document';
+import { buildDocument, type DeTable, type Spanned } from './document';
 import { type Expected, type Span, TomlParseError } from './errors';
 import { lex } from './lexer';
 import { parseEvents } from './parser';
 
+/** A `toml::Value`, as serde's walk builds it from the document. */
+export type TomlValue =
+	| { readonly type: 'string'; readonly text: string }
+	| { readonly type: 'integer'; readonly value: bigint }
+	| { readonly type: 'float'; readonly value: number }
+	| { readonly type: 'boolean'; readonly value: boolean }
+	| { readonly type: 'datetime' }
+	| { readonly type: 'array'; readonly items: readonly TomlValue[] }
+	| {
+			readonly type: 'table';
+			readonly entries: ReadonlyArray<readonly [string, TomlValue]>;
+	  };
+
 /**
- * The crate's `toml.rs`: `text.parse::<toml::Table>()` at toml 1.1.6 with
+ * `text.parse::<toml::Table>()` at toml 1.1.6 with
  * `preserve_order`. Three phases, in the crate's order — toml_parser's
  * syntax (lexer, parser, whitespace validation), the toml crate's table
  * rules and value decoding, then serde's walk into `toml::Value` — and the
@@ -169,7 +176,7 @@ const VALUE_EXPECTING = 'any valid TOML value';
 const DATETIME_EXPECTING = 'string containing a datetime';
 
 /** The value, or serde's `invalid type` for a visitor that does not take it. */
-function walk(item: Spanned, expecting: string): Value {
+function walk(item: Spanned, expecting: string): TomlValue {
 	const { value, span } = item;
 	const fail = (message: string): never => {
 		throw new DeError(message, span);
@@ -178,7 +185,7 @@ function walk(item: Spanned, expecting: string): Value {
 		fail(`invalid type: ${unexpected}, expected ${expecting}`);
 	switch (value.type) {
 		case 'string':
-			return { type: 'text', text: value.text };
+			return { type: 'string', text: value.text };
 		case 'integer': {
 			const parsed = integer(value.text, value.radix);
 			if (parsed === undefined) fail('integer number overflowed');
@@ -187,7 +194,7 @@ function walk(item: Spanned, expecting: string): Value {
 				invalid(`integer \`${number}\` as ${kind}`);
 			if (expecting === DATETIME_EXPECTING) invalid(`integer \`${number}\``);
 			if (kind === 'u64') fail('u64 value was too large');
-			return OTHER;
+			return { type: 'integer', value: number };
 		}
 		case 'float': {
 			const lower = value.text.toLowerCase();
@@ -210,19 +217,19 @@ function walk(item: Spanned, expecting: string): Value {
 					`floating point \`${shown.includes('.') ? shown : `${shown}.0`}\``,
 				);
 			}
-			return OTHER;
+			return { type: 'float', value: floatOf(value.text) };
 		}
 		case 'boolean':
 			if (expecting === DATETIME_EXPECTING)
 				invalid(`boolean \`${value.value}\``);
-			return OTHER;
+			return { type: 'boolean', value: value.value };
 		case 'datetime':
 			if (expecting === DATETIME_EXPECTING) invalid('map');
-			return OTHER;
+			return { type: 'datetime' };
 		case 'array':
 			if (expecting === DATETIME_EXPECTING) invalid('sequence');
 			return {
-				type: 'seq',
+				type: 'array',
 				items: value.items.map((element) => walk(element, VALUE_EXPECTING)),
 			};
 		case 'table':
@@ -232,7 +239,7 @@ function walk(item: Spanned, expecting: string): Value {
 }
 
 /** toml::Value's `visit_map`, with toml_datetime's hook on a first key that names its private field. */
-function nested(table: DeTable): Value {
+function nested(table: DeTable): TomlValue {
 	const entries = [...table.entries];
 	const first = entries[0];
 	if (first !== undefined && first[0] === DATETIME_FIELD) {
@@ -242,26 +249,41 @@ function nested(table: DeTable): Value {
 			const error = datetimeError((item.value as { text: string }).text);
 			if (error !== undefined) throw new DeError(error, item.span);
 		}
-		return OTHER;
+		return { type: 'datetime' };
 	}
 	return {
-		type: 'map',
+		type: 'table',
 		entries: entries.map(
 			([key, entry]) => [key, walk(entry.item, VALUE_EXPECTING)] as const,
 		),
 	};
 }
 
-function root(table: DeTable): Value {
+function root(table: DeTable): TomlValue {
 	return {
-		type: 'map',
+		type: 'table',
 		entries: [...table.entries].map(
 			([key, entry]) => [key, walk(entry.item, VALUE_EXPECTING)] as const,
 		),
 	};
 }
 
-function parsed(text: string): Value | string {
+/** TOML's float spellings as a number: Rust's `f64` from the decoded text. */
+function floatOf(text: string): number {
+	const lower = text.toLowerCase();
+	if (lower.includes('nan')) return Number.NaN;
+	if (lower.includes('inf'))
+		return lower.startsWith('-')
+			? Number.NEGATIVE_INFINITY
+			: Number.POSITIVE_INFINITY;
+	return Number(text);
+}
+
+/**
+ * The document's root table, or the error toml reports, already rendered in
+ * its own words and snippet and without any prefix a tool adds.
+ */
+export function loadToml(text: string): TomlValue | string {
 	const bytes = encoder.encode(text);
 	try {
 		return root(buildDocument(parseEvents(lex(bytes), bytes), bytes));
@@ -273,17 +295,3 @@ function parsed(text: string): Value | string {
 		throw error;
 	}
 }
-
-export function extractToml(text: string): Field[] {
-	const value = parsed(text);
-	return typeof value === 'string' ? [] : collect(value);
-}
-
-export function tomlParseError(text: string): string | undefined {
-	const value = parsed(text);
-	return typeof value === 'string'
-		? `Failed to parse TOML: ${value}`
-		: undefined;
-}
-
-export type { DeValue };

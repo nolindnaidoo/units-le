@@ -76,9 +76,10 @@ artifact users actually install.
   see AGENTS.md, Release.
 - **jsonc-parser, saphyr, toml, rust-ini and csv are transcribed, not
   approximated.** Which document yields quantities, and what a broken one is
-  told, is those crates' answer, in `src/extract/`. Any npm parser answers
+  told, is those crates' answer, in `src/parsers/`. Any npm parser answers
   differently somewhere, and the differential will say so. AGENTS.md names
-  the behaviours that surprised us.
+  the behaviours that surprised us. `src/parsers/` is shared with four
+  sibling repos and the fleet check holds every copy identical.
 - **TOML spans are UTF-8 bytes**, so the TOML port works on the document's
   bytes; everything else is UTF-16 indices, which is also how the crate
   counts columns.

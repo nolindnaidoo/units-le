@@ -22,15 +22,25 @@ extract/                 THE engine, a port of the crate — pure, no vscode:
   policy.ts, locate.ts   policy.rs, locate.rs, position.rs: key paths and positions
   format.ts              format.rs: which reader a document goes to
   dotenv.ts              dotenv.rs
-  jsonc.ts, json.ts      jsonc-parser 0.33.2, both option sets (from units-le's transcription)
-  yaml.ts, yaml/         saphyr 0.1.0 + saphyr-parser 0.1.0: scanner, parser, loader,
-                         core-schema scalar typing
-  toml.ts, toml/         toml 1.1.6 at preserve_order: toml_parser 1.1.3's lexer, parser and
+  json.ts, yaml.ts,      units-le's reading of each parsed tree: text leaves and key
+  toml.ts, ini.ts,       paths, over the shared parsers below
+  csv.ts
+parsers/                 the five crates, transcribed, as typed loaders that report each
+                         crate's own error. Shared byte for byte with numbers-le,
+                         string-le, paths-le and urls-le and held there by
+                         letools-site's fleet check, so a fix here is a fix there:
+  jsonc.ts               jsonc-parser 0.33.2, both option sets, with offsets
+  yaml/                  saphyr 0.1.0 + saphyr-parser 0.1.0: scanner, parser, and a loader
+                         with core-schema scalar typing
+  toml/                  toml 1.1.6 at preserve_order: toml_parser 1.1.3's lexer, parser and
                          decoders, the toml crate's table rules, toml_datetime, and serde's
                          walk into toml::Value — every phase's error, in its words
   ini.ts                 rust-ini 0.21.3's parser, escapes off
-  csv.ts                 csv 1.4.0 / csv-core 0.1.13's state machine
+  csv.ts                 csv 1.4.0 / csv-core 0.1.13's state machine, and the
+                         `trim_around_quotes` pass numbers-le and string-le run first
   text.ts                Rust's char and str predicates
+  reference/             the pinned crates themselves, answering for a few thousand
+                         seeded documents; parsers.test.ts holds every loader to them
 report/format.ts         the Markdown report
 mcp/                     the npm server: tools.ts (extract_units), transport.ts
 ui/, config/, telemetry/ as in every sibling
@@ -47,7 +57,7 @@ Conventions: factory functions + `Object.freeze` (classes only inside the parser
 
 `src/extract/` is a port of `crate/src/extract/`, held to it three ways: the corpus (`check-extraction-parity.ts`, `corpus.test.ts`), the differential (thousands of generated documents through both MCP servers), and the definition check. A difference is a bug in one of them.
 
-- **Five parsers are transcribed, not approximated.** Which document yields quantities, and what a broken one is told, is jsonc-parser's, saphyr's, toml's, rust-ini's and csv's answer. Any npm parser answers differently somewhere, and a document one server reads and the other refuses is a difference in every quantity it holds. `src/extract/__fixtures__/reader-cases.json` pins several hundred documents read back from the crates themselves.
+- **Five parsers are transcribed, not approximated.** Which document yields quantities, and what a broken one is told, is jsonc-parser's, saphyr's, toml's, rust-ini's and csv's answer. Any npm parser answers differently somewhere, and a document one server reads and the other refuses is a difference in every quantity it holds. `src/extract/__fixtures__/reader-cases.json` pins several hundred documents read back from the crates themselves, and `src/parsers/reference/answers.json` several thousand more, below the extraction layer. Regenerate the second with `bun src/parsers/reference/generate.ts` after a change to any parser, in the repo that made it, and copy `src/parsers/` across.
 - **TOML reports the first error of three phases, in the crate's order.** toml_parser's syntax phase (lexer, parser, whitespace and comment validation) runs to the end before the toml crate's table rules and value decoding start, and serde's walk into `toml::Value` comes last. So a syntax error on line 9 wins over a bad escape on line 1. Spans are UTF-8 byte offsets, so the TOML port works on the document's bytes, and the snippet's column is toml's: characters, or bytes when the span starts inside a multi-byte character.
 - **`preserve_order` moves a table.** A header that claims a table an earlier header created implicitly (`[a]` after `[a.b]`) removes it and re-inserts it, so it moves to the end. The port does the same with a `Map` delete and set.
 - **A directive that runs off the end of the input is refused, on both sides.** saphyr reads for ever past one (`%YAML` with no line break), because it pads the end with `'\0'` and counts that as a non-space character. Crate 0.2.1 bounds the input saphyr reads and refuses the document; the port's `Input` stops at the same point. Both answer `a directive runs to the end of the input with no line break after it`, and the corpus pins it.
