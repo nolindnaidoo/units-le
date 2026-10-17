@@ -1,0 +1,16 @@
+[package]
+name = "parsers-reference"
+version = "0.0.0"
+edition = "2024"
+
+[dependencies]
+saphyr = "=0.1.0"
+toml = { version = "=1.1.8", features = ["preserve_order"] }
+jsonc-parser = "=0.33.2"
+rust-ini = "=0.21.3"
+csv = "=1.4.0"
+serde_json = "1"
+
+# Pinned to the versions the crates that read documents lock, which are the
+# versions the transcriptions follow. A bump here is a bump there first.
+[workspace]
