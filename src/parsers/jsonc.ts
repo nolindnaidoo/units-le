@@ -24,7 +24,10 @@ export type JsonValue =
 			}>;
 	  }
 	| { readonly type: 'array'; readonly elements: readonly JsonValue[] }
-	| { readonly type: 'string'; readonly value: string }
+	/** `start` is the opening quote's UTF-16 index. */
+	| { readonly type: 'string'; readonly value: string; readonly start: number }
+	/** The literal as written; `start` is its first character's UTF-16 index. */
+	| { readonly type: 'number'; readonly text: string; readonly start: number }
 	| { readonly type: 'other' };
 
 type Token =
@@ -398,9 +401,18 @@ function parseValue(context: Context): JsonValue | undefined {
 		case '[':
 			return parseArray(context);
 		case 'string':
-			return { type: 'string', value: token.value };
-		case 'boolean':
+			return {
+				type: 'string',
+				value: token.value,
+				start: context.scanner.tokenStart,
+			};
 		case 'number':
+			return {
+				type: 'number',
+				text: token.value,
+				start: context.scanner.tokenStart,
+			};
+		case 'boolean':
 		case 'null':
 			return { type: 'other' };
 		case ']':

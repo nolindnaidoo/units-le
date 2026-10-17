@@ -1,4 +1,4 @@
-import { JsoncError, type JsonValue, parseJsonc } from './jsonc';
+import { JsoncError, type JsonValue, parseJsonc } from '../parsers/jsonc';
 import { collect, type Field, OTHER, type Value } from './policy';
 
 /** The crate's `json.rs`. Only strings are candidates; `"timeout": 30` has no unit. */
