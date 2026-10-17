@@ -36,6 +36,12 @@ on any conflict.
 - `fixtures/documents/ambiguous.yaml` is one case per line and every
   line must come back with a reason. Adding a line means adding its row
   to `fixtures/extraction.json`.
+- **The command line has a twin.** The npm package `units-le`, built
+  from the extension's `src/cli/` over the ported engine, mirrors
+  `cli.rs`, `scan.rs`, `walk.rs` and `mcp/` byte for byte, and
+  `bun ../scripts/check-cli-parity.ts` fails on any difference. A change
+  to a flag, a message, the walk, an exit code or an MCP reply changes
+  `src/cli/` in the same commit.
 - Write regression tests for every bug you fix; keep unit tests free of
   clocks, randomness, and the filesystem outside `walk`/`scan`.
 - **Run the binary, not only the tests.** The text scan's

@@ -124,9 +124,11 @@ file.
 | Route | Command | Worth knowing |
 |---|---|---|
 | **crates.io** | `cargo install units-le` | Needs **Rust 1.88+**. |
+| **npm** | `npm install -g units-le` or `npx units-le` | Needs **Node 20+**. The same `units-le` command, held to this one byte for byte. |
 | **From source** | `git clone https://github.com/nolindnaidoo/units-le`<br>`cd units-le/crate && cargo build --release` | The same build CI runs. |
 
-No runtime, no network, nothing written.
+The cargo build needs no runtime. Neither one touches the network or
+writes a file.
 
 ## Four dimensions
 
