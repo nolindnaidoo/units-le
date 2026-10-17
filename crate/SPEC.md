@@ -316,6 +316,16 @@ question that was not asked.
 — so dropping it under `--dimension bytes` would be this tool deciding
 what it just said it could not decide.
 
+**Held equal: this surface and the npm one.** The npm package
+`units-le` installs a command named `units-le`, built from the
+extension's `src/cli/` over the extension's port of this crate, and
+nobody running `units-le` can tell which one they have. It is held to
+everything in this section byte for byte — flags, walk, quantities,
+refusals, exit codes, stdout, stderr, and every reply `units-le mcp`
+writes — by `scripts/check-cli-parity.ts`. A change to this surface
+changes `src/cli/` in the same commit. That includes `--version`: every
+surface in the repository carries one version.
+
 ## The MCP surface
 
 `units-le mcp` speaks the Model Context Protocol on stdio. Both tools

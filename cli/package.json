@@ -1,0 +1,47 @@
+{
+	"name": "units-le",
+	"version": "1.2.0",
+	"description": "Find every quantity in a codebase, a number welded to a unit: durations, byte sizes, percentages and frequencies, each with its value in one base unit. Refuses what it cannot read unambiguously.",
+	"keywords": [
+		"units",
+		"duration",
+		"bytes",
+		"quantities",
+		"config",
+		"audit",
+		"cli",
+		"units-le",
+		"nolindnaidoo",
+		"letools"
+	],
+	"license": "MIT",
+	"author": {
+		"name": "Nolin Naidoo",
+		"url": "https://nolindnaidoo.com"
+	},
+	"homepage": "https://letools.dev/tools/units-le",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/nolindnaidoo/units-le.git",
+		"directory": "cli"
+	},
+	"bugs": {
+		"url": "https://github.com/nolindnaidoo/units-le/issues"
+	},
+	"type": "commonjs",
+	"bin": {
+		"units-le": "cli.js"
+	},
+	"files": [
+		"cli.js",
+		"README.md",
+		"LICENSE"
+	],
+	"engines": {
+		"node": ">=20"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
+}

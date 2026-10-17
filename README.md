@@ -56,6 +56,7 @@ Run `Units-LE: Extract Quantities` and every quantity in the active document —
 | **VS Code** | The report, in your editor, on a keystroke | [Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.units-le) |
 | **Cursor, VSCodium, Windsurf** | The same extension | [Open VSX](https://open-vsx.org/extension/nolindnaidoo/units-le) |
 | **A terminal or a CI step** | A whole tree, with exit codes | `cargo install units-le` · [crates.io](https://crates.io/crates/units-le) |
+| **A terminal, via Node** | The same command line, held to the Rust one byte for byte | `npx units-le` · [npm](https://www.npmjs.com/package/units-le) |
 | **Any MCP agent, via Node** | `extract_units` over stdio | `npx units-le-mcp` · [npm](https://www.npmjs.com/package/units-le-mcp) |
 
 ## A refusal is a finding
@@ -282,7 +283,7 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | npx -y units-le-mcp
 
 ## The CLI
 
-The same extraction runs over a tree from a terminal or a CI step: a Rust CLI in [`crate/`](crate/README.md), sharing one corpus with the extension — [`crate/fixtures/`](crate/fixtures/) — so the two can never read a quantity differently.
+The same extraction runs over a tree from a terminal or a CI step: a Rust CLI in [`crate/`](crate/README.md), sharing one corpus with the extension — [`crate/fixtures/`](crate/fixtures/) — so the two can never read a quantity differently. The same command line also ships on npm as `units-le`, for a machine with Node and no Rust, and CI holds it to the crate byte for byte on three operating systems.
 
 <p align="center">
   <img src="assets/demos/cli.gif" alt="units-le in a terminal" style="max-width: 100%; height: auto;" />
@@ -384,12 +385,12 @@ a build only tells you how busy the runner was.
 <!-- coverage:start -->
 | Metric | Coverage |
 | --- | --- |
-| Statements | 87.26% |
-| Branches | 79.16% |
-| Functions | 96.06% |
-| Lines | 89.17% |
+| Statements | 83.05% |
+| Branches | 75.83% |
+| Functions | 88.87% |
+| Lines | 85.32% |
 
-623 test cases across 16 files, plus an integration suite that runs
+641 test cases across 18 files, plus an integration suite that runs
 in a real VS Code extension host and an end-to-end test that installs the
 built `.vsix` into a clean profile.
 

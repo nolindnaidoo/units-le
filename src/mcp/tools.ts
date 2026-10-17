@@ -42,7 +42,9 @@ function readMaxResults(args: Record<string, unknown>): number {
 	return raw;
 }
 
-function readDimension(args: Record<string, unknown>): Dimension | undefined {
+export function readDimension(
+	args: Record<string, unknown>,
+): Dimension | undefined {
 	if (!Object.hasOwn(args, 'dimension') || args.dimension === undefined)
 		return undefined;
 	const name = args.dimension;
