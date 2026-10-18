@@ -1,8 +1,8 @@
 {
 	"name": "units-le",
 	"publisher": "nolindnaidoo",
-	"displayName": "Units-LE",
-	"description": "Find every quantity in a document — durations, sizes, percentages, frequencies — with its value in one base unit, and refuse the ambiguous ones by name",
+	"displayName": "Units-LE: Unit & Quantity Extractor",
+	"description": "Unit and quantity extractor: find every duration, size, percentage and frequency, normalized to one base unit, and refuse the ambiguous ones",
 	"version": "1.2.1",
 	"license": "MIT",
 	"author": {
@@ -26,22 +26,17 @@
 		"Linters"
 	],
 	"keywords": [
+		"unit",
 		"units",
 		"quantity",
 		"quantities",
 		"duration",
+		"durations",
 		"bytes",
-		"size",
-		"percent",
-		"frequency",
-		"timeout",
-		"memory",
-		"config",
-		"kubernetes",
-		"yaml",
-		"toml",
-		"mcp",
-		"model-context-protocol"
+		"unit conversion",
+		"extract units",
+		"percentages",
+		"frequency"
 	],
 	"icon": "src/assets/images/icon.png",
 	"l10n": "./l10n",

@@ -11,6 +11,18 @@ npm command line. The Rust CLI in `crate/` keeps its own
 version and releases from one tag. The entries below 1.0.0 describe this
 repository while it held the CLI alone.
 
+## [Unreleased]
+
+### Changed
+
+- **The listing carries the words people search for.** Open VSX ranks a
+  match in the name five times a match in the description, and "Units-LE"
+  holds "units" but not "unit", which Open VSX does not match to it, so a
+  search for "unit" put it 54th on 2026-10-18. The name is "Units-LE: Unit &
+  Quantity Extractor", the description opens with "Unit and quantity
+  extractor", where a card has room for about forty characters, and the
+  keywords are cut from 16 to 11 phrases someone would search for.
+
 ## [1.2.1] - 2026-10-17
 
 ### Fixed
