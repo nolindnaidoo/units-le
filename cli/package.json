@@ -1,6 +1,6 @@
 {
 	"name": "units-le",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"description": "Find every quantity in a codebase, a number welded to a unit: durations, byte sizes, percentages and frequencies, each with its value in one base unit. Refuses what it cannot read unambiguously.",
 	"keywords": [
 		"units",

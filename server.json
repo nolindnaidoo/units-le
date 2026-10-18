@@ -17,13 +17,13 @@
 		"url": "https://github.com/nolindnaidoo/units-le",
 		"source": "github"
 	},
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"packages": [
 		{
 			"registryType": "npm",
 			"registryBaseUrl": "https://registry.npmjs.org",
 			"identifier": "units-le-mcp",
-			"version": "1.2.1",
+			"version": "1.2.2",
 			"runtimeHint": "npx",
 			"transport": {
 				"type": "stdio"

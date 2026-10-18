@@ -3,7 +3,7 @@
 	"publisher": "nolindnaidoo",
 	"displayName": "Units-LE: Unit & Quantity Extractor",
 	"description": "Unit and quantity extractor: find every duration, size, percentage and frequency, normalized to one base unit, and refuse the ambiguous ones",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"license": "MIT",
 	"author": {
 		"name": "nolindnaidoo",
