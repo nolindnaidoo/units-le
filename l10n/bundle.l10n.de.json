@@ -36,5 +36,6 @@
 	"{0} quantit(ies) in {1} file(s)": "{0} Größe(n) in {1} Datei(en)",
 	"Quantities": "Größen",
 	"Could not be resolved": "Nicht auflösbar",
-	"{0} file(s) could not be read.": "{0} Datei(en) konnten nicht gelesen werden."
+	"{0} file(s) could not be read.": "{0} Datei(en) konnten nicht gelesen werden.",
+	"Units-LE could not finish: {0}": "Units-LE konnte nicht abschließen: {0}"
 }

@@ -36,5 +36,6 @@
 	"{0} quantit(ies) in {1} file(s)": "{1} 个文件中有 {0} 个数量",
 	"Quantities": "数量",
 	"Could not be resolved": "无法解析",
-	"{0} file(s) could not be read.": "{0} 个文件无法读取。"
+	"{0} file(s) could not be read.": "{0} 个文件无法读取。",
+	"Units-LE could not finish: {0}": "Units-LE 无法完成：{0}"
 }

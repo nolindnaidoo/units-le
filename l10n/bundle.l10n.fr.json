@@ -36,5 +36,6 @@
 	"{0} quantit(ies) in {1} file(s)": "{0} quantité(s) dans {1} fichier(s)",
 	"Quantities": "Quantités",
 	"Could not be resolved": "Impossible à résoudre",
-	"{0} file(s) could not be read.": "{0} fichier(s) n'ont pas pu être lus."
+	"{0} file(s) could not be read.": "{0} fichier(s) n'ont pas pu être lus.",
+	"Units-LE could not finish: {0}": "Units-LE n'a pas pu terminer : {0}"
 }

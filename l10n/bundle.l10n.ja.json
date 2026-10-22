@@ -36,5 +36,6 @@
 	"{0} quantit(ies) in {1} file(s)": "{1} 個のファイルに {0} 個の数量",
 	"Quantities": "数量",
 	"Could not be resolved": "解決できません",
-	"{0} file(s) could not be read.": "{0} 個のファイルを読み取れませんでした。"
+	"{0} file(s) could not be read.": "{0} 個のファイルを読み取れませんでした。",
+	"Units-LE could not finish: {0}": "Units-LE を完了できませんでした: {0}"
 }
