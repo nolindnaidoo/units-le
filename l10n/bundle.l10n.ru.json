@@ -35,5 +35,6 @@
 	"Not read: {0}. The {1} settings change this.": "Не прочитано: {0}. Это меняют параметры {1}.",
 	"{0} quantit(ies) in {1} file(s)": "Величин: {0}, файлов: {1}",
 	"Quantities": "Величины",
-	"Could not be resolved": "Не удалось определить"
+	"Could not be resolved": "Не удалось определить",
+	"{0} file(s) could not be read.": "Не удалось прочитать файлов: {0}."
 }

@@ -35,5 +35,6 @@
 	"Not read: {0}. The {1} settings change this.": "未读取：{0}。可通过 {1} 设置更改。",
 	"{0} quantit(ies) in {1} file(s)": "{1} 个文件中有 {0} 个数量",
 	"Quantities": "数量",
-	"Could not be resolved": "无法解析"
+	"Could not be resolved": "无法解析",
+	"{0} file(s) could not be read.": "{0} 个文件无法读取。"
 }

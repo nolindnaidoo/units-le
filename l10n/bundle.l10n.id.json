@@ -35,5 +35,6 @@
 	"Not read: {0}. The {1} settings change this.": "Tidak dibaca: {0}. Pengaturan {1} mengubah hal ini.",
 	"{0} quantit(ies) in {1} file(s)": "{0} kuantitas dalam {1} file",
 	"Quantities": "Kuantitas",
-	"Could not be resolved": "Tidak dapat diselesaikan"
+	"Could not be resolved": "Tidak dapat diselesaikan",
+	"{0} file(s) could not be read.": "{0} file tidak dapat dibaca."
 }

@@ -35,5 +35,6 @@
 	"Not read: {0}. The {1} settings change this.": "Non letto: {0}. Le impostazioni {1} lo modificano.",
 	"{0} quantit(ies) in {1} file(s)": "{0} quantità in {1} file",
 	"Quantities": "Quantità",
-	"Could not be resolved": "Impossibile risolvere"
+	"Could not be resolved": "Impossibile risolvere",
+	"{0} file(s) could not be read.": "Impossibile leggere {0} file."
 }
