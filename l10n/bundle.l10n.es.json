@@ -35,5 +35,7 @@
 	"Not read: {0}. The {1} settings change this.": "No leído: {0}. Los ajustes {1} cambian esto.",
 	"{0} quantit(ies) in {1} file(s)": "{0} cantidad(es) en {1} archivo(s)",
 	"Quantities": "Cantidades",
-	"Could not be resolved": "No se pudo resolver"
+	"Could not be resolved": "No se pudo resolver",
+	"{0} file(s) could not be read.": "{0} archivo(s) no se pudieron leer.",
+	"Units-LE could not finish: {0}": "Units-LE no pudo terminar: {0}"
 }

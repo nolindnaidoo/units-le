@@ -35,5 +35,7 @@
 	"Not read: {0}. The {1} settings change this.": "Не прочитано: {0}. Це змінюють параметри {1}.",
 	"{0} quantit(ies) in {1} file(s)": "Величин: {0}, файлів: {1}",
 	"Quantities": "Величини",
-	"Could not be resolved": "Не вдалося визначити"
+	"Could not be resolved": "Не вдалося визначити",
+	"{0} file(s) could not be read.": "Не вдалося прочитати файлів: {0}.",
+	"Units-LE could not finish: {0}": "Units-LE не вдалося завершити: {0}"
 }

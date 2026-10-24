@@ -35,5 +35,7 @@
 	"Not read: {0}. The {1} settings change this.": "Không đọc: {0}. Các cài đặt {1} thay đổi điều này.",
 	"{0} quantit(ies) in {1} file(s)": "{0} đại lượng trong {1} tệp",
 	"Quantities": "Đại lượng",
-	"Could not be resolved": "Không thể xác định"
+	"Could not be resolved": "Không thể xác định",
+	"{0} file(s) could not be read.": "Không thể đọc {0} tệp.",
+	"Units-LE could not finish: {0}": "Units-LE không thể hoàn thành: {0}"
 }
